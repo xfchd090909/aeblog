@@ -6,7 +6,7 @@
   <title>aeBlog</title>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles1.css">
   <style>
     body { visibility: hidden; }
     #loader { visibility: visible; position: fixed; inset: 0; background: #dde8f3; z-index: 10000; }
@@ -16,6 +16,19 @@
 <body>
   <div id="loader"></div>
   <div id="theme-canvas"></div>
+
+  <!-- 自定义 NSFW 确认弹窗 -->
+  <div id="custom-modal" class="modal-overlay">
+    <div class="modal-card">
+      <span class="modal-icon">warning</span>
+      <h3>确认开启内容限制？</h3>
+      <p>开启后将展示包含 NSFW (不适合工作场景) 标签的内容。请确保您已满 18 岁并在合适环境下浏览。</p>
+      <div class="modal-actions">
+        <button class="modal-btn btn-secondary" onclick="closeModal()">取消</button>
+        <button class="modal-btn btn-primary" onclick="confirmNsfw()">确认开启</button>
+      </div>
+    </div>
+  </div>
 
   <main class="container">
     <section id="content-page" class="page active">
@@ -46,6 +59,7 @@
     const links = document.querySelectorAll('.link');
     const pages = document.querySelectorAll('.page');
     const canvas = document.getElementById('theme-canvas');
+    const modal = document.getElementById('custom-modal'); // 获取弹窗元素
 
     async function initApp() {
       try {
@@ -130,23 +144,32 @@
       }).join('');
     }
 
+    // 修改后的 NSFW 开关处理：开启时显示自定义弹窗，关闭时直接关闭
     function toggleNsfw(event) {
       const btn = event.currentTarget;
       
       if (!isNsfwEnabled) {
-        // 尝试开启时的警告
-        const confirmed = confirm("警告：开启后将展示包含 NSFW (不适合工作场景) 标签的内容。是否继续？");
-        if (confirmed) {
-          isNsfwEnabled = true;
-          btn.classList.add('active');
-          renderBlog();
-        }
+        // 尝试开启 → 显示自定义弹窗
+        modal.classList.add('active');
       } else {
         // 正常关闭
         isNsfwEnabled = false;
         btn.classList.remove('active');
         renderBlog();
       }
+    }
+
+    // 弹窗确认开启
+    function confirmNsfw() {
+      isNsfwEnabled = true;
+      closeModal();
+      renderSettings(); // 刷新设置页，使开关变为激活状态
+      renderBlog();
+    }
+
+    // 关闭弹窗
+    function closeModal() {
+      modal.classList.remove('active');
     }
 
     function toggleTheme(event) {
