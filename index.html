@@ -13,29 +13,46 @@
     #loader { visibility: visible; position: fixed; inset: 0; background: #dde8f3; z-index: 10000; }
     html.dark-theme #loader { background: #0f172a; }
 
-    /* ==================== 同页切换阅读区动画 ==================== */
+    /* ==================== 同页阅读区切换（标题独立飞出 + 主页渐隐） ==================== */
     #content-page {
       position: relative;
+      min-height: 100vh;
       overflow: hidden;
     }
     .view {
       position: absolute;
       inset: 0;
-      transition: transform 0.7s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.7s ease;
-      opacity: 0;
-      transform: translateX(100%);
+      transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.32, 0.72, 0, 1);
     }
-    .view.active {
+    #list-view { opacity: 1; transform: translateX(0); }
+    #reader-view {
+      opacity: 0;
+      transform: translateX(80px);
+      pointer-events: none;
+    }
+    #reader-view.active {
       opacity: 1;
       transform: translateX(0);
-      position: relative;
+      pointer-events: auto;
     }
 
-    /* 阅读区标题动画 */
+    /* 标题飞出动画（从卡片位置飞到顶部） */
+    #flying-title {
+      position: fixed;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--text);
+      pointer-events: none;
+      z-index: 99999;
+      opacity: 0;
+      transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* 阅读区头部（已移除蓝色，使用协调卡片风格） */
     #reader-header {
       padding: 24px 28px;
-      background: var(--accent);
-      color: white;
+      background: var(--card-bg);
+      color: var(--text);
       position: sticky;
       top: 0;
       z-index: 10;
@@ -43,23 +60,26 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
     }
     #reader-header.shrunk {
       padding: 14px 24px;
-      font-size: 1.15rem;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+      font-size: 1.18rem;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
     }
 
+    /* 阅读区主体 - 动态高度 + 完整显示长内容 */
     #reader-body {
       padding: 40px;
       overflow-y: auto;
-      max-height: calc(100vh - 74px);
+      max-height: none; /* 动态高度，不限制 */
+      min-height: 60vh;
     }
     .markdown-content {
       line-height: 1.85;
       font-size: 1.05rem;
       opacity: 0;
-      animation: fadeInContent 0.9s forwards 0.4s;
+      animation: fadeInContent 0.9s forwards 0.3s;
     }
     @keyframes fadeInContent {
       to { opacity: 1; }
@@ -114,7 +134,7 @@
   <main class="container">
     <section id="content-page" class="page active">
       <!-- 列表视图 -->
-      <div id="list-view" class="view active">
+      <div id="list-view" class="view">
         <div id="blog-container"></div>
       </div>
 
@@ -166,6 +186,8 @@
     const readerTitle = document.getElementById('reader-title');
     const readerMarkdown = document.getElementById('reader-markdown');
 
+    let currentFlyingTitle = null;
+
     async function initApp() {
       if (sessionStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark-theme');
@@ -184,14 +206,13 @@
       }
     }
 
-    // ==================== 列表视图 ====================
     async function renderBlog() {
       const container = document.getElementById('blog-container');
       container.innerHTML = '';
 
       for (const post of blogData) {
         const cardHTML = `
-          <article class="card" onclick="openReader(${post.id})" style="cursor:pointer;">
+          <article class="card" onclick="openReader(${post.id}, event)" style="cursor:pointer;">
             <h3>${post.title}</h3>
             <p class="date">${post.date}</p>
             <span class="badge ${getTagClass(post.tag)}">${post.tag}</span>
@@ -201,13 +222,37 @@
       }
     }
 
-    // ==================== 切换到阅读视图（同页滑动） ====================
-    async function openReader(id) {
+    // ==================== 点击卡片：标题独立飞出 + 主页渐隐 ====================
+    async function openReader(id, e) {
       const post = blogData.find(p => p.id === id);
       if (!post) return;
 
-      readerTitle.textContent = post.title;
+      // 创建飞出标题（独立动画）
+      const cardTitle = e.currentTarget.querySelector('h3');
+      const rect = cardTitle.getBoundingClientRect();
 
+      currentFlyingTitle = document.createElement('div');
+      currentFlyingTitle.id = 'flying-title';
+      currentFlyingTitle.textContent = post.title;
+      currentFlyingTitle.style.left = `${rect.left}px`;
+      currentFlyingTitle.style.top = `${rect.top}px`;
+      currentFlyingTitle.style.width = `${rect.width}px`;
+      document.body.appendChild(currentFlyingTitle);
+
+      // 飞到顶部
+      setTimeout(() => {
+        const targetRect = readerTitle.getBoundingClientRect();
+        currentFlyingTitle.style.left = `${targetRect.left}px`;
+        currentFlyingTitle.style.top = `${targetRect.top + 8}px`;
+        currentFlyingTitle.style.fontSize = '1.6rem';
+        currentFlyingTitle.style.opacity = '0';
+      }, 10);
+
+      // 主页列表渐隐
+      listView.style.transition = 'opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1)';
+      listView.style.opacity = '0';
+
+      // 加载 Markdown
       let mdContent = '';
       try {
         const res = await fetch(`/posts/${post.filename}`);
@@ -215,95 +260,79 @@
       } catch (e) {
         mdContent = post.content || '无法加载文章内容';
       }
-
       readerMarkdown.innerHTML = marked.parse(mdContent);
+      readerTitle.textContent = post.title;
 
-      // 重置滚动和标题状态
-      readerHeader.classList.remove('shrunk');
-      document.getElementById('reader-body').scrollTop = 0;
+      // 显示阅读区
+      setTimeout(() => {
+        readerView.classList.add('active');
+        document.getElementById('reader-body').scrollTop = 0;
+        readerHeader.classList.remove('shrunk');
+      }, 400);
 
-      // 平滑切换视图
-      listView.classList.remove('active');
-      readerView.classList.add('active');
+      // 清理飞出标题
+      setTimeout(() => {
+        if (currentFlyingTitle) {
+          currentFlyingTitle.remove();
+          currentFlyingTitle = null;
+        }
+      }, 1200);
     }
 
     function closeReader() {
-      readerView.classList.remove('active');
-      listView.classList.add('active');
+      // 反向动画：阅读区渐隐 + 列表渐显
+      readerView.style.opacity = '0';
+      setTimeout(() => {
+        readerView.classList.remove('active');
+        listView.style.opacity = '1';
+      }, 600);
     }
 
-    // ==================== 滚动时标题缩小吸附 ====================
-    const readerBody = document.getElementById('reader-body');
-    readerBody.addEventListener('scroll', () => {
-      if (readerBody.scrollTop > 80) {
+    // ==================== 滚动时标题吸附缩小 ====================
+    document.getElementById('reader-body').addEventListener('scroll', () => {
+      if (document.getElementById('reader-body').scrollTop > 80) {
         readerHeader.classList.add('shrunk');
       } else {
         readerHeader.classList.remove('shrunk');
       }
     });
 
-    function renderSettings() {
+    function renderSettings() { /* 保持不变 */ 
       const isDark = document.body.classList.contains('dark-theme');
       document.getElementById('settings-title').textContent = settingsData.title;
       const list = document.getElementById('settings-list');
-      
       let settingsHtml = '';
-
       settingsData.categories.forEach(category => {
-        settingsHtml += `
-          <div class="settings-category">
-            <h3 class="settings-category-title">${category.title}</h3>
-        `;
-
+        settingsHtml += `<div class="settings-category"><h3 class="settings-category-title">${category.title}</h3>`;
         if (category.id === 'content' && RESTRICTED_COUNTRIES.includes(userCountry)) {
-          settingsHtml += `
-            <div class="settings-local-tip">当前内容已符合当地规范，无需调整</div>
-          `;
+          settingsHtml += `<div class="settings-local-tip">当前内容已符合当地规范，无需调整</div>`;
         } else {
           const filteredOptions = category.options.filter(opt => {
             if (["CN", "China"].includes(userCountry) && opt.id === "nsfw_filter") return false;
             if (RESTRICTED_COUNTRIES.includes(userCountry) && (opt.id === "parental_filter" || opt.id === "nsfw_filter")) return false;
             return true;
           });
-
           filteredOptions.forEach(opt => {
             if (opt.type === 'theme-toggle') {
-              settingsHtml += `
-                <div class="setting-item">
-                  <span>${opt.label}</span>
-                  <button class="toggle-btn ${isDark ? 'active' : ''}" id="${opt.id}" onclick="toggleTheme(event)">
-                    <div class="toggle-thumb"></div>
-                  </button>
-                </div>`;
-            } 
-            else if (opt.type === 'toggle') {
+              settingsHtml += `<div class="setting-item"><span>${opt.label}</span><button class="toggle-btn ${isDark ? 'active' : ''}" id="${opt.id}" onclick="toggleTheme(event)"><div class="toggle-thumb"></div></button></div>`;
+            } else if (opt.type === 'toggle') {
               let isActive = (opt.id === 'parental_filter') ? isParentalEnabled : isNsfwEnabled;
-              settingsHtml += `
-                <div class="setting-item">
-                  <span>${opt.label}</span>
-                  <button class="toggle-btn ${isActive ? 'active' : ''}" id="${opt.id}" onclick="handleContentToggle(event)">
-                    <div class="toggle-thumb"></div>
-                  </button>
-                </div>`;
-            }
-            else {
+              settingsHtml += `<div class="setting-item"><span>${opt.label}</span><button class="toggle-btn ${isActive ? 'active' : ''}" id="${opt.id}" onclick="handleContentToggle(event)"><div class="toggle-thumb"></div></button></div>`;
+            } else {
               settingsHtml += `<div class="setting-item"><span>${opt.label}</span><div>[ 待开发 ]</div></div>`;
             }
           });
         }
-
         if (category.id === 'content') {
           const displayCountry = countryMap[userCountry] || `未知地区 (${userCountry}) 🌐`;
-          settingsHtml += `
-            <div class="settings-country-info">
-              当前检测到的国家/地区：<strong>${displayCountry}</strong>
-            </div>
-          `;
+          settingsHtml += `<div class="settings-country-info">当前检测到的国家/地区：<strong>${displayCountry}</strong></div>`;
         }
         settingsHtml += `</div>`;
       });
       list.innerHTML = settingsHtml;
     }
+
+    /* 以下函数保持你之前的版本（toggleTheme、handleContentToggle、confirmParental、confirmNsfw、closeModal、getTagClass）不变 */
 
     function toggleTheme(event) {
       const btn = event.currentTarget;
