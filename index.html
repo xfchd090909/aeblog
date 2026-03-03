@@ -89,7 +89,7 @@
     function renderBlog() {
       const container = document.getElementById('blog-container');
       const filteredData = blogData.filter(post => {
-        if (userCountry === "CN" || userCountry === "China") return post.tag === "适合全年龄";
+        if (userCountry === "CN","SG" || userCountry === "China","Singapore","Singapore") return post.tag === "适合全年龄";
         if (!isNsfwEnabled) {
           const restrictedTags = ["需要监护人指导", "不适合工作场景"];
           if (restrictedTags.includes(post.tag)) return false;
@@ -123,14 +123,14 @@
         `;
 
         // 处理内容管理分类的特殊逻辑（中国IP）
-        if (category.id === 'content' && (userCountry === "CN" || userCountry === "China")) {
+        if (category.id === 'content' && (userCountry === "CN","SG" || userCountry === "China","Singapore","Singapore")) {
           settingsHtml += `
             <div class="settings-local-tip">当前内容已符合当地规范，无需调整</div>
           `;
         } else {
           // 渲染分类下的选项
           const filteredOptions = category.options.filter(opt => {
-            if ((userCountry === "CN" || userCountry === "China") && opt.id === "nsfw_filter") return false;
+            if ((userCountry === "CN","SG" || userCountry === "China","Singapore","Singapore") && opt.id === "nsfw_filter") return false;
             return true;
           });
 
