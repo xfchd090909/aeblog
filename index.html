@@ -6,7 +6,7 @@
   <title>aeBlog</title>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles1.css">
+  <link rel="stylesheet" href="styles.css">
   <style>
     body { visibility: hidden; }
     #loader { visibility: visible; position: fixed; inset: 0; background: #dde8f3; z-index: 10000; }
@@ -17,7 +17,6 @@
   <div id="loader"></div>
   <div id="theme-canvas"></div>
 
-  <!-- 自定义 NSFW 确认弹窗 -->
   <div id="custom-modal" class="modal-overlay">
     <div class="modal-card">
       <span class="modal-icon">warning</span>
@@ -54,12 +53,12 @@
   <script src="data.js"></script>
   <script>
     let userCountry = "";
-    let isNsfwEnabled = false; // 默认为关闭
+    let isNsfwEnabled = false;
 
     const links = document.querySelectorAll('.link');
     const pages = document.querySelectorAll('.page');
     const canvas = document.getElementById('theme-canvas');
-    const modal = document.getElementById('custom-modal'); // 获取弹窗元素
+    const modal = document.getElementById('custom-modal');
 
     async function initApp() {
       try {
@@ -78,21 +77,12 @@
 
     function renderBlog() {
       const container = document.getElementById('blog-container');
-      
       const filteredData = blogData.filter(post => {
-        // 国家限制逻辑
-        if (userCountry === "CN" || userCountry === "China") {
-          return post.tag === "适合全年龄";
-        }
-        
-        // NSFW 过滤逻辑
+        if (userCountry === "CN" || userCountry === "China") return post.tag === "适合全年龄";
         if (!isNsfwEnabled) {
           const restrictedTags = ["需要监护人指导", "不适合工作场景"];
-          if (restrictedTags.includes(post.tag)) {
-            return false;
-          }
+          if (restrictedTags.includes(post.tag)) return false;
         }
-        
         return true;
       });
 
@@ -109,11 +99,8 @@
     function renderSettings() {
       document.getElementById('settings-title').textContent = settingsData.title;
       const list = document.getElementById('settings-list');
-      
       const filteredOptions = settingsData.options.filter(opt => {
-        if ((userCountry === "CN" || userCountry === "China") && opt.id === "nsfw_filter") {
-          return false;
-        }
+        if ((userCountry === "CN" || userCountry === "China") && opt.id === "nsfw_filter") return false;
         return true;
       });
 
@@ -131,43 +118,33 @@
           return `
             <div class="setting-item">
               <span>${opt.label}</span>
-              <button class="toggle-btn ${isNsfwEnabled ? 'active' : ''}" id="${opt.id}" onclick="toggleNsfw(event)">
+              <button class="toggle-btn ${isNsfwEnabled ? 'active' : ''}" id="${opt.id}" onclick="handleNsfwToggle(event)">
                 <div class="toggle-thumb"></div>
               </button>
             </div>`;
         }
-        return `
-          <div class="setting-item">
-            <span>${opt.label}</span>
-            <div class="status-placeholder">[ 待开发 ]</div>
-          </div>`;
+        return `<div class="setting-item"><span>${opt.label}</span><div class="status-placeholder">[ 待开发 ]</div></div>`;
       }).join('');
     }
 
-    // 修改后的 NSFW 开关处理：开启时显示自定义弹窗，关闭时直接关闭
-    function toggleNsfw(event) {
-      const btn = event.currentTarget;
-      
+    // 处理开关点击
+    function handleNsfwToggle(event) {
       if (!isNsfwEnabled) {
-        // 尝试开启 → 显示自定义弹窗
-        modal.classList.add('active');
+        modal.classList.add('active'); // 显示自定义弹窗
       } else {
-        // 正常关闭
         isNsfwEnabled = false;
-        btn.classList.remove('active');
+        event.currentTarget.classList.remove('active');
         renderBlog();
       }
     }
 
-    // 弹窗确认开启
     function confirmNsfw() {
       isNsfwEnabled = true;
       closeModal();
-      renderSettings(); // 刷新设置页，使开关变为激活状态
+      renderSettings(); // 刷新开关状态
       renderBlog();
     }
 
-    // 关闭弹窗
     function closeModal() {
       modal.classList.remove('active');
     }
