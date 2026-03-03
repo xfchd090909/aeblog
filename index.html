@@ -70,6 +70,7 @@
   </nav>
 
   <script src="data.js"></script>
+  <script src="countries.js"></script>   <!-- 新增：读取独立国家文件 -->
   <script>
     let userCountry = "";
     let isParentalEnabled = sessionStorage.getItem('parental') !== 'disabled';
@@ -189,12 +190,12 @@
           });
         }
 
-        // 国家信息始终显示在“内容管理”最底部（动态生成，无硬编码）
+        // 国家信息始终显示在“内容管理”最底部（从 countries.js 读取）
         if (category.id === 'content') {
-          const displayCountry = getDisplayCountry(userCountry);
+          const displayCountry = countryMap[userCountry] || `未知地区 (${userCountry}) 🌐`;
           settingsHtml += `
             <div class="settings-country-info">
-              当前国家/地区：<strong>${displayCountry}</strong>
+              当前检测到的国家/地区：<strong>${displayCountry}</strong>
             </div>
           `;
         }
@@ -205,7 +206,7 @@
       list.innerHTML = settingsHtml;
     }
 
-    function toggleTheme(event) { /* 原代码不变 */ 
+    function toggleTheme(event) {
       const btn = event.currentTarget;
       const isNowDark = document.body.classList.toggle('dark-theme');
       document.documentElement.classList.toggle('dark-theme', isNowDark);
@@ -223,7 +224,7 @@
       canvas.classList.add('animate');
     }
 
-    function handleContentToggle(event) { /* 原代码不变 */ 
+    function handleContentToggle(event) {
       const btn = event.currentTarget;
       const toggleId = btn.id;
       const isCurrentlyEnabled = (toggleId === 'parental_filter') ? isParentalEnabled : isNsfwEnabled;
@@ -247,7 +248,7 @@
       }
     }
 
-    function confirmParental() { /* 原代码不变 */ 
+    function confirmParental() {
       isParentalEnabled = true;
       sessionStorage.setItem('parental', 'enabled');
       closeParentalModal();
@@ -255,7 +256,7 @@
       renderBlog();
     }
 
-    function confirmNsfw() { /* 原代码不变 */ 
+    function confirmNsfw() {
       isNsfwEnabled = true;
       sessionStorage.setItem('nsfw', 'enabled');
       closeNsfwModal();
@@ -263,10 +264,15 @@
       renderBlog();
     }
 
-    function closeParentalModal() { parentalModal.classList.remove('active'); }
-    function closeNsfwModal() { nsfwModal.classList.remove('active'); }
+    function closeParentalModal() {
+      parentalModal.classList.remove('active');
+    }
 
-    function getTagClass(tag) { /* 原代码不变 */ 
+    function closeNsfwModal() {
+      nsfwModal.classList.remove('active');
+    }
+
+    function getTagClass(tag) {
       if (tag === "适合全年龄") return "tag-green";
       if (tag === "需要监护人指导") return "tag-yellow";
       if (tag === "不适合工作场景") return "tag-red";
