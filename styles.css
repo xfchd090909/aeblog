@@ -33,7 +33,6 @@ body {
   color: var(--text);
 }
 
-/* --- 涟漪动画保持不变 --- */
 #theme-canvas {
   position: fixed;
   width: 2px;
@@ -53,7 +52,6 @@ body {
   100% { transform: translate(-50%, -50%) scale(2500); opacity: 0; }
 }
 
-/* --- 页面布局保持不变 --- */
 .container { flex: 1; width: 100%; max-width: 800px; position: relative; margin-top: 40px; }
 
 .page {
@@ -119,7 +117,6 @@ body {
 }
 .toggle-btn.active .toggle-thumb { transform: translateX(26px); }
 
-/* --- 核心合并：菜单增强样式 --- */
 .menu {
   position: fixed; bottom: 40px; padding: 1rem;
   background: var(--menu-bg); backdrop-filter: blur(12px);
@@ -135,7 +132,6 @@ body {
   position: relative;
 }
 
-/* 焦点跟随：当菜单被悬停时，强制收缩当前 active 但未被悬停的项 */
 .menu:hover .link.active:not(:hover) {
   width: 60px;
   color: var(--muted);
@@ -148,7 +144,6 @@ body {
   transform: translateX(10px);
 }
 
-/* 激活与悬停状态合并 */
 .link:hover,
 .link.active {
   width: 150px;
