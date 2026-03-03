@@ -7,7 +7,7 @@ const blogData = [
     date: "2026-03-03",
     content: "mdf/p1.md",
     tag: "适合全年龄"
-  },
+  }
 ];
 
 const settingsData = {
@@ -30,5 +30,6 @@ const settingsData = {
     }
   ]
 };
+
 
 
