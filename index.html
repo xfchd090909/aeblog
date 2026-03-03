@@ -70,23 +70,12 @@
   </nav>
 
   <script src="data.js"></script>
-  <script src="countries.js"></script>   <!-- 新增：读取独立国家文件 -->
+  <script src="countries.js"></script>
+  <script src="restricted.js"></script>   <!-- 新增：读取独立受限国家文件 -->
   <script>
     let userCountry = "";
     let isParentalEnabled = sessionStorage.getItem('parental') !== 'disabled';
     let isNsfwEnabled = sessionStorage.getItem('nsfw') === 'enabled';
-
-    const RESTRICTED_COUNTRIES = [
-      "AU", "Australia", "MY", "Malaysia", "SG", "Singapore",
-      "DE", "Germany",
-      "AT", "Austria", "BE", "Belgium", "BG", "Bulgaria", "HR", "Croatia",
-      "CY", "Cyprus", "CZ", "Czech Republic", "Czechia", "DK", "Denmark",
-      "EE", "Estonia", "FI", "Finland", "FR", "France", "GR", "Greece",
-      "HU", "Hungary", "IE", "Ireland", "IT", "Italy", "LV", "Latvia",
-      "LT", "Lithuania", "LU", "Luxembourg", "MT", "Malta", "NL", "Netherlands",
-      "PL", "Poland", "PT", "Portugal", "RO", "Romania", "SK", "Slovakia",
-      "SI", "Slovenia", "ES", "Spain", "SE", "Sweden"
-    ];
 
     const links = document.querySelectorAll('.link');
     const pages = document.querySelectorAll('.page');
@@ -190,12 +179,11 @@
           });
         }
 
-        // 国家信息始终显示在“内容管理”最底部（从 countries.js 读取）
         if (category.id === 'content') {
           const displayCountry = countryMap[userCountry] || `未知地区 (${userCountry}) 🌐`;
           settingsHtml += `
             <div class="settings-country-info">
-              当前国家/地区：<strong>${displayCountry}</strong>
+              当前检测到的国家/地区：<strong>${displayCountry}</strong>
             </div>
           `;
         }
