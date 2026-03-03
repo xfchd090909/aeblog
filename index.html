@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>aeBlog</title>
+  <title>aeBlog - 极简体验</title>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css">
   <style>
-    /* 初始锁定状态，不输出任何文字 */
     body { visibility: hidden; }
     #loader { visibility: visible; position: fixed; inset: 0; background: #dde8f3; z-index: 10000; }
     body.dark-theme #loader { background: #0f172a; }
@@ -28,12 +27,12 @@
     </section>
   </main>
 
-  <nav class="menu" role="navigation">
-    <a href="#" class="link active" data-target="content-page">
+  <nav class="menu" role="navigation" aria-label="主导航">
+    <a href="#" class="link active" data-target="content-page" aria-label="内容">
       <span class="link-icon">dashboard</span>
       <span class="link-title">内容</span>
     </a>
-    <a href="#" class="link" data-target="settings-page">
+    <a href="#" class="link" data-target="settings-page" aria-label="设置">
       <span class="link-icon">settings</span>
       <span class="link-title">设置</span>
     </a>
