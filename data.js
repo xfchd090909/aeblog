@@ -1,7 +1,7 @@
 const blogData = [
   {
     id: 1,
-    filename: "post1.md",                    // ← 对应 posts/post1.md
+    filename: "p1.md",                    // ← 对应 posts/post1.md
     title: "探索极简主义设计",
     date: "2026-03-03",
     content: "",                             // 留空，实际内容从 .md 文件加载
@@ -53,3 +53,4 @@ const settingsData = {
     }
   ]
 };
+
