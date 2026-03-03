@@ -127,10 +127,9 @@
       }).join('');
     }
 
-    // 处理开关点击
     function handleNsfwToggle(event) {
       if (!isNsfwEnabled) {
-        modal.classList.add('active'); // 显示自定义弹窗
+        modal.classList.add('active');
       } else {
         isNsfwEnabled = false;
         event.currentTarget.classList.remove('active');
@@ -141,7 +140,7 @@
     function confirmNsfw() {
       isNsfwEnabled = true;
       closeModal();
-      renderSettings(); // 刷新开关状态
+      renderSettings();
       renderBlog();
     }
 
@@ -174,12 +173,19 @@
     links.forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
+        const targetId = link.getAttribute('data-target');
+        
         links.forEach(l => l.classList.remove('active'));
         link.classList.add('active');
-        const targetId = link.getAttribute('data-target');
+
         pages.forEach(page => {
-          page.classList.remove('active');
-          if (page.id === targetId) setTimeout(() => page.classList.add('active'), 50);
+          if (page.id === targetId) {
+            page.style.display = 'block';
+            setTimeout(() => page.classList.add('active'), 50);
+          } else {
+            page.classList.remove('active');
+            setTimeout(() => { if(!page.classList.contains('active')) page.style.display = 'none' }, 400);
+          }
         });
       });
     });
