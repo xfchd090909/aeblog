@@ -48,7 +48,7 @@
 
     async function initApp() {
       try {
-        const response = await fetch('/.netlify/functions/get-ip');
+        const response = await fetch('/.netlify/functions/get-ip.js');
         const data = await response.json();
         userCountry = data.country;
       } catch (e) {
