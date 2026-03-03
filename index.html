@@ -22,14 +22,28 @@
   <div id="loader"></div>
   <div id="theme-canvas"></div>
 
+  <!-- NSFW 弹窗（红色，保持原样） -->
   <div id="custom-modal" class="modal-overlay">
     <div class="modal-card">
       <span class="modal-icon">warning</span>
       <h3>限制内容警告</h3>
       <p>如果你能看到此提示，说明我们检测到你的位置处于网络审查宽松的环境下，如果符合相关规范，你可以选择开启<br><br>但如果你使用了用于越过网络审查的工具访问本站打开限制内容产生的后果我们概不负责!<br></p>
       <div class="modal-actions">
-        <button class="modal-btn btn-secondary" onclick="closeModal()">取消</button>
-        <button class="modal-btn btn-primary" onclick="confirmRestricted()">开启限制内容</button>
+        <button class="modal-btn btn-secondary" onclick="closeNsfwModal()">取消</button>
+        <button class="modal-btn btn-primary" onclick="confirmNsfw()">开启限制内容</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 需要监护人指导 独立弹窗（黄色感叹号 + 新文案） -->
+  <div id="parental-modal" class="modal-overlay">
+    <div class="modal-card">
+      <span class="modal-icon parental-icon">warning</span>
+      <h3>限制内容警告</h3>
+      <p>如果你能看到此提示，说明我们检测到你的位置处于网络审查有部分限制的环境下，如果符合相关规范，你应该谨慎选择开启，这个行为不代表你可以观看NSFW级内容，我们也不建议这样做，但可以看到未被限制且你认为合法的信息</p>
+      <div class="modal-actions">
+        <button class="modal-btn btn-secondary" onclick="closeParentalModal()">取消</button>
+        <button class="modal-btn btn-primary" onclick="confirmParental()">开启限制内容</button>
       </div>
     </div>
   </div>
@@ -60,12 +74,12 @@
     let userCountry = "";
     let isParentalEnabled = sessionStorage.getItem('parental') !== 'disabled';
     let isNsfwEnabled = sessionStorage.getItem('nsfw') === 'enabled';
-    let pendingToggleType = null;
 
     const links = document.querySelectorAll('.link');
     const pages = document.querySelectorAll('.page');
     const canvas = document.getElementById('theme-canvas');
-    const modal = document.getElementById('custom-modal');
+    const nsfwModal = document.getElementById('custom-modal');
+    const parentalModal = document.getElementById('parental-modal');
 
     async function initApp() {
       if (sessionStorage.getItem('theme') === 'dark') {
@@ -155,7 +169,6 @@
             }
           });
         }
-
         settingsHtml += `</div>`;
       });
 
@@ -166,7 +179,6 @@
       const btn = event.currentTarget;
       const isNowDark = document.body.classList.toggle('dark-theme');
       document.documentElement.classList.toggle('dark-theme', isNowDark);
-      
       btn.classList.toggle('active');
       sessionStorage.setItem('theme', isNowDark ? 'dark' : 'light');
 
@@ -187,8 +199,11 @@
       const isCurrentlyEnabled = (toggleId === 'parental_filter') ? isParentalEnabled : isNsfwEnabled;
 
       if (!isCurrentlyEnabled) {
-        pendingToggleType = toggleId;
-        modal.classList.add('active');
+        if (toggleId === 'parental_filter') {
+          parentalModal.classList.add('active');
+        } else {
+          nsfwModal.classList.add('active');
+        }
       } else {
         if (toggleId === 'parental_filter') {
           isParentalEnabled = false;
@@ -202,25 +217,28 @@
       }
     }
 
-    function confirmRestricted() {
-      if (!pendingToggleType) return;
-
-      if (pendingToggleType === 'parental_filter') {
-        isParentalEnabled = true;
-        sessionStorage.setItem('parental', 'enabled');
-      } else if (pendingToggleType === 'nsfw_filter') {
-        isNsfwEnabled = true;
-        sessionStorage.setItem('nsfw', 'enabled');
-      }
-
-      closeModal();
+    function confirmParental() {
+      isParentalEnabled = true;
+      sessionStorage.setItem('parental', 'enabled');
+      closeParentalModal();
       renderSettings();
       renderBlog();
     }
 
-    function closeModal() { 
-      modal.classList.remove('active'); 
-      pendingToggleType = null;
+    function confirmNsfw() {
+      isNsfwEnabled = true;
+      sessionStorage.setItem('nsfw', 'enabled');
+      closeNsfwModal();
+      renderSettings();
+      renderBlog();
+    }
+
+    function closeParentalModal() {
+      parentalModal.classList.remove('active');
+    }
+
+    function closeNsfwModal() {
+      nsfwModal.classList.remove('active');
     }
 
     function getTagClass(tag) {
@@ -238,7 +256,7 @@
         link.classList.add('active');
         pages.forEach(page => {
           page.classList.toggle('active', page.id === targetId);
-          if(targetId === 'settings-page' && page.id === targetId) renderSettings();
+          if (targetId === 'settings-page' && page.id === targetId) renderSettings();
         });
       });
     });
