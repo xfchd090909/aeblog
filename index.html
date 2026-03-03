@@ -87,46 +87,36 @@
       "SI", "Slovenia", "ES", "Spain", "SE", "Sweden"
     ];
 
-    const countryMap = {
-      "CN": "中国 🇨🇳", "China": "中国 🇨🇳",
-      "AU": "澳大利亚 🇦🇺", "Australia": "澳大利亚 🇦🇺",
-      "MY": "马来西亚 🇲🇾", "Malaysia": "马来西亚 🇲🇾",
-      "SG": "新加坡 🇸🇬", "Singapore": "新加坡 🇸🇬",
-      "DE": "德国 🇩🇪", "Germany": "德国 🇩🇪",
-      "AT": "奥地利 🇦🇹", "Austria": "奥地利 🇦🇹",
-      "BE": "比利时 🇧🇪", "Belgium": "比利时 🇧🇪",
-      "BG": "保加利亚 🇧🇬", "Bulgaria": "保加利亚 🇧🇬",
-      "HR": "克罗地亚 🇭🇷", "Croatia": "克罗地亚 🇭🇷",
-      "CY": "塞浦路斯 🇨🇾", "Cyprus": "塞浦路斯 🇨🇾",
-      "CZ": "捷克 🇨🇿", "Czech Republic": "捷克 🇨🇿", "Czechia": "捷克 🇨🇿",
-      "DK": "丹麦 🇩🇰", "Denmark": "丹麦 🇩🇰",
-      "EE": "爱沙尼亚 🇪🇪", "Estonia": "爱沙尼亚 🇪🇪",
-      "FI": "芬兰 🇫🇮", "Finland": "芬兰 🇫🇮",
-      "FR": "法国 🇫🇷", "France": "法国 🇫🇷",
-      "GR": "希腊 🇬🇷", "Greece": "希腊 🇬🇷",
-      "HU": "匈牙利 🇭🇺", "Hungary": "匈牙利 🇭🇺",
-      "IE": "爱尔兰 🇮🇪", "Ireland": "爱尔兰 🇮🇪",
-      "IT": "意大利 🇮🇹", "Italy": "意大利 🇮🇹",
-      "LV": "拉脱维亚 🇱🇻", "Latvia": "拉脱维亚 🇱🇻",
-      "LT": "立陶宛 🇱🇹", "Lithuania": "立陶宛 🇱🇹",
-      "LU": "卢森堡 🇱🇺", "Luxembourg": "卢森堡 🇱🇺",
-      "MT": "马耳他 🇲🇹", "Malta": "马耳他 🇲🇹",
-      "NL": "荷兰 🇳🇱", "Netherlands": "荷兰 🇳🇱",
-      "PL": "波兰 🇵🇱", "Poland": "波兰 🇵🇱",
-      "PT": "葡萄牙 🇵🇹", "Portugal": "葡萄牙 🇵🇹",
-      "RO": "罗马尼亚 🇷🇴", "Romania": "罗马尼亚 🇷🇴",
-      "SK": "斯洛伐克 🇸🇰", "Slovakia": "斯洛伐克 🇸🇰",
-      "SI": "斯洛文尼亚 🇸🇮", "Slovenia": "斯洛文尼亚 🇸🇮",
-      "ES": "西班牙 🇪🇸", "Spain": "西班牙 🇪🇸",
-      "SE": "瑞典 🇸🇪", "Sweden": "瑞典 🇸🇪",
-      "UNKNOWN": "其他 🌐"
-    };
-
     const links = document.querySelectorAll('.link');
     const pages = document.querySelectorAll('.page');
     const canvas = document.getElementById('theme-canvas');
     const nsfwModal = document.getElementById('custom-modal');
     const parentalModal = document.getElementById('parental-modal');
+
+    // ==================== 动态国旗生成函数（无硬编码） ====================
+    function getFlagEmoji(code) {
+      if (!code || code.length !== 2) return "🌐";
+      return String.fromCodePoint(
+        ...code.toUpperCase().split('').map(c => 0x1F1E6 + c.charCodeAt(0) - 65)
+      );
+    }
+
+    // ==================== 动态中文翻译 + 国旗函数（从IP检测结果直接生成） ====================
+    function getDisplayCountry(country) {
+      if (!country || country === "UNKNOWN") return "未知地区 🌐";
+
+      const flag = getFlagEmoji(country);
+      
+      // 使用浏览器原生 Intl.DisplayNames 动态翻译为中文（支持全球所有国家，无硬编码）
+      try {
+        const regionNames = new Intl.DisplayNames(['zh-CN'], { type: 'region' });
+        const chineseName = regionNames.of(country) || country;
+        return `${chineseName} ${flag}`;
+      } catch (e) {
+        // 极少数旧浏览器降级处理
+        return `${country} ${flag}`;
+      }
+    }
 
     async function initApp() {
       if (sessionStorage.getItem('theme') === 'dark') {
@@ -224,9 +214,9 @@
           });
         }
 
-        // 国家信息始终显示在“内容管理”最底部
+        // 国家信息始终显示在“内容管理”最底部（动态生成，无硬编码）
         if (category.id === 'content') {
-          const displayCountry = countryMap[userCountry] || `未知地区 (${userCountry}) 🌐`;
+          const displayCountry = getDisplayCountry(userCountry);
           settingsHtml += `
             <div class="settings-country-info">
               当前检测到的国家/地区：<strong>${displayCountry}</strong>
@@ -240,7 +230,7 @@
       list.innerHTML = settingsHtml;
     }
 
-    function toggleTheme(event) {
+    function toggleTheme(event) { /* 原代码不变 */ 
       const btn = event.currentTarget;
       const isNowDark = document.body.classList.toggle('dark-theme');
       document.documentElement.classList.toggle('dark-theme', isNowDark);
@@ -258,7 +248,7 @@
       canvas.classList.add('animate');
     }
 
-    function handleContentToggle(event) {
+    function handleContentToggle(event) { /* 原代码不变 */ 
       const btn = event.currentTarget;
       const toggleId = btn.id;
       const isCurrentlyEnabled = (toggleId === 'parental_filter') ? isParentalEnabled : isNsfwEnabled;
@@ -282,7 +272,7 @@
       }
     }
 
-    function confirmParental() {
+    function confirmParental() { /* 原代码不变 */ 
       isParentalEnabled = true;
       sessionStorage.setItem('parental', 'enabled');
       closeParentalModal();
@@ -290,7 +280,7 @@
       renderBlog();
     }
 
-    function confirmNsfw() {
+    function confirmNsfw() { /* 原代码不变 */ 
       isNsfwEnabled = true;
       sessionStorage.setItem('nsfw', 'enabled');
       closeNsfwModal();
@@ -298,15 +288,10 @@
       renderBlog();
     }
 
-    function closeParentalModal() {
-      parentalModal.classList.remove('active');
-    }
+    function closeParentalModal() { parentalModal.classList.remove('active'); }
+    function closeNsfwModal() { nsfwModal.classList.remove('active'); }
 
-    function closeNsfwModal() {
-      nsfwModal.classList.remove('active');
-    }
-
-    function getTagClass(tag) {
+    function getTagClass(tag) { /* 原代码不变 */ 
       if (tag === "适合全年龄") return "tag-green";
       if (tag === "需要监护人指导") return "tag-yellow";
       if (tag === "不适合工作场景") return "tag-red";
