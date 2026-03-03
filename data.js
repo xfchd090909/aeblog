@@ -17,7 +17,7 @@ const blogData = [
     id: 3,
     title: "职场心理学：压力管理",
     date: "2026-02-25",
-    content: "在快节奏加的办公环境中，保持心理健康是长期职业发展的关键。",
+    content: "在快节奏的办公环境中，保持心理健康是长期职业发展的关键。",
     tag: "不适合工作场景"
   },
   {
@@ -43,6 +43,7 @@ const settingsData = {
       id: "content",
       title: "内容管理",
       options: [
+        { id: "parental_filter", label: "显示需要监护人指导的内容", type: "toggle" },
         { id: "nsfw_filter", label: "显示 NSFW 内容", type: "toggle" }
       ]
     }
