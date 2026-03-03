@@ -17,22 +17,15 @@ const blogData = [
     id: 3,
     title: "职场心理学：压力管理",
     date: "2026-02-25",
-    content: "在快节奏 Graves 办公环境中，保持心理健康是长期职业发展的关键。",
+    content: "在快节奏的办公环境中，保持心理健康是长期职业发展的关键。",
     tag: "不适合工作场景"
-  },
-  {
-    id: 4,
-    title: "加密货币风险提示",
-    date: "2026-02-20",
-    content: "投资需谨慎，了解市场波动及其背后的技术原理。",
-    tag: "需要监护人指导"
   }
 ];
 
 const settingsData = {
   title: "偏好设置",
   options: [
-    { id: "nsfw_filter", label: "显示 NSFW 内容", type: "toggle", restricted: true },
-    { id: "dark_mode", label: "深色模式", type: "theme-toggle", restricted: false }
+    { id: "nsfw_filter", label: "显示 NSFW 内容", type: "toggle" },
+    { id: "dark_mode", label: "深色模式", type: "theme-toggle" }
   ]
 };
