@@ -33,6 +33,7 @@ body {
   color: var(--text);
 }
 
+/* --- 涟漪动画保持不变 --- */
 #theme-canvas {
   position: fixed;
   width: 2px;
@@ -52,6 +53,7 @@ body {
   100% { transform: translate(-50%, -50%) scale(2500); opacity: 0; }
 }
 
+/* --- 页面布局保持不变 --- */
 .container { flex: 1; width: 100%; max-width: 800px; position: relative; margin-top: 40px; }
 
 .page {
@@ -117,20 +119,68 @@ body {
 }
 .toggle-btn.active .toggle-thumb { transform: translateX(26px); }
 
+/* --- 核心合并：菜单增强样式 --- */
 .menu {
   position: fixed; bottom: 40px; padding: 1rem;
   background: var(--menu-bg); backdrop-filter: blur(12px);
   border-radius: 16px; border: 1px solid var(--border);
   display: flex; gap: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .link {
   display: flex; align-items: center; width: 60px; height: 50px;
   border-radius: var(--radius); color: var(--muted); text-decoration: none;
   overflow: hidden; transition: all var(--transition);
+  position: relative;
 }
 
-.link.active { width: 150px; color: #fff; background: var(--accent); }
-.link-icon { font-family: "Material Symbols Rounded"; font-size: 26px; margin-left: 16px; flex-shrink: 0; }
-.link-title { margin-left: 12px; white-space: nowrap; opacity: 0; font-weight: 600; }
-.link.active .link-title { opacity: 1; }
+/* 焦点跟随：当菜单被悬停时，强制收缩当前 active 但未被悬停的项 */
+.menu:hover .link.active:not(:hover) {
+  width: 60px;
+  color: var(--muted);
+  background: transparent;
+  box-shadow: none;
+}
+
+.menu:hover .link.active:not(:hover) .link-title {
+  opacity: 0;
+  transform: translateX(10px);
+}
+
+/* 激活与悬停状态合并 */
+.link:hover,
+.link.active {
+  width: 150px;
+  color: #fff;
+  background: var(--accent);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.link-icon {
+  font-family: "Material Symbols Rounded";
+  font-size: 26px;
+  margin-left: 16px;
+  flex-shrink: 0;
+  transition: transform var(--transition);
+}
+
+.link:hover .link-icon,
+.link.active .link-icon {
+  transform: scale(1.1);
+}
+
+.link-title {
+  margin-left: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  font-weight: 600;
+  transform: translateX(10px);
+  transition: opacity var(--transition), transform var(--transition);
+}
+
+.link:hover .link-title,
+.link.active .link-title {
+  opacity: 1;
+  transform: translateX(0);
+}
