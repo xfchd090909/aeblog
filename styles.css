@@ -12,7 +12,6 @@
   --overlay: rgba(0, 0, 0, 0.3);
 }
 
-/* 兼容 html 和 body 的深色模式类名 */
 html.dark-theme,
 body.dark-theme {
   --bg: #0f172a;
