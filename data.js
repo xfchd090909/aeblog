@@ -31,8 +31,20 @@ const blogData = [
 
 const settingsData = {
   title: "偏好设置",
-  options: [
-    { id: "nsfw_filter", label: "显示 NSFW 内容", type: "toggle" },
-    { id: "dark_mode", label: "深色模式", type: "theme-toggle" }
+  categories: [
+    {
+      id: "appearance",
+      title: "外观管理",
+      options: [
+        { id: "dark_mode", label: "深色模式", type: "theme-toggle" }
+      ]
+    },
+    {
+      id: "content",
+      title: "内容管理",
+      options: [
+        { id: "nsfw_filter", label: "显示 NSFW 内容", type: "toggle" }
+      ]
+    }
   ]
 };
