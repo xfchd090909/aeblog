@@ -58,7 +58,6 @@ body {
   margin-bottom: 16px; 
   display: block; 
 }
-/* 新增：需要监护人指导的黄色感叹号 */
 .modal-icon.parental-icon {
   color: #eab308;
 }
@@ -66,6 +65,22 @@ body {
 .modal-btn { flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; }
 .btn-primary { background: var(--accent); color: white; }
 .btn-secondary { background: var(--border); color: var(--text); }
+
+/* --- 新增：国家信息显示样式 --- */
+.settings-country-info {
+  padding: 18px;
+  background: var(--card-bg);
+  margin-bottom: 20px;
+  border-radius: 12px;
+  color: var(--muted);
+  font-size: 0.95rem;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+.settings-country-info strong {
+  color: var(--accent);
+  font-weight: 600;
+}
 
 /* --- 动画 --- */
 #theme-canvas {
