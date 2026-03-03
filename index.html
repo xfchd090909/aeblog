@@ -125,7 +125,7 @@
       for (const post of blogData) {
         let mdContent = '';
         try {
-          const res = await fetch(`/mdf/${post.filename}`);
+          const res = await fetch(`/posts/${post.filename}`);
           if (res.ok) mdContent = await res.text();
         } catch (e) {
           mdContent = post.content || '无法加载文章内容';
