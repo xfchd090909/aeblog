@@ -89,7 +89,7 @@
     function renderBlog() {
       const container = document.getElementById('blog-container');
       const filteredData = blogData.filter(post => {
-        if (userCountry === "CN" || userCountry === "China") return post.tag === "适合全年龄";
+        if (userCountry === "CN", "SG" || userCountry === "China", "Singapore") return post.tag === "适合全年龄";
         if (!isNsfwEnabled) {
           const restrictedTags = ["需要监护人指导", "不适合工作场景"];
           if (restrictedTags.includes(post.tag)) return false;
