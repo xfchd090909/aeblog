@@ -41,6 +41,8 @@
   <script src="data.js"></script>
   <script>
     let userCountry = "";
+    let isNsfwEnabled = false; // 默认为关闭
+
     const links = document.querySelectorAll('.link');
     const pages = document.querySelectorAll('.page');
     const canvas = document.getElementById('theme-canvas');
@@ -62,10 +64,21 @@
 
     function renderBlog() {
       const container = document.getElementById('blog-container');
+      
       const filteredData = blogData.filter(post => {
+        // 国家限制逻辑
         if (userCountry === "CN" || userCountry === "China") {
           return post.tag === "适合全年龄";
         }
+        
+        // NSFW 过滤逻辑
+        if (!isNsfwEnabled) {
+          const restrictedTags = ["需要监护人指导", "不适合工作场景"];
+          if (restrictedTags.includes(post.tag)) {
+            return false;
+          }
+        }
+        
         return true;
       });
 
@@ -100,6 +113,15 @@
               </button>
             </div>`;
         }
+        if (opt.type === 'toggle' && opt.id === 'nsfw_filter') {
+          return `
+            <div class="setting-item">
+              <span>${opt.label}</span>
+              <button class="toggle-btn ${isNsfwEnabled ? 'active' : ''}" id="${opt.id}" onclick="toggleNsfw(event)">
+                <div class="toggle-thumb"></div>
+              </button>
+            </div>`;
+        }
         return `
           <div class="setting-item">
             <span>${opt.label}</span>
@@ -108,11 +130,23 @@
       }).join('');
     }
 
-    function getTagClass(tag) {
-      if (tag === "适合全年龄") return "tag-green";
-      if (tag === "需要监护人指导") return "tag-yellow";
-      if (tag === "不适合工作场景") return "tag-red";
-      return "";
+    function toggleNsfw(event) {
+      const btn = event.currentTarget;
+      
+      if (!isNsfwEnabled) {
+        // 尝试开启时的警告
+        const confirmed = confirm("警告：开启后将展示包含 NSFW (不适合工作场景) 标签的内容。是否继续？");
+        if (confirmed) {
+          isNsfwEnabled = true;
+          btn.classList.add('active');
+          renderBlog();
+        }
+      } else {
+        // 正常关闭
+        isNsfwEnabled = false;
+        btn.classList.remove('active');
+        renderBlog();
+      }
     }
 
     function toggleTheme(event) {
@@ -128,6 +162,13 @@
       canvas.classList.remove('animate');
       void canvas.offsetWidth;
       canvas.classList.add('animate');
+    }
+
+    function getTagClass(tag) {
+      if (tag === "适合全年龄") return "tag-green";
+      if (tag === "需要监护人指导") return "tag-yellow";
+      if (tag === "不适合工作场景") return "tag-red";
+      return "";
     }
 
     links.forEach(link => {
