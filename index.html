@@ -13,7 +13,6 @@
     html.dark-theme #loader { background: #0f172a; }
   </style>
   <script>
-    // 预加载逻辑：立即应用主题防止闪烁
     if (sessionStorage.getItem('theme') === 'dark') {
       document.documentElement.classList.add('dark-theme');
     }
@@ -30,7 +29,7 @@
       <p>如果你能看到此提示，说明我们检测到你的位置处于网络审查宽松的环境下，如果符合相关规范，你可以选择开启<br><br>但如果你使用了用于越过网络审查的工具访问本站打开限制内容产生的后果我们概不负责!<br></p>
       <div class="modal-actions">
         <button class="modal-btn btn-secondary" onclick="closeModal()">取消</button>
-        <button class="modal-btn btn-primary" onclick="confirmNsfw()">开启限制内容</button>
+        <button class="modal-btn btn-primary" onclick="confirmRestricted()">开启限制内容</button>
       </div>
     </div>
   </div>
@@ -59,7 +58,9 @@
   <script src="data.js"></script>
   <script>
     let userCountry = "";
+    let isParentalEnabled = sessionStorage.getItem('parental') !== 'disabled';
     let isNsfwEnabled = sessionStorage.getItem('nsfw') === 'enabled';
+    let pendingToggleType = null;
 
     const links = document.querySelectorAll('.link');
     const pages = document.querySelectorAll('.page');
@@ -67,7 +68,6 @@
     const modal = document.getElementById('custom-modal');
 
     async function initApp() {
-      // 初始化同步 body 的类名
       if (sessionStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark-theme');
       }
@@ -89,11 +89,11 @@
     function renderBlog() {
       const container = document.getElementById('blog-container');
       const filteredData = blogData.filter(post => {
-        if (["CN", "China"].includes(userCountry)) return post.tag === "适合全年龄";
-        if (!isNsfwEnabled) {
-          const restrictedTags = ["需要监护人指导", "不适合工作场景"];
-          if (restrictedTags.includes(post.tag)) return false;
+        if (["CN", "China"].includes(userCountry)) {
+          return post.tag === "适合全年龄";
         }
+        if (post.tag === "需要监护人指导" && !isParentalEnabled) return false;
+        if (post.tag === "不适合工作场景" && !isNsfwEnabled) return false;
         return true;
       });
 
@@ -112,25 +112,21 @@
       document.getElementById('settings-title').textContent = settingsData.title;
       const list = document.getElementById('settings-list');
       
-      // 构建分类化的设置HTML
       let settingsHtml = '';
       
       settingsData.categories.forEach(category => {
-        // 添加分类标题
         settingsHtml += `
           <div class="settings-category">
             <h3 class="settings-category-title">${category.title}</h3>
         `;
 
-        // 处理内容管理分类的特殊逻辑（中国IP）
         if (category.id === 'content' && ["CN", "China"].includes(userCountry)) {
           settingsHtml += `
             <div class="settings-local-tip">当前内容已符合当地规范，无需调整</div>
           `;
         } else {
-          // 渲染分类下的选项
           const filteredOptions = category.options.filter(opt => {
-            if (["CN", "China"].includes(userCountry) && opt.id === "nsfw_filter") return false;
+            if (["CN", "China"].includes(userCountry) && (opt.id === "parental_filter" || opt.id === "nsfw_filter")) return false;
             return true;
           });
 
@@ -143,23 +139,23 @@
                     <div class="toggle-thumb"></div>
                   </button>
                 </div>`;
-            }
-            if (opt.type === 'toggle' && opt.id === 'nsfw_filter') {
+            } 
+            else if (opt.type === 'toggle') {
+              let isActive = (opt.id === 'parental_filter') ? isParentalEnabled : isNsfwEnabled;
               settingsHtml += `
                 <div class="setting-item">
                   <span>${opt.label}</span>
-                  <button class="toggle-btn ${isNsfwEnabled ? 'active' : ''}" id="${opt.id}" onclick="handleNsfwToggle(event)">
+                  <button class="toggle-btn ${isActive ? 'active' : ''}" id="${opt.id}" onclick="handleContentToggle(event)">
                     <div class="toggle-thumb"></div>
                   </button>
                 </div>`;
             }
-            if (!['theme-toggle', 'toggle'].includes(opt.type)) {
+            else {
               settingsHtml += `<div class="setting-item"><span>${opt.label}</span><div>[ 待开发 ]</div></div>`;
             }
           });
         }
 
-        // 关闭分类容器
         settingsHtml += `</div>`;
       });
 
@@ -168,14 +164,12 @@
 
     function toggleTheme(event) {
       const btn = event.currentTarget;
-      // 修复核心：同时切换 html 和 body 的类名
       const isNowDark = document.body.classList.toggle('dark-theme');
       document.documentElement.classList.toggle('dark-theme', isNowDark);
       
       btn.classList.toggle('active');
       sessionStorage.setItem('theme', isNowDark ? 'dark' : 'light');
 
-      // 动画效果
       const rect = btn.getBoundingClientRect();
       const x = rect.left + rect.width / 2;
       const y = rect.top + rect.height / 2;
@@ -187,26 +181,47 @@
       canvas.classList.add('animate');
     }
 
-    function handleNsfwToggle(event) {
-      if (!isNsfwEnabled) {
+    function handleContentToggle(event) {
+      const btn = event.currentTarget;
+      const toggleId = btn.id;
+      const isCurrentlyEnabled = (toggleId === 'parental_filter') ? isParentalEnabled : isNsfwEnabled;
+
+      if (!isCurrentlyEnabled) {
+        pendingToggleType = toggleId;
         modal.classList.add('active');
       } else {
-        isNsfwEnabled = false;
-        sessionStorage.setItem('nsfw', 'disabled');
-        event.currentTarget.classList.remove('active');
+        if (toggleId === 'parental_filter') {
+          isParentalEnabled = false;
+          sessionStorage.setItem('parental', 'disabled');
+        } else {
+          isNsfwEnabled = false;
+          sessionStorage.setItem('nsfw', 'disabled');
+        }
+        btn.classList.remove('active');
         renderBlog();
       }
     }
 
-    function confirmNsfw() {
-      isNsfwEnabled = true;
-      sessionStorage.setItem('nsfw', 'enabled');
+    function confirmRestricted() {
+      if (!pendingToggleType) return;
+
+      if (pendingToggleType === 'parental_filter') {
+        isParentalEnabled = true;
+        sessionStorage.setItem('parental', 'enabled');
+      } else if (pendingToggleType === 'nsfw_filter') {
+        isNsfwEnabled = true;
+        sessionStorage.setItem('nsfw', 'enabled');
+      }
+
       closeModal();
       renderSettings();
       renderBlog();
     }
 
-    function closeModal() { modal.classList.remove('active'); }
+    function closeModal() { 
+      modal.classList.remove('active'); 
+      pendingToggleType = null;
+    }
 
     function getTagClass(tag) {
       if (tag === "适合全年龄") return "tag-green";
