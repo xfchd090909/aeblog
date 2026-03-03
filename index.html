@@ -13,7 +13,7 @@
     #loader { visibility: visible; position: fixed; inset: 0; background: #dde8f3; z-index: 10000; }
     html.dark-theme #loader { background: #0f172a; }
 
-    /* ==================== 同页阅读区切换（标题独立飞出 + 主页渐隐） ==================== */
+    /* ==================== 主页与阅读区彻底隔离 ==================== */
     #content-page {
       position: relative;
       min-height: 100vh;
@@ -22,20 +22,25 @@
     .view {
       position: absolute;
       inset: 0;
-      transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: opacity 0.75s cubic-bezier(0.4, 0, 0.2, 1), transform 0.75s cubic-bezier(0.32, 0.72, 0, 1);
     }
-    #list-view { opacity: 1; }
+    #list-view {
+      opacity: 1;
+      transform: translateX(0);
+    }
     #reader-view {
       opacity: 0;
+      transform: translateX(60px);
       pointer-events: none;
       overflow: hidden;
     }
     #reader-view.active {
       opacity: 1;
+      transform: translateX(0);
       pointer-events: auto;
     }
 
-    /* 独立飞出标题 */
+    /* ==================== 标题独立飞出动画 ==================== */
     #flying-title {
       position: fixed;
       font-size: 1.35rem;
@@ -45,10 +50,10 @@
       z-index: 99999;
       opacity: 0;
       transition: all 0.75s cubic-bezier(0.34, 1.56, 0.64, 1);
-      text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      text-shadow: 0 2px 10px rgba(0,0,0,0.15);
     }
 
-    /* 阅读区头部（协调主题，无蓝色） */
+    /* ==================== 阅读区头部（无白框、协调主题） ==================== */
     #reader-header {
       padding: 24px 28px;
       background: var(--card-bg);
@@ -60,19 +65,28 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      border-bottom: 1px solid var(--border);
     }
     #reader-header.shrunk {
       padding: 14px 24px;
       font-size: 1.18rem;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
     }
 
-    /* 阅读区主体 - 动态高度 + 完整显示长内容 */
+    /* ==================== 阅读区主体 - 动态高度 + 完整显示 ==================== */
     #reader-body {
       padding: 40px;
       overflow-y: auto;
       height: calc(100vh - 74px);
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent) transparent;
+    }
+    #reader-body::-webkit-scrollbar {
+      width: 6px;
+    }
+    #reader-body::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 3px;
     }
     .markdown-content {
       line-height: 1.85;
@@ -132,12 +146,12 @@
 
   <main class="container">
     <section id="content-page" class="page active">
-      <!-- 列表视图 -->
+      <!-- 主页列表区（完全独立） -->
       <div id="list-view" class="view">
         <div id="blog-container"></div>
       </div>
 
-      <!-- 阅读视图（同页切换） -->
+      <!-- 阅读区（同页切换） -->
       <div id="reader-view" class="view">
         <div id="reader-header">
           <h3 id="reader-title" style="margin:0; font-size:1.6rem; font-weight:600;"></h3>
@@ -226,7 +240,7 @@
       const post = blogData.find(p => p.id === id);
       if (!post) return;
 
-      // 1. 创建独立飞出标题（从卡片位置精确飞出）
+      // 1. 独立飞出标题
       const cardTitleEl = e.currentTarget.querySelector('h3');
       const rect = cardTitleEl.getBoundingClientRect();
 
@@ -236,10 +250,8 @@
       flyingTitle.style.left = rect.left + 'px';
       flyingTitle.style.top = rect.top + 'px';
       flyingTitle.style.width = rect.width + 'px';
-      flyingTitle.style.fontSize = '1.35rem';
       document.body.appendChild(flyingTitle);
 
-      // 触发飞行动画
       requestAnimationFrame(() => {
         const targetRect = readerTitle.getBoundingClientRect();
         flyingTitle.style.left = targetRect.left + 'px';
@@ -299,10 +311,7 @@
       const list = document.getElementById('settings-list');
       let settingsHtml = '';
       settingsData.categories.forEach(category => {
-        settingsHtml += `
-          <div class="settings-category">
-            <h3 class="settings-category-title">${category.title}</h3>
-        `;
+        settingsHtml += `<div class="settings-category"><h3 class="settings-category-title">${category.title}</h3>`;
         if (category.id === 'content' && RESTRICTED_COUNTRIES.includes(userCountry)) {
           settingsHtml += `<div class="settings-local-tip">当前内容已符合当地规范，无需调整</div>`;
         } else {
