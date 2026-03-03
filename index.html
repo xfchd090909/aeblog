@@ -22,7 +22,7 @@
   <div id="loader"></div>
   <div id="theme-canvas"></div>
 
-  <!-- NSFW 弹窗（红色，保持原样） -->
+  <!-- NSFW 弹窗（红色，原样保留） -->
   <div id="custom-modal" class="modal-overlay">
     <div class="modal-card">
       <span class="modal-icon">warning</span>
@@ -35,12 +35,12 @@
     </div>
   </div>
 
-  <!-- 需要监护人指导 独立弹窗（黄色感叹号 + 新文案） -->
+  <!-- 需要监护人指导 独立弹窗（黄色，新文案） -->
   <div id="parental-modal" class="modal-overlay">
     <div class="modal-card">
       <span class="modal-icon parental-icon">warning</span>
       <h3>限制内容警告</h3>
-      <p>如果你能看到此提示，说明我们检测到你的位置处于网络审查有部分限制的环境下，如果你不知道是否符合相关规范，你应该谨慎选择开启<br><br>这个行为不代表你可以观看NSFW级内容，我们也不建议这样做，但可以看到未被限制且你认为合法的信息<br></p>
+      <p>如果你能看到此提示，说明我们检测到你的位置处于网络审查有部分限制的环境下，如果符合相关规范，你应该谨慎选择开启，这个行为不代表你可以观看NSFW级内容，我们也不建议这样做，但可以看到未被限制且你认为合法的信息</p>
       <div class="modal-actions">
         <button class="modal-btn btn-secondary" onclick="closeParentalModal()">取消</button>
         <button class="modal-btn btn-primary" onclick="confirmParental()">开启限制内容</button>
@@ -75,6 +75,40 @@
     let isParentalEnabled = sessionStorage.getItem('parental') !== 'disabled';
     let isNsfwEnabled = sessionStorage.getItem('nsfw') === 'enabled';
 
+    // ==================== 新增：限制国家列表（renderSettings 使用） ====================
+    // 中国已移除；澳大利亚、马来西亚、新加坡、德国 + 欧盟全部27国（已逐一列出）
+    const RESTRICTED_COUNTRIES = [
+      "AU", "Australia", "MY", "Malaysia", "SG", "Singapore",
+      "DE", "Germany",
+      // 欧盟27国（代码 + 常见英文名，兼容不同IP返回格式）
+      "AT", "Austria",
+      "BE", "Belgium",
+      "BG", "Bulgaria",
+      "HR", "Croatia",
+      "CY", "Cyprus",
+      "CZ", "Czech Republic", "Czechia",
+      "DK", "Denmark",
+      "EE", "Estonia",
+      "FI", "Finland",
+      "FR", "France",
+      "GR", "Greece",
+      "HU", "Hungary",
+      "IE", "Ireland",
+      "IT", "Italy",
+      "LV", "Latvia",
+      "LT", "Lithuania",
+      "LU", "Luxembourg",
+      "MT", "Malta",
+      "NL", "Netherlands",
+      "PL", "Poland",
+      "PT", "Portugal",
+      "RO", "Romania",
+      "SK", "Slovakia",
+      "SI", "Slovenia",
+      "ES", "Spain",
+      "SE", "Sweden"
+    ];
+
     const links = document.querySelectorAll('.link');
     const pages = document.querySelectorAll('.page');
     const canvas = document.getElementById('theme-canvas');
@@ -103,9 +137,20 @@
     function renderBlog() {
       const container = document.getElementById('blog-container');
       const filteredData = blogData.filter(post => {
+        // 中国IP特殊逻辑：允许“需要监护人指导”，但永久不显示NSFW
         if (["CN", "China"].includes(userCountry)) {
+          if (post.tag === "适合全年龄") return true;
+          if (post.tag === "需要监护人指导") return isParentalEnabled;
+          if (post.tag === "不适合工作场景") return false; // 强制屏蔽NSFW
+          return true;
+        }
+
+        // 其他限制国家（澳大利亚、马来西亚、新加坡、德国、欧盟全部）：仅显示“适合全年龄”
+        if (RESTRICTED_COUNTRIES.includes(userCountry)) {
           return post.tag === "适合全年龄";
         }
+
+        // 普通国家：两个分级独立控制
         if (post.tag === "需要监护人指导" && !isParentalEnabled) return false;
         if (post.tag === "不适合工作场景" && !isNsfwEnabled) return false;
         return true;
@@ -134,13 +179,14 @@
             <h3 class="settings-category-title">${category.title}</h3>
         `;
 
-        if (category.id === 'content' && ["CN", "China"].includes(userCountry)) {
+        // renderSettings() 核心修改：中国已移除，换成新国家列表
+        if (category.id === 'content' && RESTRICTED_COUNTRIES.includes(userCountry)) {
           settingsHtml += `
             <div class="settings-local-tip">当前内容已符合当地规范，无需调整</div>
           `;
         } else {
           const filteredOptions = category.options.filter(opt => {
-            if (["CN", "China"].includes(userCountry) && (opt.id === "parental_filter" || opt.id === "nsfw_filter")) return false;
+            if (RESTRICTED_COUNTRIES.includes(userCountry) && (opt.id === "parental_filter" || opt.id === "nsfw_filter")) return false;
             return true;
           });
 
