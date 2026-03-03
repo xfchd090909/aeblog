@@ -22,33 +22,33 @@
     .view {
       position: absolute;
       inset: 0;
-      transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.32, 0.72, 0, 1);
+      transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    #list-view { opacity: 1; transform: translateX(0); }
+    #list-view { opacity: 1; }
     #reader-view {
       opacity: 0;
-      transform: translateX(80px);
       pointer-events: none;
+      overflow: hidden;
     }
     #reader-view.active {
       opacity: 1;
-      transform: translateX(0);
       pointer-events: auto;
     }
 
-    /* 标题飞出动画（从卡片位置飞到顶部） */
+    /* 独立飞出标题 */
     #flying-title {
       position: fixed;
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       font-weight: 600;
       color: var(--text);
       pointer-events: none;
       z-index: 99999;
       opacity: 0;
-      transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: all 0.75s cubic-bezier(0.34, 1.56, 0.64, 1);
+      text-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
 
-    /* 阅读区头部（已移除蓝色，使用协调卡片风格） */
+    /* 阅读区头部（协调主题，无蓝色） */
     #reader-header {
       padding: 24px 28px;
       background: var(--card-bg);
@@ -65,15 +65,14 @@
     #reader-header.shrunk {
       padding: 14px 24px;
       font-size: 1.18rem;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
     }
 
     /* 阅读区主体 - 动态高度 + 完整显示长内容 */
     #reader-body {
       padding: 40px;
       overflow-y: auto;
-      max-height: none; /* 动态高度，不限制 */
-      min-height: 60vh;
+      height: calc(100vh - 74px);
     }
     .markdown-content {
       line-height: 1.85;
@@ -138,7 +137,7 @@
         <div id="blog-container"></div>
       </div>
 
-      <!-- 阅读视图（同页内切换） -->
+      <!-- 阅读视图（同页切换） -->
       <div id="reader-view" class="view">
         <div id="reader-header">
           <h3 id="reader-title" style="margin:0; font-size:1.6rem; font-weight:600;"></h3>
@@ -186,7 +185,7 @@
     const readerTitle = document.getElementById('reader-title');
     const readerMarkdown = document.getElementById('reader-markdown');
 
-    let currentFlyingTitle = null;
+    let flyingTitle = null;
 
     async function initApp() {
       if (sessionStorage.getItem('theme') === 'dark') {
@@ -222,37 +221,38 @@
       }
     }
 
-    // ==================== 点击卡片：标题独立飞出 + 主页渐隐 ====================
+    // ==================== 标题独立飞出 + 主页渐隐 + 阅读区滑入 ====================
     async function openReader(id, e) {
       const post = blogData.find(p => p.id === id);
       if (!post) return;
 
-      // 创建飞出标题（独立动画）
-      const cardTitle = e.currentTarget.querySelector('h3');
-      const rect = cardTitle.getBoundingClientRect();
+      // 1. 创建独立飞出标题（从卡片位置精确飞出）
+      const cardTitleEl = e.currentTarget.querySelector('h3');
+      const rect = cardTitleEl.getBoundingClientRect();
 
-      currentFlyingTitle = document.createElement('div');
-      currentFlyingTitle.id = 'flying-title';
-      currentFlyingTitle.textContent = post.title;
-      currentFlyingTitle.style.left = `${rect.left}px`;
-      currentFlyingTitle.style.top = `${rect.top}px`;
-      currentFlyingTitle.style.width = `${rect.width}px`;
-      document.body.appendChild(currentFlyingTitle);
+      flyingTitle = document.createElement('div');
+      flyingTitle.id = 'flying-title';
+      flyingTitle.textContent = post.title;
+      flyingTitle.style.left = rect.left + 'px';
+      flyingTitle.style.top = rect.top + 'px';
+      flyingTitle.style.width = rect.width + 'px';
+      flyingTitle.style.fontSize = '1.35rem';
+      document.body.appendChild(flyingTitle);
 
-      // 飞到顶部
-      setTimeout(() => {
+      // 触发飞行动画
+      requestAnimationFrame(() => {
         const targetRect = readerTitle.getBoundingClientRect();
-        currentFlyingTitle.style.left = `${targetRect.left}px`;
-        currentFlyingTitle.style.top = `${targetRect.top + 8}px`;
-        currentFlyingTitle.style.fontSize = '1.6rem';
-        currentFlyingTitle.style.opacity = '0';
-      }, 10);
+        flyingTitle.style.left = targetRect.left + 'px';
+        flyingTitle.style.top = targetRect.top + 'px';
+        flyingTitle.style.fontSize = '1.6rem';
+        flyingTitle.style.opacity = '0';
+      });
 
-      // 主页列表渐隐
-      listView.style.transition = 'opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1)';
+      // 2. 主页列表渐隐
+      listView.style.transition = 'opacity 0.75s cubic-bezier(0.4, 0, 0.2, 1)';
       listView.style.opacity = '0';
 
-      // 加载 Markdown
+      // 3. 加载 Markdown
       let mdContent = '';
       try {
         const res = await fetch(`/posts/${post.filename}`);
@@ -263,29 +263,25 @@
       readerMarkdown.innerHTML = marked.parse(mdContent);
       readerTitle.textContent = post.title;
 
-      // 显示阅读区
+      // 4. 显示阅读区
       setTimeout(() => {
         readerView.classList.add('active');
         document.getElementById('reader-body').scrollTop = 0;
         readerHeader.classList.remove('shrunk');
-      }, 400);
+      }, 350);
 
       // 清理飞出标题
       setTimeout(() => {
-        if (currentFlyingTitle) {
-          currentFlyingTitle.remove();
-          currentFlyingTitle = null;
+        if (flyingTitle) {
+          flyingTitle.remove();
+          flyingTitle = null;
         }
-      }, 1200);
+      }, 1100);
     }
 
     function closeReader() {
-      // 反向动画：阅读区渐隐 + 列表渐显
-      readerView.style.opacity = '0';
-      setTimeout(() => {
-        readerView.classList.remove('active');
-        listView.style.opacity = '1';
-      }, 600);
+      readerView.classList.remove('active');
+      listView.style.opacity = '1';
     }
 
     // ==================== 滚动时标题吸附缩小 ====================
@@ -297,13 +293,16 @@
       }
     });
 
-    function renderSettings() { /* 保持不变 */ 
+    function renderSettings() {
       const isDark = document.body.classList.contains('dark-theme');
       document.getElementById('settings-title').textContent = settingsData.title;
       const list = document.getElementById('settings-list');
       let settingsHtml = '';
       settingsData.categories.forEach(category => {
-        settingsHtml += `<div class="settings-category"><h3 class="settings-category-title">${category.title}</h3>`;
+        settingsHtml += `
+          <div class="settings-category">
+            <h3 class="settings-category-title">${category.title}</h3>
+        `;
         if (category.id === 'content' && RESTRICTED_COUNTRIES.includes(userCountry)) {
           settingsHtml += `<div class="settings-local-tip">当前内容已符合当地规范，无需调整</div>`;
         } else {
@@ -331,8 +330,6 @@
       });
       list.innerHTML = settingsHtml;
     }
-
-    /* 以下函数保持你之前的版本（toggleTheme、handleContentToggle、confirmParental、confirmNsfw、closeModal、getTagClass）不变 */
 
     function toggleTheme(event) {
       const btn = event.currentTarget;
