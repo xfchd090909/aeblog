@@ -153,3 +153,13 @@ body {
   color: var(--muted);
   font-size: 0.95rem;
 }
+
+.markdown-content {
+  line-height: 1.7;
+  color: var(--text);
+}
+.markdown-content h1, .markdown-content h2, .markdown-content h3 {
+  margin: 1.2em 0 0.6em;
+  color: var(--accent);
+}
+.markdown-content p { margin-bottom: 1em; }
