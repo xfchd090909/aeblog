@@ -40,7 +40,7 @@
     <div class="modal-card">
       <span class="modal-icon parental-icon">warning</span>
       <h3>限制内容警告</h3>
-      <p>如果你能看到此提示，说明我们检测到你的位置处于网络审查有部分限制的环境下，如果你不知道是否符合相关规范，你应该谨慎选择开启<br><br>这个行为不代表你可以观看NSFW级内容，我们也不建议这样做，但可以看到未被限制且你认为合法的信息<br></p>
+      <p>如果你能看到此提示，说明我们检测到你的位置处于网络审查有部分限制的环境下，如果符合相关规范，你应该谨慎选择开启，这个行为不代表你可以观看NSFW级内容，我们也不建议这样做，但可以看到未被限制且你认为合法的信息</p>
       <div class="modal-actions">
         <button class="modal-btn btn-secondary" onclick="closeParentalModal()">取消</button>
         <button class="modal-btn btn-primary" onclick="confirmParental()">开启限制内容</button>
@@ -101,7 +101,7 @@
       try {
         const response = await fetch('/.netlify/functions/get-ip');
         const data = await response.json();
-        userCountry = data.country;
+        userCountry = data.country || "UNKNOWN";
       } catch (e) {
         userCountry = "UNKNOWN";
       } finally {
@@ -146,8 +146,13 @@
       document.getElementById('settings-title').textContent = settingsData.title;
       const list = document.getElementById('settings-list');
       
-      let settingsHtml = '';
-      
+      let settingsHtml = `
+        <!-- 新增：始终显示检测到的国家/地区 -->
+        <div class="settings-country-info">
+          当前检测到的国家/地区：<strong>${userCountry}</strong>
+        </div>
+      `;
+
       settingsData.categories.forEach(category => {
         settingsHtml += `
           <div class="settings-category">
@@ -160,7 +165,6 @@
           `;
         } else {
           const filteredOptions = category.options.filter(opt => {
-            // 中国IP特殊处理：隐藏NSFW开关，只显示需要监护人指导开关
             if (["CN", "China"].includes(userCountry) && opt.id === "nsfw_filter") return false;
             if (RESTRICTED_COUNTRIES.includes(userCountry) && (opt.id === "parental_filter" || opt.id === "nsfw_filter")) return false;
             return true;
