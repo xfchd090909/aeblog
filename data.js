@@ -1,12 +1,35 @@
-// 年龄分级：适合全年龄、需要监护人指导、不适合工作场景
 const blogData = [
-{
+  {
     id: 1,
-    filename: "p1.md",
-    title: "深度技术解析：渲染引擎",
+    filename: "post1.md",                    // ← 对应 posts/post1.md
+    title: "探索极简主义设计",
     date: "2026-03-03",
-    content: "mdf/p1.md",
+    content: "",                             // 留空，实际内容从 .md 文件加载
     tag: "适合全年龄"
+  },
+  {
+    id: 2,
+    filename: "post2.md",
+    title: "深度技术解析：渲染引擎",
+    date: "2026-03-01",
+    content: "",
+    tag: "适合全年龄"
+  },
+  {
+    id: 3,
+    filename: "post3.md",
+    title: "职场心理学：压力管理",
+    date: "2026-02-25",
+    content: "",
+    tag: "不适合工作场景"
+  },
+  {
+    id: 4,
+    filename: "post4.md",
+    title: "特殊内容回顾",
+    date: "2026-02-20",
+    content: "",
+    tag: "需要监护人指导"
   }
 ];
 
@@ -30,6 +53,3 @@ const settingsData = {
     }
   ]
 };
-
-
-
