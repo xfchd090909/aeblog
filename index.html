@@ -10,8 +10,14 @@
   <style>
     body { visibility: hidden; }
     #loader { visibility: visible; position: fixed; inset: 0; background: #dde8f3; z-index: 10000; }
-    body.dark-theme #loader { background: #0f172a; }
+    html.dark-theme #loader { background: #0f172a; }
   </style>
+  <script>
+    // 预加载逻辑：立即应用主题防止闪烁
+    if (sessionStorage.getItem('theme') === 'dark') {
+      document.documentElement.classList.add('dark-theme');
+    }
+  </script>
 </head>
 <body>
   <div id="loader"></div>
@@ -20,11 +26,11 @@
   <div id="custom-modal" class="modal-overlay">
     <div class="modal-card">
       <span class="modal-icon">warning</span>
-      <h3>限制内容警告</h3>
-      <p>如果你能看到此提示，说明我们检测到你的位置处于网络审查宽松的环境下，如果符合相关规范，你可以选择开启<br><br>但如果你使用了用于越过网络审查工具访问本站打开限制内容产生的后果我们概不负责!<br></p>
+      <h3>确认开启内容限制？</h3>
+      <p>开启后将展示包含 NSFW 标签的内容。请确保您已满 18 岁。</p>
       <div class="modal-actions">
         <button class="modal-btn btn-secondary" onclick="closeModal()">取消</button>
-        <button class="modal-btn btn-primary" onclick="confirmNsfw()">开启限制内容</button>
+        <button class="modal-btn btn-primary" onclick="confirmNsfw()">确认开启</button>
       </div>
     </div>
   </div>
@@ -40,11 +46,11 @@
   </main>
 
   <nav class="menu" role="navigation" aria-label="主导航">
-    <a href="#" class="link active" data-target="content-page" aria-label="内容">
+    <a href="#" class="link active" data-target="content-page">
       <span class="link-icon">dashboard</span>
       <span class="link-title">内容</span>
     </a>
-    <a href="#" class="link" data-target="settings-page" aria-label="设置">
+    <a href="#" class="link" data-target="settings-page">
       <span class="link-icon">settings</span>
       <span class="link-title">设置</span>
     </a>
@@ -53,7 +59,7 @@
   <script src="data.js"></script>
   <script>
     let userCountry = "";
-    let isNsfwEnabled = false;
+    let isNsfwEnabled = sessionStorage.getItem('nsfw') === 'enabled';
 
     const links = document.querySelectorAll('.link');
     const pages = document.querySelectorAll('.page');
@@ -61,6 +67,11 @@
     const modal = document.getElementById('custom-modal');
 
     async function initApp() {
+      // 初始化同步 body 的类名
+      if (sessionStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-theme');
+      }
+
       try {
         const response = await fetch('/.netlify/functions/get-ip');
         const data = await response.json();
@@ -96,7 +107,6 @@
       `).join('');
     }
 
-    // 修复：渲染设置时读取当前的 dark-theme 状态
     function renderSettings() {
       const isDark = document.body.classList.contains('dark-theme');
       document.getElementById('settings-title').textContent = settingsData.title;
@@ -125,35 +135,20 @@
               </button>
             </div>`;
         }
-        return `<div class="setting-item"><span>${opt.label}</span><div class="status-placeholder">[ 待开发 ]</div></div>`;
+        return `<div class="setting-item"><span>${opt.label}</span><div>[ 待开发 ]</div></div>`;
       }).join('');
-    }
-
-    function handleNsfwToggle(event) {
-      if (!isNsfwEnabled) {
-        modal.classList.add('active');
-      } else {
-        isNsfwEnabled = false;
-        event.currentTarget.classList.remove('active');
-        renderBlog();
-      }
-    }
-
-    function confirmNsfw() {
-      isNsfwEnabled = true;
-      closeModal();
-      renderSettings();
-      renderBlog();
-    }
-
-    function closeModal() {
-      modal.classList.remove('active');
     }
 
     function toggleTheme(event) {
       const btn = event.currentTarget;
-      document.body.classList.toggle('dark-theme');
+      // 修复核心：同时切换 html 和 body 的类名
+      const isNowDark = document.body.classList.toggle('dark-theme');
+      document.documentElement.classList.toggle('dark-theme', isNowDark);
+      
       btn.classList.toggle('active');
+      sessionStorage.setItem('theme', isNowDark ? 'dark' : 'light');
+
+      // 动画效果
       const rect = btn.getBoundingClientRect();
       const x = rect.left + rect.width / 2;
       const y = rect.top + rect.height / 2;
@@ -165,6 +160,27 @@
       canvas.classList.add('animate');
     }
 
+    function handleNsfwToggle(event) {
+      if (!isNsfwEnabled) {
+        modal.classList.add('active');
+      } else {
+        isNsfwEnabled = false;
+        sessionStorage.setItem('nsfw', 'disabled');
+        event.currentTarget.classList.remove('active');
+        renderBlog();
+      }
+    }
+
+    function confirmNsfw() {
+      isNsfwEnabled = true;
+      sessionStorage.setItem('nsfw', 'enabled');
+      closeModal();
+      renderSettings();
+      renderBlog();
+    }
+
+    function closeModal() { modal.classList.remove('active'); }
+
     function getTagClass(tag) {
       if (tag === "适合全年龄") return "tag-green";
       if (tag === "需要监护人指导") return "tag-yellow";
@@ -172,22 +188,15 @@
       return "";
     }
 
-    // 修复：页面隔离逻辑，增加 render 状态同步
     links.forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         const targetId = link.getAttribute('data-target');
-        
         links.forEach(l => l.classList.remove('active'));
         link.classList.add('active');
-
         pages.forEach(page => {
-          if (page.id === targetId) {
-            page.classList.add('active');
-            if(targetId === 'settings-page') renderSettings();
-          } else {
-            page.classList.remove('active');
-          }
+          page.classList.toggle('active', page.id === targetId);
+          if(targetId === 'settings-page' && page.id === targetId) renderSettings();
         });
       });
     });
