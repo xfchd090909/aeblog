@@ -35,7 +35,7 @@ body {
   color: var(--text);
 }
 
-/* --- 自定义弹窗样式 --- */
+/* --- 弹窗样式 --- */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -79,24 +79,13 @@ body {
 
 .modal-card h3 { margin: 0 0 12px 0; font-size: 1.4rem; }
 .modal-card p { color: var(--muted); line-height: 1.5; font-size: 0.95rem; margin-bottom: 24px; }
-
 .modal-actions { display: flex; gap: 12px; }
-
-.modal-btn {
-  flex: 1;
-  padding: 12px;
-  border-radius: 12px;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
-
+.modal-btn { flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
 .btn-primary { background: var(--accent); color: white; }
 .btn-secondary { background: var(--border); color: var(--text); }
 .modal-btn:hover { opacity: 0.8; }
 
-/* --- 动画 & 画布 --- */
+/* --- 动画画布 --- */
 #theme-canvas {
   position: fixed; width: 2px; height: 2px; border-radius: 50%;
   background: var(--ripple-color); opacity: 0; pointer-events: none; z-index: 9999;
@@ -109,18 +98,30 @@ body {
   100% { transform: translate(-50%, -50%) scale(2500); opacity: 0; }
 }
 
-/* --- 容器 & 页面 --- */
+/* --- 页面隔离优化 --- */
 .container { flex: 1; width: 100%; max-width: 800px; position: relative; margin-top: 40px; }
 
 .page {
-  position: absolute; width: 100%; opacity: 0; transform: translateY(20px);
+  position: absolute; 
+  width: 100%; 
+  opacity: 0; 
+  transform: translateY(20px);
   transition: opacity var(--transition), transform var(--transition);
-  padding: 20px; box-sizing: border-box;
+  padding: 20px; 
+  box-sizing: border-box;
+  /* 修复：不可见时禁止点击 */
+  pointer-events: none;
+  visibility: hidden;
 }
 
-.page.active { opacity: 1; transform: translateY(0); }
+.page.active { 
+  opacity: 1; 
+  transform: translateY(0); 
+  pointer-events: auto;
+  visibility: visible;
+}
 
-/* --- 卡片样式 --- */
+/* --- 卡片与设置 --- */
 .card {
   background: var(--card-bg); border-radius: var(--radius); padding: 24px;
   margin-bottom: 20px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
@@ -140,7 +141,6 @@ body {
 .tag-yellow { background: #fef9c3; color: #854d0e; }
 .tag-red { background: #fee2e2; color: #991b1b; }
 
-/* --- 设置项样式 --- */
 .setting-item {
   display: flex; justify-content: space-between; align-items: center;
   padding: 18px; background: var(--card-bg); margin-bottom: 12px; border-radius: 12px;
@@ -159,7 +159,7 @@ body {
 }
 .toggle-btn.active .toggle-thumb { transform: translateX(26px); }
 
-/* --- 菜单导航 (修复焦点跟踪逻辑) --- */
+/* --- 菜单导航优化 --- */
 .menu {
   position: fixed; bottom: 40px; padding: 1rem;
   background: var(--menu-bg); backdrop-filter: blur(12px);
@@ -169,13 +169,20 @@ body {
   z-index: 1000;
 }
 
+/* 修复：增加伪元素扩大触发热区，防止鼠标边缘抖动丢失焦点 */
+.menu::before {
+  content: "";
+  position: absolute;
+  inset: -10px;
+  z-index: -1;
+}
+
 .link {
   display: flex; align-items: center; width: 60px; height: 50px;
   border-radius: var(--radius); color: var(--muted); text-decoration: none;
   overflow: hidden; transition: all var(--transition); position: relative;
 }
 
-/* 核心修改：当鼠标在菜单内移动时，只有悬浮项变宽；鼠标离开后，active项恢复宽度 */
 .link:hover, 
 .menu:not(:hover) .link.active {
   width: 150px; 
@@ -184,7 +191,6 @@ body {
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
-/* 核心修改：当菜单正在被 hover 时，非鼠标下的 .active 项收缩 */
 .menu:hover .link.active:not(:hover) {
   width: 60px;
   background: transparent;
@@ -202,7 +208,6 @@ body {
   transform: translateX(10px); transition: opacity var(--transition), transform var(--transition);
 }
 
-/* 核心修改：文字显示逻辑同步跟随 */
 .link:hover .link-title,
 .menu:not(:hover) .link.active .link-title { 
   opacity: 1; 
