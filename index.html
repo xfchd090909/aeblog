@@ -96,7 +96,9 @@
       `).join('');
     }
 
+    // 修复：渲染设置时读取当前的 dark-theme 状态
     function renderSettings() {
+      const isDark = document.body.classList.contains('dark-theme');
       document.getElementById('settings-title').textContent = settingsData.title;
       const list = document.getElementById('settings-list');
       const filteredOptions = settingsData.options.filter(opt => {
@@ -109,7 +111,7 @@
           return `
             <div class="setting-item">
               <span>${opt.label}</span>
-              <button class="toggle-btn" id="${opt.id}" onclick="toggleTheme(event)">
+              <button class="toggle-btn ${isDark ? 'active' : ''}" id="${opt.id}" onclick="toggleTheme(event)">
                 <div class="toggle-thumb"></div>
               </button>
             </div>`;
@@ -170,6 +172,7 @@
       return "";
     }
 
+    // 修复：页面隔离逻辑，增加 render 状态同步
     links.forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
@@ -180,11 +183,10 @@
 
         pages.forEach(page => {
           if (page.id === targetId) {
-            page.style.display = 'block';
-            setTimeout(() => page.classList.add('active'), 50);
+            page.classList.add('active');
+            if(targetId === 'settings-page') renderSettings();
           } else {
             page.classList.remove('active');
-            setTimeout(() => { if(!page.classList.contains('active')) page.style.display = 'none' }, 400);
           }
         });
       });
