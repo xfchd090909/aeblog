@@ -10,26 +10,36 @@ h1, h2, h3 {
     font-family: Georgia, 'Times New Roman', serif;
 }
 
-/* 不完美卡片风格 */
+/* 文章卡片：极简风格 — 只加左边框 + 改颜色 */
 #post-grid .card {
-    transition: all 0.4s ease;
-    border: 2px solid #27272a;
-    border-radius: 14px;
-    box-shadow: 4px 6px 0 -1px rgba(0, 104, 181, 0.08);
+    background-color: #18181b;
+    padding: 2rem;
+    border-left: 5px solid #0068B5;
+    border-radius: 0;
+    transition: none; /* 彻底关闭所有动画 */
 }
 
 #post-grid .card:hover {
-    transform: translateY(-6px) rotate(0.6deg);
-    border-color: #0068B5;
-    box-shadow: 6px 10px 0 -2px rgba(0, 104, 181, 0.15);
+    /* 没有任何 hover 效果 */
+}
+
+#post-grid .card .title {
+    color: #0068B5;
+    font-size: 1.35rem;
+    line-height: 1.4;
+}
+
+#post-grid .card .date {
+    color: #0068B5;
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
 }
 
 .prose h1, .prose h2, .prose h3 {
     color: #0068B5;
-    font-weight: 600;
 }
 
-/* 阅读页优化 - 更像纸质阅读 */
+/* 阅读页保持不变 */
 #post-content {
     line-height: 1.85;
 }
