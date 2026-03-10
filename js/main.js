@@ -10,9 +10,8 @@ async function loadGreetings() {
     try {
         const res = await fetch('data/greetings.json');
         greetings = await res.json();
-        console.log('✅ 提示词库加载成功');
     } catch (e) {
-        console.error('❌ 提示词库加载失败');
+        // 静默失败，不影响页面
     }
 }
 
@@ -25,7 +24,7 @@ function getPeriodKey(hour) {
     return "22";
 }
 
-// ====================== 实时北京时间（文字固定） ======================
+// ====================== 实时北京时间（趣味化） ======================
 function updateBeijingTime() {
     try {
         const timeEl = document.getElementById('beijing-time');
@@ -57,16 +56,13 @@ function updateBeijingTime() {
             lastPeriod = periodKey;
         }
         
-        console.log('🕒 北京时间：' + timePart + ' | 区间：' + periodKey);
-        
         if (currentQuote) {
             timeEl.textContent = currentQuote + '：' + datePart + ' ' + timePart;
-            console.log('🎉 当前固定趣味文字：' + currentQuote);
         } else {
             timeEl.textContent = datePart + ' ' + timePart;
         }
     } catch (e) {
-        console.error('时间更新出错', e);
+        // 静默处理，防止任何意外
     }
 }
 
