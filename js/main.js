@@ -1,6 +1,10 @@
 // ====================== 提示词库 ======================
 let greetings = {};
 
+// 全局缓存：让同一时间段内文字保持不变
+let currentQuote = '';
+let lastPeriod = '';
+
 // 加载提示词库
 async function loadGreetings() {
     try {
@@ -21,7 +25,7 @@ function getPeriodKey(hour) {
     return "22";
 }
 
-// ====================== 实时北京时间（趣味化） ======================
+// ====================== 实时北京时间（文字固定） ======================
 function updateBeijingTime() {
     try {
         const timeEl = document.getElementById('beijing-time');
@@ -44,13 +48,20 @@ function updateBeijingTime() {
         
         const periodKey = getPeriodKey(hour);
         
+        // 只有时间段变化或首次加载时才随机新文字
+        if (periodKey !== lastPeriod || !currentQuote) {
+            if (greetings[periodKey] && greetings[periodKey].length > 0) {
+                const randomIndex = Math.floor(Math.random() * greetings[periodKey].length);
+                currentQuote = greetings[periodKey][randomIndex];
+            }
+            lastPeriod = periodKey;
+        }
+        
         console.log('🕒 北京时间：' + timePart + ' | 区间：' + periodKey);
         
-        if (greetings[periodKey] && greetings[periodKey].length > 0) {
-            const randomIndex = Math.floor(Math.random() * greetings[periodKey].length);
-            const quote = greetings[periodKey][randomIndex];
-            timeEl.textContent = quote + '：' + datePart + ' ' + timePart;
-            console.log('🎉 显示趣味文字：' + quote);
+        if (currentQuote) {
+            timeEl.textContent = currentQuote + '：' + datePart + ' ' + timePart;
+            console.log('🎉 当前固定趣味文字：' + currentQuote);
         } else {
             timeEl.textContent = datePart + ' ' + timePart;
         }
