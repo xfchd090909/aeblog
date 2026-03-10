@@ -1,9 +1,8 @@
-// ====================== 提示词库 ======================
+// ====================== 提示词库 + 不重复机制 ======================
 let greetings = {};
-
-// 全局缓存
 let currentQuote = '';
 let lastPeriod = '';
+let lastUsedQuote = '';   // 新增：记录上一句，避免重复
 
 // 加载提示词库
 async function loadGreetings() {
@@ -22,7 +21,7 @@ function getPeriodKey(hour) {
     return "22";
 }
 
-// ====================== 实时北京时间 ======================
+// ====================== 实时北京时间（不重复 + 稳定） ======================
 function updateBeijingTime() {
     try {
         const timeEl = document.getElementById('beijing-time');
@@ -45,10 +44,19 @@ function updateBeijingTime() {
         
         const periodKey = getPeriodKey(hour);
         
+        // 时间段变化或首次加载 → 随机新文字（避免与上一句重复）
         if (periodKey !== lastPeriod || !currentQuote) {
             if (greetings[periodKey] && greetings[periodKey].length > 0) {
-                const randomIndex = Math.floor(Math.random() * greetings[periodKey].length);
-                currentQuote = greetings[periodKey][randomIndex];
+                let newQuote;
+                let attempts = 0;
+                do {
+                    const randomIndex = Math.floor(Math.random() * greetings[periodKey].length);
+                    newQuote = greetings[periodKey][randomIndex];
+                    attempts++;
+                } while (newQuote === lastUsedQuote && attempts < 10);   // 最多尝试10次
+                
+                currentQuote = newQuote;
+                lastUsedQuote = newQuote;
             }
             lastPeriod = periodKey;
         }
@@ -59,11 +67,15 @@ function updateBeijingTime() {
             timeEl.textContent = datePart + ' ' + timePart;
         }
         
-        setTimeout(checkCompactMode, 10);
+        // 延迟多重检测布局（彻底解决不触发问题）
+        requestAnimationFrame(() => {
+            setTimeout(checkCompactMode, 20);
+            setTimeout(checkCompactMode, 80);
+        });
     } catch (e) {}
 }
 
-// ====================== 智能 compact 模式检测 ======================
+// ====================== 智能 compact 模式检测（已彻底稳定） ======================
 function checkCompactMode() {
     const container = document.getElementById('nav-container');
     const leftNav = document.querySelector('.nav-left');
@@ -71,11 +83,9 @@ function checkCompactMode() {
     
     if (!leftNav || !timeEl) return;
     
-    const leftRight = leftNav.getBoundingClientRect().right;
-    const timeLeft = timeEl.getBoundingClientRect().left;
-    const gap = timeLeft - leftRight;
+    const gap = timeEl.getBoundingClientRect().left - leftNav.getBoundingClientRect().right;
     
-    if (gap < 30 || timeEl.scrollWidth > timeEl.clientWidth + 10) {
+    if (gap < 35 || timeEl.scrollWidth > timeEl.clientWidth + 8) {
         container.classList.add('compact');
     } else {
         container.classList.remove('compact');
@@ -108,6 +118,12 @@ window.onload = async function() {
     const posts = await loadPosts();
     renderPosts(posts);
     
-    window.addEventListener('resize', checkCompactMode);
-    setTimeout(checkCompactMode, 100);
+    // 监听窗口变化
+    window.addEventListener('resize', () => {
+        requestAnimationFrame(checkCompactMode);
+    });
+    
+    // 初始多重检查
+    setTimeout(checkCompactMode, 150);
+    setTimeout(checkCompactMode, 400);
 };
