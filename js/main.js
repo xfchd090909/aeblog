@@ -1,7 +1,7 @@
 // ====================== 提示词库 ======================
 let greetings = {};
 
-// 全局缓存：让同一时间段内文字保持不变
+// 全局缓存
 let currentQuote = '';
 let lastPeriod = '';
 
@@ -10,9 +10,7 @@ async function loadGreetings() {
     try {
         const res = await fetch('data/greetings.json');
         greetings = await res.json();
-    } catch (e) {
-        // 静默失败，不影响页面
-    }
+    } catch (e) {}
 }
 
 // ====================== 时间段判断 ======================
@@ -24,7 +22,7 @@ function getPeriodKey(hour) {
     return "22";
 }
 
-// ====================== 实时北京时间（趣味化） ======================
+// ====================== 实时北京时间 ======================
 function updateBeijingTime() {
     try {
         const timeEl = document.getElementById('beijing-time');
@@ -47,7 +45,6 @@ function updateBeijingTime() {
         
         const periodKey = getPeriodKey(hour);
         
-        // 只有时间段变化或首次加载时才随机新文字
         if (periodKey !== lastPeriod || !currentQuote) {
             if (greetings[periodKey] && greetings[periodKey].length > 0) {
                 const randomIndex = Math.floor(Math.random() * greetings[periodKey].length);
@@ -61,8 +58,27 @@ function updateBeijingTime() {
         } else {
             timeEl.textContent = datePart + ' ' + timePart;
         }
-    } catch (e) {
-        // 静默处理，防止任何意外
+        
+        setTimeout(checkCompactMode, 10);
+    } catch (e) {}
+}
+
+// ====================== 智能 compact 模式检测 ======================
+function checkCompactMode() {
+    const container = document.getElementById('nav-container');
+    const leftNav = document.querySelector('.nav-left');
+    const timeEl = document.getElementById('beijing-time');
+    
+    if (!leftNav || !timeEl) return;
+    
+    const leftRight = leftNav.getBoundingClientRect().right;
+    const timeLeft = timeEl.getBoundingClientRect().left;
+    const gap = timeLeft - leftRight;
+    
+    if (gap < 30 || timeEl.scrollWidth > timeEl.clientWidth + 10) {
+        container.classList.add('compact');
+    } else {
+        container.classList.remove('compact');
     }
 }
 
@@ -91,4 +107,7 @@ window.onload = async function() {
     
     const posts = await loadPosts();
     renderPosts(posts);
+    
+    window.addEventListener('resize', checkCompactMode);
+    setTimeout(checkCompactMode, 100);
 };
