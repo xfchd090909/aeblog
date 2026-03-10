@@ -4,7 +4,7 @@ let greetings = {};
 // 加载提示词库
 async function loadGreetings() {
     try {
-        const res = await fetch('data/greetings.json');
+        const res = await fetch('greetings.json');
         greetings = await res.json();
     } catch (e) {
         console.error('提示词库加载失败，使用默认北京时间');
