@@ -10,17 +10,36 @@ h1, h2, h3 {
     font-family: Georgia, 'Times New Roman', serif;
 }
 
-/* 文章卡片：极简风格 — 只加左边框 + 改颜色 */
+/* ==================== 智能 compact 模式 ==================== */
+#nav-container.compact {
+    gap: 1rem !important;
+}
+
+#nav-container.compact .nav-left {
+    font-size: 0.875rem;
+    gap: 1.25rem !important;
+}
+
+#nav-container.compact #beijing-time {
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+
+/* 平滑滚动条样式（移动端更美观） */
+#nav-container::-webkit-scrollbar {
+    height: 3px;
+}
+#nav-container::-webkit-scrollbar-thumb {
+    background: #0068B5;
+    border-radius: 10px;
+}
+
+/* 文章卡片样式 */
 #post-grid .card {
     background-color: #18181b;
     padding: 2rem;
     border-left: 5px solid #0068B5;
     border-radius: 0;
-    transition: none; /* 彻底关闭所有动画 */
-}
-
-#post-grid .card:hover {
-    /* 没有任何 hover 效果 */
 }
 
 #post-grid .card .title {
@@ -39,7 +58,6 @@ h1, h2, h3 {
     color: #0068B5;
 }
 
-/* 阅读页保持不变 */
 #post-content {
     line-height: 1.85;
 }
