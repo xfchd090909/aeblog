@@ -3,23 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>aeBlog</title>
+    <title>XFCHD 的个人博客</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-zinc-950 text-zinc-200">
-    <!-- 导航栏（左右已互换） -->
+    <!-- 导航栏（默认一行 + 智能 compact 模式） -->
     <nav class="fixed top-0 left-0 right-0 z-50 bg-zinc-900/80 backdrop-blur-md border-b border-zinc-800">
-        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-            <!-- 左侧：导航选项 -->
-            <div class="flex gap-8 text-sm font-medium">
-                <a href="#posts" class="hover:text-[#0068B5] transition">文章</a>
-                <a href="#contact" class="hover:text-[#0068B5] transition">联系</a>
-            </div>
-            
-            <!-- 右侧：实时北京时间 -->
-            <div id="beijing-time" class="text-sm font-medium text-zinc-200 tabular-nums">
-                load Beijing Time...
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div id="nav-container" class="flex items-center justify-between gap-8 transition-all duration-300 overflow-x-auto pb-1">
+                
+                <!-- 左侧导航 -->
+                <div class="flex gap-8 text-sm font-medium nav-left whitespace-nowrap">
+                    <a href="#posts" class="hover:text-[#0068B5] transition">文章</a>
+                    <a href="#contact" class="hover:text-[#0068B5] transition">联系</a>
+                </div>
+                
+                <!-- 右侧北京时间 -->
+                <div id="beijing-time" 
+                     class="text-sm font-medium text-zinc-200 tabular-nums text-right whitespace-nowrap transition-all duration-300 min-w-0 flex-1">
+                </div>
             </div>
         </div>
     </nav>
@@ -27,7 +30,7 @@
     <!-- 文章列表 -->
     <section id="posts" class="pt-24 pb-24">
         <div class="max-w-5xl mx-auto px-6">
-            <h2 class="text-4xl font-serif tracking-normal mb-12 text-center">多读书有助进步...</h2>
+            <h2 class="text-4xl font-serif tracking-normal mb-12 text-center">最近写的几篇</h2>
             <div id="post-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
         </div>
     </section>
