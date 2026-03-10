@@ -1,8 +1,9 @@
-// ====================== 实时北京时间 ======================
+// ====================== 实时北京时间（已彻底修复） ======================
 function updateBeijingTime() {
     const timeEl = document.getElementById('beijing-time');
     
-    const formatter = new Intl.DateTimeFormat('zh-CN', {
+    const now = new Date();
+    const options = {
         timeZone: 'Asia/Shanghai',
         year: 'numeric',
         month: '2-digit',
@@ -11,22 +12,14 @@ function updateBeijingTime() {
         minute: '2-digit',
         second: '2-digit',
         hour12: false
-    });
+    };
     
-    const parts = formatter.formatToParts(new Date());
-    const year = parts.find(p => p.type === 'year').value;
-    const month = parts.find(p => p.type === 'month').value;
-    const day = parts.find(p => p.type === 'day').value;
-    const hour = parts.find(p => p.type === 'hour').value;
-    const minute = parts.find(p => p.type === 'minute').value;
-    const second = parts.find(p => p.type === 'second').value;
+    let timeStr = now.toLocaleString('zh-CN', options);
+    // 统一格式：把斜杠替换为横线（兼容不同浏览器）
+    timeStr = timeStr.replace(/\//g, '-');
     
-    // 显示格式：2025-03-10 09:10:45
-    timeEl.textContent = `\( {year}- \){month}-${day} \( {hour}: \){minute}:${second}`;
+    timeEl.textContent = `北京时间：${timeStr}`;
 }
-
-// 每秒更新一次
-setInterval(updateBeijingTime, 1000);
 
 // ====================== 文章列表 ======================
 async function loadPosts() {
@@ -47,10 +40,13 @@ function renderPosts(posts) {
 
 // ====================== 初始化 ======================
 window.onload = async () => {
-    // 初始化时间（立即显示）
+    // 立即显示一次时间
     updateBeijingTime();
     
-    // 加载文章
+    // 每秒自动更新
+    setInterval(updateBeijingTime, 1000);
+    
+    // 加载文章列表
     const posts = await loadPosts();
     renderPosts(posts);
 };
