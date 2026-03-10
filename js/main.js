@@ -1,24 +1,33 @@
-// ====================== 提示词库（从独立文件读取） ======================
+// ====================== 提示词库 ======================
 let greetings = {};
 
 // 加载提示词库
 async function loadGreetings() {
     try {
-        const res = await fetch('data/greetings.json');   // 相对路径，更稳定
+        const res = await fetch('data/greetings.json');
         greetings = await res.json();
-        console.log('✅ 提示词库加载成功，包含时间段：', Object.keys(greetings));
-        console.log('📚 完整提示词库内容：', greetings);
+        console.log('✅ 提示词库加载成功');
     } catch (e) {
-        console.error('❌ 提示词库加载失败，请检查 data/greetings.json 是否存在');
+        console.error('❌ 提示词库加载失败，请确认 data/greetings.json 存在于根目录');
     }
 }
 
-// ====================== 实时北京时间（带趣味替换） ======================
+// ====================== 时间段判断（全天覆盖） ======================
+function getPeriodKey(hour) {
+    const h = parseInt(hour);
+    if (h >= 7 && h <= 11) return "07";   // 早上 7:00-11:59
+    if (h >= 12 && h <= 17) return "12";  // 中午 12:00-17:59
+    if (h >= 18 && h <= 21) return "18";  // 傍晚 18:00-21:59
+    return "22";                          // 深夜 22:00-次日 06:59
+}
+
+// ====================== 实时北京时间（趣味化） ======================
+let currentQuote = '';   // 缓存当前文字，让同一时间段内保持稳定
+
 function updateBeijingTime() {
     const timeEl = document.getElementById('beijing-time');
-    const now = new Date();
     
-    // 获取北京时间字符串（强制使用北京时区）
+    const now = new Date();
     const options = {
         timeZone: 'Asia/Shanghai',
         year: 'numeric',
@@ -31,21 +40,26 @@ function updateBeijingTime() {
     };
     
     let timeStr = now.toLocaleString('zh-CN', options).replace(/\//g, '-');
-    const [datePart, timePart] = timeStr.split(' ');   // datePart=日期, timePart=HH:mm:ss
+    const [datePart, timePart] = timeStr.split(' ');
+    const hour = timePart.split(':')[0];   // 如 "08"
+
+    const periodKey = getPeriodKey(hour);
     
-    // 关键修复：从北京时间字符串中提取小时（不再用本地 getHours()）
-    const beijingHour = timePart.split(':')[0];   // 例如 "07"
-    
-    console.log(`🕒 当前北京时间：\( {timePart} | 提取小时： \){beijingHour}`);
-    
-    if (greetings[beijingHour] && greetings[beijingHour].length > 0) {
-        const randomIndex = Math.floor(Math.random() * greetings[beijingHour].length);
-        const quote = greetings[beijingHour][randomIndex];
-        timeEl.textContent = `\( {quote}： \){datePart} ${timePart}`;
-        console.log(`🎉 匹配到趣味时间段 \( {beijingHour} → 显示 " \){quote}"`);
+    console.log(`🕒 北京时间 ${timePart} | 区间: ${periodKey}`);
+
+    // 如果时间段变化或首次加载，则随机新文字
+    if (!currentQuote || periodKey !== getPeriodKey(new Date().toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai', hour: '2-digit'}).split(':')[0])) {
+        if (greetings[periodKey] && greetings[periodKey].length > 0) {
+            const randomIndex = Math.floor(Math.random() * greetings[periodKey].length);
+            currentQuote = greetings[periodKey][randomIndex];
+        }
+    }
+
+    if (currentQuote) {
+        timeEl.textContent = `\( {currentQuote}： \){datePart} ${timePart}`;
+        console.log(`🎉 显示趣味文字: ${currentQuote}`);
     } else {
-        timeEl.textContent = `北京时间：${datePart} ${timePart}`;
-        console.log('ℹ️ 普通时间段，不显示趣味文字');
+        timeEl.textContent = `${datePart} ${timePart}`;
     }
 }
 
