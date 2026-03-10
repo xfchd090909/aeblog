@@ -4,20 +4,21 @@ let greetings = {};
 // 加载提示词库
 async function loadGreetings() {
     try {
-        const res = await fetch('/data/greetings.json');   // 使用根路径，确保加载
+        const res = await fetch('data/greetings.json');   // 相对路径，更稳定
         greetings = await res.json();
-        console.log('提示词库加载成功');
+        console.log('✅ 提示词库加载成功，包含时间段：', Object.keys(greetings));
+        console.log('📚 完整提示词库内容：', greetings);
     } catch (e) {
-        console.error('提示词库加载失败');
+        console.error('❌ 提示词库加载失败，请检查 data/greetings.json 是否存在');
     }
 }
 
-// ====================== 实时北京时间（按小时段趣味替换） ======================
+// ====================== 实时北京时间（带趣味替换） ======================
 function updateBeijingTime() {
     const timeEl = document.getElementById('beijing-time');
     const now = new Date();
     
-    // 获取北京时间
+    // 获取北京时间字符串（强制使用北京时区）
     const options = {
         timeZone: 'Asia/Shanghai',
         year: 'numeric',
@@ -30,20 +31,21 @@ function updateBeijingTime() {
     };
     
     let timeStr = now.toLocaleString('zh-CN', options).replace(/\//g, '-');
-    const [datePart, timePart] = timeStr.split(' ');
+    const [datePart, timePart] = timeStr.split(' ');   // datePart=日期, timePart=HH:mm:ss
     
-    // 按小时匹配（07、12、18、22 任意分钟秒都生效）
-    const currentHour = String(now.getHours()).padStart(2, '0');   // 强制两位数
+    // 关键修复：从北京时间字符串中提取小时（不再用本地 getHours()）
+    const beijingHour = timePart.split(':')[0];   // 例如 "07"
     
-    console.log(`当前北京小时: ${currentHour} | 完整时间: ${timePart}`);
+    console.log(`🕒 当前北京时间：\( {timePart} | 提取小时： \){beijingHour}`);
     
-    if (greetings[currentHour] && greetings[currentHour].length > 0) {
-        const randomIndex = Math.floor(Math.random() * greetings[currentHour].length);
-        const quote = greetings[currentHour][randomIndex];
+    if (greetings[beijingHour] && greetings[beijingHour].length > 0) {
+        const randomIndex = Math.floor(Math.random() * greetings[beijingHour].length);
+        const quote = greetings[beijingHour][randomIndex];
         timeEl.textContent = `\( {quote}： \){datePart} ${timePart}`;
-        console.log(`🎉 匹配到趣味时间段: \( {currentHour} → 显示 " \){quote}"`);
+        console.log(`🎉 匹配到趣味时间段 \( {beijingHour} → 显示 " \){quote}"`);
     } else {
         timeEl.textContent = `北京时间：${datePart} ${timePart}`;
+        console.log('ℹ️ 普通时间段，不显示趣味文字');
     }
 }
 
