@@ -56,7 +56,7 @@ function updateBeijingTime() {
     }
 
     if (currentQuote) {
-        timeEl.textContent = `( {currentQuote}： ){datePart} ${timePart}`;
+        timeEl.textContent = `{currentQuote}:{datePart} ${timePart}`;
         console.log(`🎉 显示趣味文字: ${currentQuote}`);
     } else {
         timeEl.textContent = `${datePart} ${timePart}`;
