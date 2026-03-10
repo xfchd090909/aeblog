@@ -6,23 +6,37 @@ body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
+h1, h2, h3 {
+    font-family: Georgia, 'Times New Roman', serif;
+}
+
+/* 不完美卡片风格 */
 #post-grid .card {
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s ease;
+    border: 2px solid #27272a;
+    border-radius: 14px;
+    box-shadow: 4px 6px 0 -1px rgba(0, 104, 181, 0.08);
 }
 
 #post-grid .card:hover {
-    transform: translateY(-12px) scale(1.02);
-    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
+    transform: translateY(-6px) rotate(0.6deg);
+    border-color: #0068B5;
+    box-shadow: 6px 10px 0 -2px rgba(0, 104, 181, 0.15);
 }
 
 .prose h1, .prose h2, .prose h3 {
-    color: rgb(167 139 250);
+    color: #0068B5;
+    font-weight: 600;
 }
 
-/* 阅读页优化 */
+/* 阅读页优化 - 更像纸质阅读 */
+#post-content {
+    line-height: 1.85;
+}
+
 #post-content pre {
     background-color: #18181b;
-    padding: 1.5rem;
-    border-radius: 12px;
-    overflow-x: auto;
+    padding: 1.75rem;
+    border-radius: 10px;
+    border-left: 4px solid #0068B5;
 }
