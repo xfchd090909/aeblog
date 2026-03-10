@@ -8,13 +8,18 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-zinc-950 text-zinc-200">
-    <!-- 导航栏（保持简洁） -->
+    <!-- 导航栏（左右已互换） -->
     <nav class="fixed top-0 left-0 right-0 z-50 bg-zinc-900/80 backdrop-blur-md border-b border-zinc-800">
         <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div class="text-2xl font-bold tracking-tighter text-[#0068B5]">aeBlog</div>
+            <!-- 左侧：导航选项 -->
             <div class="flex gap-8 text-sm font-medium">
                 <a href="#posts" class="hover:text-[#0068B5] transition">文章</a>
                 <a href="#contact" class="hover:text-[#0068B5] transition">联系</a>
+            </div>
+            
+            <!-- 右侧：实时北京时间（样式与导航文字完全一致） -->
+            <div id="beijing-time" class="text-sm font-medium text-zinc-200 tabular-nums">
+                加载北京时间...
             </div>
         </div>
     </nav>
