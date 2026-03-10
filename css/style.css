@@ -10,7 +10,7 @@ h1, h2, h3 {
     font-family: Georgia, 'Times New Roman', serif;
 }
 
-/* ==================== 智能 compact 模式 ==================== */
+/* ==================== 智能 compact 模式（已彻底防抖动） ==================== */
 #nav-container.compact {
     gap: 1rem !important;
 }
@@ -25,7 +25,10 @@ h1, h2, h3 {
     white-space: nowrap;
 }
 
-/* 平滑滚动条样式（移动端更美观） */
+/* 滚动条稳定 + 美化（彻底解决长度条问题） */
+#nav-container {
+    scrollbar-gutter: stable;
+}
 #nav-container::-webkit-scrollbar {
     height: 3px;
 }
@@ -34,7 +37,7 @@ h1, h2, h3 {
     border-radius: 10px;
 }
 
-/* 文章卡片样式 */
+/* 文章卡片样式（保持不变） */
 #post-grid .card {
     background-color: #18181b;
     padding: 2rem;
