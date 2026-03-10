@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XFCHD 的个人博客</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-zinc-950 text-zinc-200">
@@ -14,40 +13,64 @@
         <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
             <div class="text-2xl font-bold tracking-tighter text-violet-400">XFCHD</div>
             <div class="flex gap-8 text-sm font-medium">
-                <a href="#home" class="hover:text-violet-400 transition">首页</a>
-                <a href="#about" class="hover:text-violet-400 transition">关于</a>
+                <a href="index.html" class="hover:text-violet-400 transition">首页</a>
                 <a href="#posts" class="hover:text-violet-400 transition">文章</a>
+                <a href="#about" class="hover:text-violet-400 transition">关于</a>
                 <a href="#contact" class="hover:text-violet-400 transition">联系</a>
             </div>
         </div>
     </nav>
 
-    <!-- 主内容 -->
-    <main id="main-content" class="pt-20">
-        <!-- Hero / 关于我 / 文章列表 / 联系 部分保持不变（省略以节省篇幅，实际请复制您上一个版本的这部分） -->
-        <!-- （此处内容与之前完全一致，只需保留原 Hero、about、posts、contact 即可） -->
-    </main>
+    <!-- Hero -->
+    <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950">
+        <div class="text-center px-6">
+            <h1 class="text-7xl font-bold tracking-tighter mb-4">欢迎来到我的世界</h1>
+            <p class="text-xl text-zinc-400 max-w-md mx-auto">记录思考、分享技术、探索未来</p>
+            <a href="#posts" class="mt-10 inline-block px-10 py-4 bg-violet-600 hover:bg-violet-500 rounded-full font-medium transition transform hover:scale-105">
+                浏览文章
+            </a>
+        </div>
+    </section>
 
-    <!-- 文章阅读弹窗（不变） -->
-    <div id="post-modal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center z-[100]">
-        <div class="bg-zinc-900 rounded-3xl max-w-2xl w-full mx-4 overflow-hidden">
-            <div class="p-8">
-                <button onclick="closeModal()" class="float-right text-3xl leading-none">×</button>
-                <h3 id="modal-title" class="text-3xl font-bold mb-4"></h3>
-                <div id="modal-content" class="prose prose-invert max-w-none text-zinc-300"></div>
+    <!-- 关于 -->
+    <section id="about" class="py-24 bg-zinc-900">
+        <div class="max-w-4xl mx-auto px-6">
+            <h2 class="text-4xl font-bold mb-12 text-center">关于我</h2>
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <p class="text-lg text-zinc-400 leading-relaxed">
+                        Hi，我是 XFCHD，一名热爱技术的独立开发者。<br>
+                        这里是我记录生活与思考的地方。欢迎你停留片刻。
+                    </p>
+                </div>
+                <div class="bg-zinc-800 p-8 rounded-3xl">
+                    <p class="text-sm text-violet-400 mb-2">当前状态</p>
+                    <ul class="space-y-3 text-zinc-400">
+                        <li>美国俄勒冈州</li>
+                        <li>专注前端与 AI</li>
+                        <li>每天一杯美式</li>
+                    </ul>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Cloudflare Turnstile 验证遮罩 -->
-    <div id="verify-overlay" class="fixed inset-0 bg-black/90 flex items-center justify-center z-[999] hidden">
-        <div class="bg-zinc-900 rounded-3xl p-10 max-w-md w-full mx-4 text-center">
-            <h3 class="text-2xl font-semibold mb-6">请完成人机验证</h3>
-            <div id="turnstile-container" class="flex justify-center mb-6"></div>
-            <p id="verify-error" class="text-red-400 text-sm min-h-[1.25rem]"></p>
+    <!-- 文章列表 -->
+    <section id="posts" class="py-24">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="text-4xl font-bold mb-12 text-center">最新文章</h2>
+            <div id="post-grid" class="grid md:grid-cols-3 gap-8"></div>
         </div>
-    </div>
+    </section>
 
-    <script src="js/script.js"></script>
+    <!-- 联系 -->
+    <section id="contact" class="py-24 bg-zinc-900">
+        <div class="max-w-md mx-auto text-center px-6">
+            <h2 class="text-4xl font-bold mb-6">保持联系</h2>
+            <p class="text-zinc-400 mb-8">X: @xfchd2025</p>
+        </div>
+    </section>
+
+    <script src="js/main.js"></script>
 </body>
 </html>
