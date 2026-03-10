@@ -18,3 +18,11 @@ body {
 .prose h1, .prose h2, .prose h3 {
     color: rgb(167 139 250);
 }
+
+/* 阅读页优化 */
+#post-content pre {
+    background-color: #18181b;
+    padding: 1.5rem;
+    border-radius: 12px;
+    overflow-x: auto;
+}
