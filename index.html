@@ -8,66 +8,39 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-zinc-950 text-zinc-200">
-    <!-- 导航栏 -->
+    <!-- 导航栏（已删除首页和关于） -->
     <nav class="fixed top-0 left-0 right-0 z-50 bg-zinc-900/80 backdrop-blur-md border-b border-zinc-800">
         <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div class="text-2xl font-bold tracking-tighter text-violet-400">XFCHD</div>
+            <div class="text-2xl font-bold tracking-tighter text-[#0068B5]">XFCHD</div>
             <div class="flex gap-8 text-sm font-medium">
-                <a href="index.html" class="hover:text-violet-400 transition">首页</a>
-                <a href="#posts" class="hover:text-violet-400 transition">文章</a>
-                <a href="#about" class="hover:text-violet-400 transition">关于</a>
-                <a href="#contact" class="hover:text-violet-400 transition">联系</a>
+                <a href="#posts" class="hover:text-[#0068B5] transition">文章</a>
+                <a href="#contact" class="hover:text-[#0068B5] transition">联系</a>
             </div>
         </div>
     </nav>
 
     <!-- Hero -->
     <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950">
-        <div class="text-center px-6">
-            <h1 class="text-7xl font-bold tracking-tighter mb-4">欢迎来到我的世界</h1>
-            <p class="text-xl text-zinc-400 max-w-md mx-auto">记录思考、分享技术、探索未来</p>
-            <a href="#posts" class="mt-10 inline-block px-10 py-4 bg-violet-600 hover:bg-violet-500 rounded-full font-medium transition transform hover:scale-105">
-                浏览文章
-            </a>
-        </div>
-    </section>
-
-    <!-- 关于 -->
-    <section id="about" class="py-24 bg-zinc-900">
-        <div class="max-w-4xl mx-auto px-6">
-            <h2 class="text-4xl font-bold mb-12 text-center">关于我</h2>
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div>
-                    <p class="text-lg text-zinc-400 leading-relaxed">
-                        Hi，我是 XFCHD，一名热爱技术的独立开发者。<br>
-                        这里是我记录生活与思考的地方。欢迎你停留片刻。
-                    </p>
-                </div>
-                <div class="bg-zinc-800 p-8 rounded-3xl">
-                    <p class="text-sm text-violet-400 mb-2">当前状态</p>
-                    <ul class="space-y-3 text-zinc-400">
-                        <li>美国俄勒冈州</li>
-                        <li>专注前端与 AI</li>
-                        <li>每天一杯美式</li>
-                    </ul>
-                </div>
-            </div>
+        <div class="text-center px-6 max-w-xl">
+            <h1 class="text-6xl font-serif tracking-normal mb-6 leading-tight">欢迎来到我的小角落</h1>
+            <p class="text-xl text-zinc-400">随便写写，慢慢记录一些东西</p>
+            <a href="#posts" class="mt-12 inline-block px-8 py-3.5 border border-[#0068B5] hover:bg-[#0068B5]/10 rounded-xl font-medium transition">随便看看</a>
         </div>
     </section>
 
     <!-- 文章列表 -->
     <section id="posts" class="py-24">
-        <div class="max-w-6xl mx-auto px-6">
-            <h2 class="text-4xl font-bold mb-12 text-center">最新文章</h2>
-            <div id="post-grid" class="grid md:grid-cols-3 gap-8"></div>
+        <div class="max-w-5xl mx-auto px-6">
+            <h2 class="text-4xl font-serif tracking-normal mb-12 text-center">最近写的几篇</h2>
+            <div id="post-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
         </div>
     </section>
 
     <!-- 联系 -->
     <section id="contact" class="py-24 bg-zinc-900">
         <div class="max-w-md mx-auto text-center px-6">
-            <h2 class="text-4xl font-bold mb-6">保持联系</h2>
-            <p class="text-zinc-400 mb-8">X: @xfchd2025</p>
+            <h2 class="text-4xl font-serif tracking-normal mb-6">保持联系</h2>
+            <p class="text-zinc-400">X: @xfchd2025</p>
         </div>
     </section>
 
