@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>aeBlog</title>
+    <title>XFCHD 的个人博客</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-zinc-950 text-zinc-200">
-    <!-- 导航栏（默认一行 + 智能 compact 模式） -->
+    <!-- 导航栏 -->
     <nav class="fixed top-0 left-0 right-0 z-50 bg-zinc-900/80 backdrop-blur-md border-b border-zinc-800">
         <div class="max-w-6xl mx-auto px-6 py-4">
-            <div id="nav-container" class="flex items-center justify-between gap-8 transition-all duration-300 overflow-x-auto pb-1">
+            <div id="nav-container" class="flex items-center justify-between gap-8 transition-all duration-300 overflow-x-auto pb-1 scrollbar-gutter-stable">
                 
                 <!-- 左侧导航 -->
                 <div class="flex gap-8 text-sm font-medium nav-left whitespace-nowrap">
@@ -30,7 +30,7 @@
     <!-- 文章列表 -->
     <section id="posts" class="pt-24 pb-24">
         <div class="max-w-5xl mx-auto px-6">
-            <h2 class="text-4xl font-serif tracking-normal mb-12 text-center">读文章有助提升阅读理解能力...</h2>
+            <h2 class="text-4xl font-serif tracking-normal mb-12 text-center">最近写的几篇</h2>
             <div id="post-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
         </div>
     </section>
