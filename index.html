@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XFCHD 的个人博客</title>
+    <title>aeBlog</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-zinc-950 text-zinc-200">
-    <!-- 导航栏（已删除首页和关于） -->
+    <!-- 导航栏（保持简洁） -->
     <nav class="fixed top-0 left-0 right-0 z-50 bg-zinc-900/80 backdrop-blur-md border-b border-zinc-800">
         <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
             <div class="text-2xl font-bold tracking-tighter text-[#0068B5]">XFCHD</div>
@@ -19,17 +19,8 @@
         </div>
     </nav>
 
-    <!-- Hero -->
-    <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950">
-        <div class="text-center px-6 max-w-xl">
-            <h1 class="text-6xl font-serif tracking-normal mb-6 leading-tight">欢迎来到我的小角落</h1>
-            <p class="text-xl text-zinc-400">随便写写，慢慢记录一些东西</p>
-            <a href="#posts" class="mt-12 inline-block px-8 py-3.5 border border-[#0068B5] hover:bg-[#0068B5]/10 rounded-xl font-medium transition">随便看看</a>
-        </div>
-    </section>
-
-    <!-- 文章列表 -->
-    <section id="posts" class="py-24">
+    <!-- 文章列表（直接显示） -->
+    <section id="posts" class="pt-24 pb-24">
         <div class="max-w-5xl mx-auto px-6">
             <h2 class="text-4xl font-serif tracking-normal mb-12 text-center">最近写的几篇</h2>
             <div id="post-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
