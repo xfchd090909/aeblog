@@ -6,13 +6,8 @@ body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* ==================== 全局深浅色切换（彻底全局生效） ==================== */
+/* ==================== 全局深浅色切换 ==================== */
 body {
-    background-color: #18181b;
-    color: #e4e4e7;
-}
-
-.dark body {
     background-color: #18181b;
     color: #e4e4e7;
 }
@@ -22,36 +17,41 @@ body {
     color: #1f2937;
 }
 
-/* 文章卡片全局适配 */
+/* 导航栏全局切换 */
+nav {
+    background-color: #18181b;
+    border-color: #3f3f46;
+}
+
+.light nav {
+    background-color: #f8fafc;
+    border-color: #e5e5e5;
+}
+
+/* 文章卡片全局切换 */
 #post-grid .card {
     background-color: #27272a;
-    padding: 2rem;
-    border-left: 5px solid #0068B5;
+    border-left-color: #0068B5;
 }
 
 .light #post-grid .card {
     background-color: #ffffff;
 }
 
-#post-grid .card:hover {
-    transform: translateY(-2px);
+/* 联系区全局切换 */
+#contact {
+    background-color: #18181b;
 }
 
-#post-grid .card .title,
-#post-grid .card .date {
-    color: #0068B5;
+.light #contact {
+    background-color: #f8fafc;
 }
 
-/* 阅读页全局适配 */
-.prose h1, .prose h2, .prose h3 {
-    color: #0068B5;
-}
+/* 阅读页适配 */
+.prose h1, .prose h2, .prose h3 { color: #0068B5; }
 
 #post-content pre {
     background-color: #27272a;
-    padding: 1.75rem;
-    border-radius: 10px;
-    border-left: 4px solid #0068B5;
 }
 
 .light #post-content pre {
