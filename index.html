@@ -8,20 +8,20 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-zinc-950 text-zinc-200 dark:bg-zinc-950 dark:text-zinc-200 transition-colors">
-    <!-- 导航栏（纯导航，无菜单按钮） -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-zinc-900/80 backdrop-blur-md border-b border-zinc-800">
+    <!-- 导航栏（纯导航） -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-zinc-900/80 backdrop-blur-md border-b border-zinc-800 dark:bg-zinc-900/80">
         <div class="max-w-6xl mx-auto px-6 py-4">
             <div id="nav-container" class="flex items-center justify-between gap-8 transition-all duration-300 overflow-x-auto pb-1 scrollbar-gutter-stable">
                 <div class="flex gap-8 text-sm font-medium nav-left whitespace-nowrap">
-                    <a href="#posts" class="hover:text-[#0068B5] transition">文章</a>
-                    <a href="#contact" class="hover:text-[#0068B5] transition">联系</a>
+                    <a href="#posts" class="hover:text-[#0068B5] transition dark:text-zinc-200 light:text-zinc-700">文章</a>
+                    <a href="#contact" class="hover:text-[#0068B5] transition dark:text-zinc-200 light:text-zinc-700">联系</a>
                 </div>
-                <div id="beijing-time" class="text-sm font-medium text-zinc-200 tabular-nums whitespace-nowrap"></div>
+                <div id="beijing-time" class="text-sm font-medium text-zinc-200 dark:text-zinc-200 tabular-nums whitespace-nowrap"></div>
             </div>
         </div>
     </nav>
 
-    <!-- 可自由拖动的悬浮菜单按钮（完全独立） -->
+    <!-- 可随意拖动的悬浮菜单按钮（完全独立） -->
     <button id="menu-toggle" 
             class="fixed top-6 right-6 z-[999] w-11 h-11 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-2xl flex items-center justify-center shadow-2xl cursor-move active:cursor-grabbing transition">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -38,24 +38,22 @@
         </div>
     </section>
 
-    <!-- 联系 -->
-    <section id="contact" class="py-24 bg-zinc-900 dark:bg-zinc-900">
+    <!-- 联系区 -->
+    <section id="contact" class="py-24 bg-zinc-900 dark:bg-zinc-900 light:bg-zinc-100">
         <div class="max-w-md mx-auto text-center px-6">
             <h2 class="text-4xl font-serif tracking-normal mb-6">保持联系</h2>
-            <p class="text-zinc-400">X: @xfchd2025</p>
+            <p class="text-zinc-400 dark:text-zinc-400 light:text-zinc-600">X: @xfchd2025</p>
         </div>
     </section>
 
     <!-- 独立右侧滑出菜单 -->
-    <div id="theme-menu" 
-         class="fixed top-0 right-0 h-full w-72 bg-zinc-900 border-l border-zinc-700 shadow-2xl translate-x-full transition-transform duration-300 z-[999] flex flex-col">
+    <div id="theme-menu" class="fixed top-0 right-0 h-full w-72 bg-zinc-900 border-l border-zinc-700 shadow-2xl translate-x-full transition-transform duration-300 z-[999] flex flex-col">
         <div class="p-6 flex justify-between items-center border-b border-zinc-700">
             <span class="text-lg font-medium">主题切换</span>
             <button id="menu-close" class="text-3xl leading-none text-zinc-400 hover:text-white">×</button>
         </div>
         
         <div class="flex-1 flex items-center justify-center gap-16 p-8">
-            <!-- 浅色模式 -->
             <button onclick="switchTheme('light')" class="flex flex-col items-center gap-4 text-zinc-400 hover:text-white transition">
                 <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <circle cx="12" cy="12" r="5"></circle>
@@ -64,7 +62,6 @@
                 <span class="text-sm">浅色</span>
             </button>
             
-            <!-- 深色模式 -->
             <button onclick="switchTheme('dark')" class="flex flex-col items-center gap-4 text-zinc-400 hover:text-white transition">
                 <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
