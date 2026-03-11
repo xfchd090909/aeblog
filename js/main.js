@@ -66,35 +66,42 @@ function checkCompactMode() {
     }
 }
 
-// ====================== 可自由拖动按钮 ======================
+// ====================== 可随意拖动按钮（稳定版） ======================
 function makeDraggable() {
     const btn = document.getElementById('menu-toggle');
+    let posX = localStorage.getItem('menuX') || '24';
+    let posY = localStorage.getItem('menuY') || '24';
+    btn.style.left = posX + 'px';
+    btn.style.top = posY + 'px';
+    btn.style.right = 'auto';
+
     let isDragging = false;
-    let currentX, currentY, initialX, initialY;
+    let startX, startY;
 
     btn.addEventListener('mousedown', (e) => {
         isDragging = true;
-        initialX = e.clientX - currentX;
-        initialY = e.clientY - currentY;
+        startX = e.clientX - btn.offsetLeft;
+        startY = e.clientY - btn.offsetTop;
     });
 
     document.addEventListener('mousemove', (e) => {
-        if (isDragging) {
-            e.preventDefault();
-            currentX = e.clientX - initialX;
-            currentY = e.clientY - initialY;
-            btn.style.left = currentX + 'px';
-            btn.style.top = currentY + 'px';
-            btn.style.right = 'auto';
-        }
+        if (!isDragging) return;
+        let newX = e.clientX - startX;
+        let newY = e.clientY - startY;
+        btn.style.left = newX + 'px';
+        btn.style.top = newY + 'px';
     });
 
     document.addEventListener('mouseup', () => {
-        isDragging = false;
+        if (isDragging) {
+            isDragging = false;
+            localStorage.setItem('menuX', btn.style.left);
+            localStorage.setItem('menuY', btn.style.top);
+        }
     });
 }
 
-// ====================== 独立菜单控制 ======================
+// ====================== 菜单控制 ======================
 function toggleMenu() {
     const menu = document.getElementById('theme-menu');
     menu.classList.toggle('open');
@@ -161,7 +168,7 @@ window.onload = async function() {
         }
     });
 
-    // 恢复保存的主题
+    // 恢复主题
     if (localStorage.theme === 'light') {
         document.documentElement.classList.add('light');
         document.documentElement.classList.remove('dark');
@@ -170,6 +177,6 @@ window.onload = async function() {
         document.documentElement.classList.remove('light');
     }
 
-    // 启用拖动功能
+    // 启用拖拽
     makeDraggable();
 };
