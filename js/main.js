@@ -66,7 +66,7 @@ function checkCompactMode() {
     }
 }
 
-// ====================== 可随意拖动按钮（最终版：实时跟随 + 防刷新 + 移动端完美） ======================
+// ====================== 可随意拖动按钮（最终版：实时 + 边界 + 防刷新 + 防误触） ======================
 function makeDraggable() {
     const btn = document.getElementById('menu-toggle');
     
@@ -80,7 +80,7 @@ function makeDraggable() {
     let startX = 0, startY = 0;
     let currentX = posX, currentY = posY;
 
-    // ==================== 鼠标 ====================
+    // 鼠标
     btn.addEventListener('mousedown', e => {
         isDragging = true;
         hasDragged = false;
@@ -94,6 +94,7 @@ function makeDraggable() {
         hasDragged = true;
         currentX = e.clientX - startX;
         currentY = e.clientY - startY;
+        // 边界限制
         currentX = Math.max(10, Math.min(window.innerWidth - btn.offsetWidth - 10, currentX));
         currentY = Math.max(10, Math.min(window.innerHeight - btn.offsetHeight - 10, currentY));
         btn.style.transform = `translate(${currentX}px, ${currentY}px)`;
@@ -110,7 +111,7 @@ function makeDraggable() {
         }
     });
 
-    // ==================== 移动端触摸（关键修复） ====================
+    // 移动端触摸
     btn.addEventListener('touchstart', e => {
         isDragging = true;
         hasDragged = false;
