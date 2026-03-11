@@ -3,26 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>aeBlog</title>
+    <title>XFCHD 的个人博客</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Cloudflare Turnstile -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-zinc-950 text-zinc-200">
-    <!-- 导航栏 -->
+    <!-- 导航栏（保持原样） -->
     <nav class="fixed top-0 left-0 right-0 z-50 bg-zinc-900/80 backdrop-blur-md border-b border-zinc-800">
         <div class="max-w-6xl mx-auto px-6 py-4">
             <div id="nav-container" class="flex items-center justify-between gap-8 transition-all duration-300 overflow-x-auto pb-1 scrollbar-gutter-stable">
-                
-                <!-- 左侧导航 -->
                 <div class="flex gap-8 text-sm font-medium nav-left whitespace-nowrap">
                     <a href="#posts" class="hover:text-[#0068B5] transition">文章</a>
                     <a href="#contact" class="hover:text-[#0068B5] transition">联系</a>
                 </div>
-                
-                <!-- 右侧北京时间 -->
-                <div id="beijing-time" 
-                     class="text-sm font-medium text-zinc-200 tabular-nums text-right whitespace-nowrap transition-all duration-300 min-w-0 flex-1">
-                </div>
+                <div id="beijing-time" class="text-sm font-medium text-zinc-200 tabular-nums text-right whitespace-nowrap transition-all duration-300 min-w-0 flex-1"></div>
             </div>
         </div>
     </nav>
@@ -30,7 +26,7 @@
     <!-- 文章列表 -->
     <section id="posts" class="pt-24 pb-24">
         <div class="max-w-5xl mx-auto px-6">
-            <h2 class="text-4xl font-serif tracking-normal mb-12 text-center">多读几篇文章吧...</h2>
+            <h2 class="text-4xl font-serif tracking-normal mb-12 text-center">最近写的几篇</h2>
             <div id="post-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
         </div>
     </section>
@@ -42,6 +38,15 @@
             <p class="text-zinc-400">X: @xfchd2025</p>
         </div>
     </section>
+
+    <!-- Cloudflare Turnstile 验证遮罩 -->
+    <div id="verify-overlay" class="fixed inset-0 bg-black/90 flex items-center justify-center z-[999] hidden">
+        <div class="bg-zinc-900 rounded-3xl p-10 max-w-md w-full mx-4 text-center">
+            <h3 class="text-2xl font-semibold mb-6 text-white">请完成人机验证</h3>
+            <div id="turnstile-container" class="flex justify-center mb-6"></div>
+            <p id="verify-error" class="text-red-400 text-sm min-h-[1.25rem]"></p>
+        </div>
+    </div>
 
     <script src="js/main.js"></script>
 </body>
