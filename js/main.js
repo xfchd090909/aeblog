@@ -77,7 +77,7 @@ function closeMenu() {
     menu.classList.remove('open');
 }
 
-// ====================== 深浅色切换（彻底修复） ======================
+// ====================== 全局深浅色切换 ======================
 function switchTheme(mode) {
     if (mode === 'light') {
         document.documentElement.classList.add('light');
@@ -125,7 +125,7 @@ window.onload = async function() {
     document.getElementById('menu-toggle').addEventListener('click', toggleMenu);
     document.getElementById('menu-close').addEventListener('click', closeMenu);
 
-    // 点击菜单外区域关闭
+    // 点击菜单外关闭
     document.addEventListener('click', function(e) {
         const menu = document.getElementById('theme-menu');
         if (!e.target.closest('#theme-menu') && !e.target.closest('#menu-toggle')) {
