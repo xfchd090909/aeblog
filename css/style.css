@@ -7,61 +7,40 @@ body {
 }
 
 /* ==================== 全局深浅色切换 ==================== */
-body {
-    background-color: #18181b;
-    color: #e4e4e7;
-}
+body { background-color: #18181b; color: #e4e4e7; }
+.light body { background-color: #f8fafc; color: #1f2937; }
 
-.light body {
-    background-color: #f8fafc;
-    color: #1f2937;
-}
+/* 导航栏文字可读性修复 */
+nav a { color: #e4e4e7; }
+.light nav a { color: #1f2937; }
 
-/* 导航栏全局切换 */
-nav {
-    background-color: #18181b;
-    border-color: #3f3f46;
-}
-
-.light nav {
-    background-color: #f8fafc;
-    border-color: #e5e5e5;
-}
-
-/* 文章卡片全局切换 */
+/* 文章列表卡片全局修复 */
 #post-grid .card {
     background-color: #27272a;
-    border-left-color: #0068B5;
+    padding: 2rem;
+    border-left: 5px solid #0068B5;
 }
 
 .light #post-grid .card {
     background-color: #ffffff;
+    border-left-color: #0068B5;
 }
 
-/* 联系区全局切换 */
-#contact {
-    background-color: #18181b;
-}
+#post-grid .card:hover { transform: translateY(-2px); }
+#post-grid .card .title,
+#post-grid .card .date { color: #0068B5; }
 
-.light #contact {
-    background-color: #f8fafc;
-}
+/* 联系区 */
+#contact { background-color: #18181b; }
+.light #contact { background-color: #f8fafc; }
 
-/* 阅读页适配 */
+/* 阅读页 */
 .prose h1, .prose h2, .prose h3 { color: #0068B5; }
-
-#post-content pre {
-    background-color: #27272a;
-}
-
-.light #post-content pre {
-    background-color: #f1f5f9;
-}
+#post-content pre { background-color: #27272a; }
+.light #post-content pre { background-color: #f1f5f9; }
 
 /* 菜单动画 */
 #theme-menu {
     transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
 }
-#theme-menu.open {
-    transform: translateX(0);
-}
+#theme-menu.open { transform: translateX(0); }
