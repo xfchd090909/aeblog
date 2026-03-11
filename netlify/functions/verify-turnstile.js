@@ -5,29 +5,23 @@ export default async function handler(request) {
 
     try {
         const { token } = await request.json();
-        const secret = process.env.TURNSTILE_SECRET_KEY;   // ← 从环境变量读取
+        const secret = process.env.TURNSTILE_SECRET_KEY;
 
         if (!secret) {
-            return new Response(JSON.stringify({ success: false, error: '服务器配置错误' }), { status: 500 });
+            return new Response(JSON.stringify({ success: false }), { status: 500 });
         }
 
         const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                secret: secret,
-                response: token
-            })
+            body: JSON.stringify({ secret, response: token })
         });
 
         const data = await verifyRes.json();
 
         return new Response(
             JSON.stringify({ success: data.success }),
-            { 
-                status: data.success ? 200 : 400,
-                headers: { 'Content-Type': 'application/json' }
-            }
+            { status: data.success ? 200 : 400 }
         );
     } catch (err) {
         return new Response(JSON.stringify({ success: false }), { status: 500 });
