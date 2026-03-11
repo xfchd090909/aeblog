@@ -47,7 +47,7 @@ h1, h2, h3 {
     transform: translateX(0);
 }
 
-/* 拖拽按钮触摸优化 */
+/* 拖拽按钮优化 */
 #menu-toggle {
     touch-action: none;
 }
