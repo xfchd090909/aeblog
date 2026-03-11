@@ -1,20 +1,8 @@
 [
   {
-    "slug": "ai-trends-2025",
-    "title": "2025 年 AI 前端开发趋势",
-    "date": "2025-03-01",
-    "excerpt": "从 React Server Components 到 AI 辅助编程，这一年我们看到了什么？"
-  },
-  {
-    "slug": "tailwind-tips",
-    "title": "Tailwind CSS 高级技巧分享",
-    "date": "2025-02-15",
-    "excerpt": "如何用 Tailwind 打造极致美观且可维护的组件库"
-  },
-  {
-    "slug": "static-blog",
-    "title": "纯静态博客完整搭建指南",
-    "date": "2025-02-01",
-    "excerpt": "使用 Markdown + marked.js 零后端实现个人博客"
+    "slug": "posts1",
+    "title": "更新公告",
+    "date": "2025-03-11",
+    "excerpt": "从aeafx到aeBlog更新信息"
   }
 ]
