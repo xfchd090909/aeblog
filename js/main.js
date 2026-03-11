@@ -66,7 +66,7 @@ function checkCompactMode() {
     }
 }
 
-// ====================== 可随意拖动按钮（最终稳定版） ======================
+// ====================== 可拖动按钮（已防误触点击） ======================
 function makeDraggable() {
     const btn = document.getElementById('menu-toggle');
     let posX = localStorage.getItem('menuX') || '24';
@@ -76,16 +76,19 @@ function makeDraggable() {
     btn.style.right = 'auto';
 
     let isDragging = false;
+    let hasDragged = false;   // 关键标志位
     let startX, startY;
 
     btn.addEventListener('mousedown', e => {
         isDragging = true;
+        hasDragged = false;
         startX = e.clientX - btn.offsetLeft;
         startY = e.clientY - btn.offsetTop;
     });
 
     document.addEventListener('mousemove', e => {
         if (!isDragging) return;
+        hasDragged = true;
         let newX = e.clientX - startX;
         let newY = e.clientY - startY;
         btn.style.left = newX + 'px';
@@ -95,8 +98,10 @@ function makeDraggable() {
     document.addEventListener('mouseup', () => {
         if (isDragging) {
             isDragging = false;
-            localStorage.setItem('menuX', btn.style.left);
-            localStorage.setItem('menuY', btn.style.top);
+            if (hasDragged) {
+                localStorage.setItem('menuX', btn.style.left);
+                localStorage.setItem('menuY', btn.style.top);
+            }
         }
     });
 }
@@ -112,15 +117,13 @@ function closeMenu() {
     menu.classList.remove('open');
 }
 
-// ====================== 全局深浅色切换（最终修复） ======================
+// ====================== 全局主题切换 ======================
 function switchTheme(mode) {
     if (mode === 'light') {
         document.documentElement.classList.remove('dark');
-        document.documentElement.classList.add('light');
         localStorage.theme = 'light';
     } else {
         document.documentElement.classList.add('dark');
-        document.documentElement.classList.remove('light');
         localStorage.theme = 'dark';
     }
     closeMenu();
@@ -138,7 +141,7 @@ function renderPosts(posts) {
         <a href="post.html?slug=${post.slug}" class="card block">
             <div class="date">${post.date}</div>
             <div class="title">${post.title}</div>
-            <p class="text-zinc-400 text-[15px] leading-relaxed mt-4">${post.excerpt}</p>
+            <p class="text-zinc-400 dark:text-zinc-400 text-[15px] leading-relaxed mt-4">${post.excerpt}</p>
         </a>
     `).join('');
 }
@@ -156,20 +159,23 @@ window.onload = async function() {
     setTimeout(checkCompactMode, 150);
     setTimeout(checkCompactMode, 400);
 
-    document.getElementById('menu-toggle').addEventListener('click', toggleMenu);
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+        // 如果刚刚拖拽过，就不触发菜单
+        if (!this.dataset.dragged) toggleMenu();
+    });
     document.getElementById('menu-close').addEventListener('click', closeMenu);
 
     document.addEventListener('click', function(e) {
         const menu = document.getElementById('theme-menu');
-        if (!e.target.closest('#theme-menu') && !e.target.closest('#menu-toggle')) menu.classList.remove('open');
+        if (!e.target.closest('#theme-menu') && !e.target.closest('#menu-toggle')) {
+            menu.classList.remove('open');
+        }
     });
 
     if (localStorage.theme === 'light') {
-        document.documentElement.classList.add('light');
         document.documentElement.classList.remove('dark');
     } else {
         document.documentElement.classList.add('dark');
-        document.documentElement.classList.remove('light');
     }
 
     makeDraggable();
