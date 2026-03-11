@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-zinc-950 text-zinc-200 dark:bg-zinc-950 dark:text-zinc-200 transition-colors">
-    <!-- 导航栏（已移除菜单按钮） -->
+    <!-- 导航栏（纯导航，无菜单按钮） -->
     <nav class="fixed top-0 left-0 right-0 z-50 bg-zinc-900/80 backdrop-blur-md border-b border-zinc-800">
         <div class="max-w-6xl mx-auto px-6 py-4">
             <div id="nav-container" class="flex items-center justify-between gap-8 transition-all duration-300 overflow-x-auto pb-1 scrollbar-gutter-stable">
@@ -21,9 +21,9 @@
         </div>
     </nav>
 
-    <!-- 独立右上角悬浮菜单按钮（完全不在导航栏内） -->
+    <!-- 可自由拖动的悬浮菜单按钮（完全独立） -->
     <button id="menu-toggle" 
-            class="fixed top-6 right-6 z-[999] w-11 h-11 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-2xl flex items-center justify-center transition shadow-xl">
+            class="fixed top-6 right-6 z-[999] w-11 h-11 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-2xl flex items-center justify-center shadow-2xl cursor-move active:cursor-grabbing transition">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <circle cx="12" cy="12" r="10"></circle>
             <path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"></path>
