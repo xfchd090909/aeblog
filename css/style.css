@@ -10,13 +10,11 @@ h1, h2, h3 {
     font-family: Georgia, 'Times New Roman', serif;
 }
 
-/* ==================== 文章卡片 + 弹性蓝条覆盖动画 ==================== */
+/* ==================== 文章卡片（已删除蓝条动画） ==================== */
 #post-grid .card {
     background-color: #18181b;
     padding: 2rem;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
+    border-left: 5px solid #0068B5;
     transition: transform 0.2s ease;
 }
 
@@ -24,49 +22,31 @@ h1, h2, h3 {
     transform: translateY(-2px);
 }
 
-/* 蓝色指示条（默认左侧） */
-#post-grid .card::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 6px;                    /* 稍加宽，更明显 */
-    background: #0068B5;
-    z-index: 10;                   /* 关键：覆盖文字 */
-    transition: all 420ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+/* 浅色模式适配（保证文章可读） */
+.light #post-grid .card {
+    background-color: #f8fafc;
+    border-left-color: #0068B5;
 }
 
-/* 点击后蓝条滑动到右侧并覆盖文本 */
-#post-grid .card.animating::before {
-    left: 100%;
-    transform: translateX(-100%);
-}
-
-/* 文章内容样式 */
-#post-grid .card .title {
+.light #post-grid .card .title {
     color: #0068B5;
-    font-size: 1.35rem;
-    line-height: 1.4;
-    position: relative;
-    z-index: 1;
 }
 
-#post-grid .card .date {
+.light #post-grid .card .date {
     color: #0068B5;
-    font-size: 0.85rem;
-    margin-bottom: 0.75rem;
-    position: relative;
-    z-index: 1;
 }
 
-/* 阅读页样式（保持不变） */
+/* 阅读页文章内容适配 */
 .prose h1, .prose h2, .prose h3 {
     color: #0068B5;
 }
 
-#post-content {
-    line-height: 1.85;
+.light .prose {
+    color: #1f2937;
+}
+
+.light .prose h1, .light .prose h2, .light .prose h3 {
+    color: #0068B5;
 }
 
 #post-content pre {
@@ -74,4 +54,8 @@ h1, h2, h3 {
     padding: 1.75rem;
     border-radius: 10px;
     border-left: 4px solid #0068B5;
+}
+
+.light #post-content pre {
+    background-color: #f1f5f9;
 }
