@@ -10,41 +10,39 @@ h1, h2, h3 {
     font-family: Georgia, 'Times New Roman', serif;
 }
 
-/* ==================== 智能 compact 模式（已彻底防抖动） ==================== */
-#nav-container.compact {
-    gap: 1rem !important;
-}
-
-#nav-container.compact .nav-left {
-    font-size: 0.875rem;
-    gap: 1.25rem !important;
-}
-
-#nav-container.compact #beijing-time {
-    font-size: 0.75rem;
-    white-space: nowrap;
-}
-
-/* 滚动条稳定 + 美化（彻底解决长度条问题） */
-#nav-container {
-    scrollbar-gutter: stable;
-}
-#nav-container::-webkit-scrollbar {
-    height: 3px;
-}
-#nav-container::-webkit-scrollbar-thumb {
-    background: #0068B5;
-    border-radius: 10px;
-}
-
-/* 文章卡片样式（保持不变） */
+/* ==================== 文章卡片 + 弹性蓝条动画 ==================== */
 #post-grid .card {
     background-color: #18181b;
     padding: 2rem;
-    border-left: 5px solid #0068B5;
-    border-radius: 0;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s ease;
 }
 
+#post-grid .card:hover {
+    transform: translateY(-2px);
+}
+
+/* 蓝色指示条（默认在左侧） */
+#post-grid .card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background: #0068B5;
+    transition: all 420ms cubic-bezier(0.68, -0.55, 0.265, 1.55); /* 弹性弹簧效果 */
+}
+
+/* 点击后蓝条滑动到右侧 */
+#post-grid .card.animating::before {
+    left: 100%;
+    transform: translateX(-100%);
+}
+
+/* 文章内容样式 */
 #post-grid .card .title {
     color: #0068B5;
     font-size: 1.35rem;
@@ -57,6 +55,7 @@ h1, h2, h3 {
     margin-bottom: 0.75rem;
 }
 
+/* 阅读页样式（保持不变） */
 .prose h1, .prose h2, .prose h3 {
     color: #0068B5;
 }
