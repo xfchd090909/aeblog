@@ -1,9 +1,11 @@
-// ====================== 提示词库 + 北京时间 ======================
+// ====================== 全局变量（关键修复） ======================
 let greetings = {};
 let currentQuote = '';
 let lastPeriod = '';
 let lastUsedQuote = '';
+let hasDragged = false;   // ← 提升为全局变量
 
+// ====================== 提示词库 + 北京时间 ======================
 async function loadGreetings() {
     try {
         const res = await fetch('data/greetings.json');
@@ -66,7 +68,7 @@ function checkCompactMode() {
     }
 }
 
-// ====================== 可拖动按钮（最终稳定版） ======================
+// ====================== 可拖动按钮（最终闭环版） ======================
 function makeDraggable() {
     const btn = document.getElementById('menu-toggle');
     
@@ -75,9 +77,9 @@ function makeDraggable() {
     btn.style.transform = `translate(${posX}px, ${posY}px)`;
 
     let isDragging = false;
-    let hasDragged = false;
     let startX = 0, startY = 0;
     let currentX = posX, currentY = posY;
+    const threshold = 3;   // 3px 防抖
 
     // 鼠标
     btn.addEventListener('mousedown', e => {
@@ -90,7 +92,10 @@ function makeDraggable() {
 
     document.addEventListener('mousemove', e => {
         if (!isDragging) return;
-        hasDragged = true;
+        const deltaX = Math.abs(e.clientX - (startX + currentX));
+        const deltaY = Math.abs(e.clientY - (startY + currentY));
+        if (deltaX > threshold || deltaY > threshold) hasDragged = true;
+
         currentX = Math.max(10, Math.min(window.innerWidth - btn.offsetWidth - 10, e.clientX - startX));
         currentY = Math.max(10, Math.min(window.innerHeight - btn.offsetHeight - 10, e.clientY - startY));
         btn.style.transform = `translate(${currentX}px, ${currentY}px)`;
@@ -119,7 +124,10 @@ function makeDraggable() {
 
     document.addEventListener('touchmove', e => {
         if (!isDragging) return;
-        hasDragged = true;
+        const deltaX = Math.abs(e.touches[0].clientX - (startX + currentX));
+        const deltaY = Math.abs(e.touches[0].clientY - (startY + currentY));
+        if (deltaX > threshold || deltaY > threshold) hasDragged = true;
+
         currentX = Math.max(10, Math.min(window.innerWidth - btn.offsetWidth - 10, e.touches[0].clientX - startX));
         currentY = Math.max(10, Math.min(window.innerHeight - btn.offsetHeight - 10, e.touches[0].clientY - startY));
         btn.style.transform = `translate(${currentX}px, ${currentY}px)`;
@@ -191,10 +199,10 @@ window.onload = async function() {
     setTimeout(checkCompactMode, 150);
     setTimeout(checkCompactMode, 400);
 
-    const toggleBtn = document.getElementById('menu-toggle');
-    toggleBtn.addEventListener('click', function() {
-        // 只有没有拖拽过才弹出菜单
+    // 菜单点击（使用全局 hasDragged）
+    document.getElementById('menu-toggle').addEventListener('click', function() {
         if (!hasDragged) toggleMenu();
+        hasDragged = false;   // 重置
     });
 
     document.getElementById('menu-close').addEventListener('click', closeMenu);
