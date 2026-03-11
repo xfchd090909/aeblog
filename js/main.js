@@ -67,7 +67,7 @@ function checkCompactMode() {
     }
 }
 
-// ====================== 文章列表 ======================
+// ====================== 文章列表 + 弹性蓝条动画 ======================
 async function loadPosts() {
     const res = await fetch('data/posts.json');
     return await res.json();
@@ -75,13 +75,31 @@ async function loadPosts() {
 
 function renderPosts(posts) {
     const grid = document.getElementById('post-grid');
-    grid.innerHTML = posts.map(function(post) {
-        return '<a href="post.html?slug=' + post.slug + '" class="card block">' +
-               '<div class="date">' + post.date + '</div>' +
-               '<div class="title">' + post.title + '</div>' +
-               '<p class="text-zinc-400 text-[15px] leading-relaxed mt-4">' + post.excerpt + '</p>' +
-               '</a>';
-    }).join('');
+    grid.innerHTML = posts.map(post => `
+        <div class="card block" data-slug="${post.slug}">
+            <div class="date">${post.date}</div>
+            <div class="title">${post.title}</div>
+            <p class="text-zinc-400 text-[15px] leading-relaxed mt-4">${post.excerpt}</p>
+        </div>
+    `).join('');
+
+    // 为每个卡片绑定点击动画
+    document.querySelectorAll('#post-grid .card').forEach(card => {
+        card.addEventListener('click', function() {
+            const slug = this.getAttribute('data-slug');
+            
+            // 添加动画类
+            this.classList.add('animating');
+            
+            // 动画结束后跳转
+            this.addEventListener('transitionend', function handler(e) {
+                if (e.propertyName === 'transform' || e.propertyName === 'left') {
+                    window.location.href = `post.html?slug=${slug}`;
+                    this.removeEventListener('transitionend', handler);
+                }
+            });
+        });
+    });
 }
 
 // ====================== 初始化 ======================
