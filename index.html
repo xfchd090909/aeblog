@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XFCHD 的个人博客</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-zinc-950 text-zinc-200">
@@ -37,15 +36,6 @@
             <p class="text-zinc-400">X: @xfchd2025</p>
         </div>
     </section>
-
-    <!-- Cloudflare Turnstile 验证遮罩 -->
-    <div id="verify-overlay" class="fixed inset-0 bg-black/90 flex items-center justify-center z-[999] hidden">
-        <div class="bg-zinc-900 rounded-3xl p-10 max-w-md w-full mx-4 text-center">
-            <h3 class="text-2xl font-semibold mb-6 text-white">请完成人机验证</h3>
-            <div id="turnstile-container" class="flex justify-center mb-6"></div>
-            <p id="verify-error" class="text-red-400 text-sm min-h-[1.25rem]"></p>
-        </div>
-    </div>
 
     <script src="js/main.js"></script>
 </body>
