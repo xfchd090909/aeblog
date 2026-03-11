@@ -5,11 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XFCHD 的个人博客</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tailwind darkMode 配置（关键修复） -->
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-        }
+        tailwind.config = { darkMode: 'class' }
     </script>
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -29,7 +26,7 @@
 
     <!-- 可随意拖动的悬浮菜单按钮 -->
     <button id="menu-toggle" 
-            class="fixed z-[999] w-11 h-11 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-2xl flex items-center justify-center shadow-2xl cursor-move active:cursor-grabbing transition-all">
+            class="fixed z-[999] w-11 h-11 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-2xl flex items-center justify-center shadow-2xl cursor-move active:cursor-grabbing transition-all touch-action-none">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <circle cx="12" cy="12" r="10"></circle>
             <path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"></path>
