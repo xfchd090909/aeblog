@@ -5,25 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XFCHD 的个人博客</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind darkMode 配置（关键修复） -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="bg-zinc-950 text-zinc-200 dark:bg-zinc-950 dark:text-zinc-200 transition-colors">
-    <!-- 导航栏（纯导航） -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-zinc-900/80 backdrop-blur-md border-b border-zinc-800 dark:bg-zinc-900/80">
+<body class="bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-200 transition-colors">
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
         <div class="max-w-6xl mx-auto px-6 py-4">
             <div id="nav-container" class="flex items-center justify-between gap-8 transition-all duration-300 overflow-x-auto pb-1 scrollbar-gutter-stable">
                 <div class="flex gap-8 text-sm font-medium nav-left whitespace-nowrap">
-                    <a href="#posts" class="hover:text-[#0068B5] dark:text-zinc-200 light:text-zinc-800 transition">文章</a>
-                    <a href="#contact" class="hover:text-[#0068B5] dark:text-zinc-200 light:text-zinc-800 transition">联系</a>
+                    <a href="#posts" class="hover:text-[#0068B5] dark:text-zinc-200 transition">文章</a>
+                    <a href="#contact" class="hover:text-[#0068B5] dark:text-zinc-200 transition">联系</a>
                 </div>
-                <div id="beijing-time" class="text-sm font-medium text-zinc-200 dark:text-zinc-200 tabular-nums whitespace-nowrap"></div>
+                <div id="beijing-time" class="text-sm font-medium text-zinc-700 dark:text-zinc-200 tabular-nums whitespace-nowrap"></div>
             </div>
         </div>
     </nav>
 
-    <!-- 可随意拖动的悬浮菜单按钮（完全独立） -->
+    <!-- 可随意拖动的悬浮菜单按钮 -->
     <button id="menu-toggle" 
-            class="fixed z-[999] w-11 h-11 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-2xl flex items-center justify-center shadow-2xl cursor-move active:cursor-grabbing transition-all">
+            class="fixed z-[999] w-11 h-11 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-2xl flex items-center justify-center shadow-2xl cursor-move active:cursor-grabbing transition-all">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <circle cx="12" cy="12" r="10"></circle>
             <path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"></path>
@@ -39,22 +45,22 @@
     </section>
 
     <!-- 联系 -->
-    <section id="contact" class="py-24 bg-zinc-900 dark:bg-zinc-900 light:bg-zinc-100">
+    <section id="contact" class="py-24 bg-white dark:bg-zinc-900">
         <div class="max-w-md mx-auto text-center px-6">
             <h2 class="text-4xl font-serif tracking-normal mb-6">保持联系</h2>
-            <p class="text-zinc-400 dark:text-zinc-400 light:text-zinc-600">X: @xfchd2025</p>
+            <p class="text-zinc-600 dark:text-zinc-400">X: @xfchd2025</p>
         </div>
     </section>
 
     <!-- 独立右侧滑出菜单 -->
-    <div id="theme-menu" class="fixed top-0 right-0 h-full w-72 bg-zinc-900 border-l border-zinc-700 shadow-2xl translate-x-full transition-transform duration-300 z-[999] flex flex-col">
-        <div class="p-6 flex justify-between items-center border-b border-zinc-700">
+    <div id="theme-menu" class="fixed top-0 right-0 h-full w-72 bg-white dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-700 shadow-2xl translate-x-full transition-transform duration-300 z-[999] flex flex-col">
+        <div class="p-6 flex justify-between items-center border-b border-zinc-200 dark:border-zinc-700">
             <span class="text-lg font-medium">主题切换</span>
-            <button id="menu-close" class="text-3xl leading-none text-zinc-400 hover:text-white">×</button>
+            <button id="menu-close" class="text-3xl leading-none text-zinc-400 hover:text-black dark:hover:text-white">×</button>
         </div>
         
         <div class="flex-1 flex items-center justify-center gap-16 p-8">
-            <button onclick="switchTheme('light')" class="flex flex-col items-center gap-4 text-zinc-400 hover:text-white transition">
+            <button onclick="switchTheme('light')" class="flex flex-col items-center gap-4 text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white transition">
                 <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <circle cx="12" cy="12" r="5"></circle>
                     <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
@@ -62,7 +68,7 @@
                 <span class="text-sm">浅色</span>
             </button>
             
-            <button onclick="switchTheme('dark')" class="flex flex-col items-center gap-4 text-zinc-400 hover:text-white transition">
+            <button onclick="switchTheme('dark')" class="flex flex-col items-center gap-4 text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white transition">
                 <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                 </svg>
