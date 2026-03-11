@@ -6,13 +6,25 @@ body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-h1, h2, h3 {
-    font-family: Georgia, 'Times New Roman', serif;
+/* ==================== 深浅色模式 CSS 变量（彻底修复） ==================== */
+:root {
+    --bg: #18181b;
+    --text: #e4e4e7;
+    --card-bg: #27272a;
 }
 
-/* ==================== 文章卡片（已删除蓝条动画） ==================== */
+.light {
+    --bg: #f8fafc;
+    --text: #1f2937;
+    --card-bg: #ffffff;
+}
+
+/* 全局颜色应用 */
+body { background-color: var(--bg); color: var(--text); }
+
+/* 文章卡片 */
 #post-grid .card {
-    background-color: #18181b;
+    background-color: var(--card-bg);
     padding: 2rem;
     border-left: 5px solid #0068B5;
     transition: transform 0.2s ease;
@@ -22,40 +34,17 @@ h1, h2, h3 {
     transform: translateY(-2px);
 }
 
-/* 浅色模式适配（保证文章可读） */
-.light #post-grid .card {
-    background-color: #f8fafc;
-    border-left-color: #0068B5;
-}
+#post-grid .card .title { color: #0068B5; }
+#post-grid .card .date { color: #0068B5; }
 
-.light #post-grid .card .title {
-    color: #0068B5;
-}
+/* 阅读页适配 */
+.prose h1, .prose h2, .prose h3 { color: #0068B5; }
+.light .prose { color: var(--text); }
 
-.light #post-grid .card .date {
-    color: #0068B5;
+/* 菜单动画 */
+#theme-menu {
+    transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
 }
-
-/* 阅读页文章内容适配 */
-.prose h1, .prose h2, .prose h3 {
-    color: #0068B5;
-}
-
-.light .prose {
-    color: #1f2937;
-}
-
-.light .prose h1, .light .prose h2, .light .prose h3 {
-    color: #0068B5;
-}
-
-#post-content pre {
-    background-color: #18181b;
-    padding: 1.75rem;
-    border-radius: 10px;
-    border-left: 4px solid #0068B5;
-}
-
-.light #post-content pre {
-    background-color: #f1f5f9;
+#theme-menu.open {
+    transform: translateX(0);
 }
