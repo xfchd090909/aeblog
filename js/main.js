@@ -80,11 +80,9 @@ function closeMenu() {
 // ====================== 全局深浅色切换 ======================
 function switchTheme(mode) {
     if (mode === 'light') {
-        document.documentElement.classList.add('light');
         document.documentElement.classList.remove('dark');
         localStorage.theme = 'light';
     } else {
-        document.documentElement.classList.remove('light');
         document.documentElement.classList.add('dark');
         localStorage.theme = 'dark';
     }
@@ -135,7 +133,6 @@ window.onload = async function() {
 
     // 恢复保存的主题
     if (localStorage.theme === 'light') {
-        document.documentElement.classList.add('light');
         document.documentElement.classList.remove('dark');
     } else {
         document.documentElement.classList.add('dark');
