@@ -66,11 +66,10 @@ function checkCompactMode() {
     }
 }
 
-// ====================== 可随意拖动按钮（最终版：实时 + 边界 + 防刷新 + 防误触） ======================
+// ====================== 可拖动按钮（最终稳定版） ======================
 function makeDraggable() {
     const btn = document.getElementById('menu-toggle');
     
-    // 恢复位置
     let posX = parseFloat(localStorage.getItem('menuX')) || (window.innerWidth - 80);
     let posY = parseFloat(localStorage.getItem('menuY')) || 24;
     btn.style.transform = `translate(${posX}px, ${posY}px)`;
@@ -92,11 +91,8 @@ function makeDraggable() {
     document.addEventListener('mousemove', e => {
         if (!isDragging) return;
         hasDragged = true;
-        currentX = e.clientX - startX;
-        currentY = e.clientY - startY;
-        // 边界限制
-        currentX = Math.max(10, Math.min(window.innerWidth - btn.offsetWidth - 10, currentX));
-        currentY = Math.max(10, Math.min(window.innerHeight - btn.offsetHeight - 10, currentY));
+        currentX = Math.max(10, Math.min(window.innerWidth - btn.offsetWidth - 10, e.clientX - startX));
+        currentY = Math.max(10, Math.min(window.innerHeight - btn.offsetHeight - 10, e.clientY - startY));
         btn.style.transform = `translate(${currentX}px, ${currentY}px)`;
     });
 
@@ -111,7 +107,7 @@ function makeDraggable() {
         }
     });
 
-    // 移动端触摸
+    // 移动端
     btn.addEventListener('touchstart', e => {
         isDragging = true;
         hasDragged = false;
@@ -124,10 +120,8 @@ function makeDraggable() {
     document.addEventListener('touchmove', e => {
         if (!isDragging) return;
         hasDragged = true;
-        currentX = e.touches[0].clientX - startX;
-        currentY = e.touches[0].clientY - startY;
-        currentX = Math.max(10, Math.min(window.innerWidth - btn.offsetWidth - 10, currentX));
-        currentY = Math.max(10, Math.min(window.innerHeight - btn.offsetHeight - 10, currentY));
+        currentX = Math.max(10, Math.min(window.innerWidth - btn.offsetWidth - 10, e.touches[0].clientX - startX));
+        currentY = Math.max(10, Math.min(window.innerHeight - btn.offsetHeight - 10, e.touches[0].clientY - startY));
         btn.style.transform = `translate(${currentX}px, ${currentY}px)`;
         e.preventDefault();
     }, { passive: false });
@@ -199,7 +193,8 @@ window.onload = async function() {
 
     const toggleBtn = document.getElementById('menu-toggle');
     toggleBtn.addEventListener('click', function() {
-        if (!this.dataset.dragged) toggleMenu();
+        // 只有没有拖拽过才弹出菜单
+        if (!hasDragged) toggleMenu();
     });
 
     document.getElementById('menu-close').addEventListener('click', closeMenu);
