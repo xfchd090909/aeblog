@@ -66,7 +66,7 @@ function checkCompactMode() {
     }
 }
 
-// ====================== 可随意拖动按钮（稳定版） ======================
+// ====================== 可随意拖动按钮（最终稳定版） ======================
 function makeDraggable() {
     const btn = document.getElementById('menu-toggle');
     let posX = localStorage.getItem('menuX') || '24';
@@ -78,13 +78,13 @@ function makeDraggable() {
     let isDragging = false;
     let startX, startY;
 
-    btn.addEventListener('mousedown', (e) => {
+    btn.addEventListener('mousedown', e => {
         isDragging = true;
         startX = e.clientX - btn.offsetLeft;
         startY = e.clientY - btn.offsetTop;
     });
 
-    document.addEventListener('mousemove', (e) => {
+    document.addEventListener('mousemove', e => {
         if (!isDragging) return;
         let newX = e.clientX - startX;
         let newY = e.clientY - startY;
@@ -112,7 +112,7 @@ function closeMenu() {
     menu.classList.remove('open');
 }
 
-// ====================== 全局深浅色切换（彻底修复） ======================
+// ====================== 全局深浅色切换（最终修复） ======================
 function switchTheme(mode) {
     if (mode === 'light') {
         document.documentElement.classList.remove('dark');
@@ -156,19 +156,14 @@ window.onload = async function() {
     setTimeout(checkCompactMode, 150);
     setTimeout(checkCompactMode, 400);
 
-    // 菜单事件
     document.getElementById('menu-toggle').addEventListener('click', toggleMenu);
     document.getElementById('menu-close').addEventListener('click', closeMenu);
 
-    // 点击菜单外关闭
     document.addEventListener('click', function(e) {
         const menu = document.getElementById('theme-menu');
-        if (!e.target.closest('#theme-menu') && !e.target.closest('#menu-toggle')) {
-            menu.classList.remove('open');
-        }
+        if (!e.target.closest('#theme-menu') && !e.target.closest('#menu-toggle')) menu.classList.remove('open');
     });
 
-    // 恢复主题
     if (localStorage.theme === 'light') {
         document.documentElement.classList.add('light');
         document.documentElement.classList.remove('dark');
@@ -177,6 +172,5 @@ window.onload = async function() {
         document.documentElement.classList.remove('light');
     }
 
-    // 启用拖拽
     makeDraggable();
 };
