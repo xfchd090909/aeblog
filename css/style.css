@@ -6,41 +6,47 @@ body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* ==================== 全局深浅色切换 ==================== */
-body { background-color: #18181b; color: #e4e4e7; }
-.light body { background-color: #f8fafc; color: #1f2937; }
+h1, h2, h3 {
+    font-family: Georgia, 'Times New Roman', serif;
+}
 
-/* 导航栏文字可读性修复 */
-nav a { color: #e4e4e7; }
-.light nav a { color: #1f2937; }
-
-/* 文章列表卡片全局修复 */
+/* 文章卡片 */
 #post-grid .card {
-    background-color: #27272a;
+    background-color: #ffffff;
     padding: 2rem;
     border-left: 5px solid #0068B5;
+    transition: transform 0.2s ease;
 }
 
-.light #post-grid .card {
-    background-color: #ffffff;
-    border-left-color: #0068B5;
+.dark #post-grid .card {
+    background-color: #27272a;
 }
 
-#post-grid .card:hover { transform: translateY(-2px); }
+#post-grid .card:hover {
+    transform: translateY(-2px);
+}
+
 #post-grid .card .title,
-#post-grid .card .date { color: #0068B5; }
-
-/* 联系区 */
-#contact { background-color: #18181b; }
-.light #contact { background-color: #f8fafc; }
+#post-grid .card .date {
+    color: #0068B5;
+}
 
 /* 阅读页 */
-.prose h1, .prose h2, .prose h3 { color: #0068B5; }
-#post-content pre { background-color: #27272a; }
-.light #post-content pre { background-color: #f1f5f9; }
+#post-content pre {
+    background-color: #f1f5f9;
+    padding: 1.75rem;
+    border-radius: 10px;
+    border-left: 4px solid #0068B5;
+}
+
+.dark #post-content pre {
+    background-color: #27272a;
+}
 
 /* 菜单动画 */
 #theme-menu {
     transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
 }
-#theme-menu.open { transform: translateX(0); }
+#theme-menu.open {
+    transform: translateX(0);
+}
