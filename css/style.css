@@ -7,38 +7,58 @@ body {
 }
 
 /* ==================== 全局深浅色切换（彻底全局生效） ==================== */
-#post-grid .card {
+body {
     background-color: #18181b;
+    color: #e4e4e7;
+}
+
+.dark body {
+    background-color: #18181b;
+    color: #e4e4e7;
+}
+
+.light body {
+    background-color: #f8fafc;
+    color: #1f2937;
+}
+
+/* 文章卡片全局适配 */
+#post-grid .card {
+    background-color: #27272a;
     padding: 2rem;
     border-left: 5px solid #0068B5;
 }
 
-.dark #post-grid .card {
-    background-color: #27272a;
+.light #post-grid .card {
+    background-color: #ffffff;
 }
 
 #post-grid .card:hover {
     transform: translateY(-2px);
 }
 
-#post-grid .card .title { color: #0068B5; }
-#post-grid .card .date { color: #0068B5; }
+#post-grid .card .title,
+#post-grid .card .date {
+    color: #0068B5;
+}
 
 /* 阅读页全局适配 */
-.prose h1, .prose h2, .prose h3 { color: #0068B5; }
+.prose h1, .prose h2, .prose h3 {
+    color: #0068B5;
+}
 
 #post-content pre {
-    background-color: #18181b;
+    background-color: #27272a;
     padding: 1.75rem;
     border-radius: 10px;
     border-left: 4px solid #0068B5;
 }
 
-.dark #post-content pre {
-    background-color: #27272a;
+.light #post-content pre {
+    background-color: #f1f5f9;
 }
 
-/* 独立菜单动画 */
+/* 菜单动画 */
 #theme-menu {
     transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
 }
