@@ -66,19 +66,23 @@ function checkCompactMode() {
     }
 }
 
-// ====================== 可拖动按钮（已防误触点击） ======================
+// ====================== 可随意拖动按钮（最终修复版） ======================
 function makeDraggable() {
     const btn = document.getElementById('menu-toggle');
-    let posX = localStorage.getItem('menuX') || '24';
-    let posY = localStorage.getItem('menuY') || '24';
+    
+    // 恢复位置（只存数字，避免 "100pxpx" bug）
+    let posX = parseFloat(localStorage.getItem('menuX')) || (window.innerWidth - 80);
+    let posY = parseFloat(localStorage.getItem('menuY')) || 24;
     btn.style.left = posX + 'px';
     btn.style.top = posY + 'px';
     btn.style.right = 'auto';
 
     let isDragging = false;
-    let hasDragged = false;   // 关键标志位
+    let hasDragged = false;     // 防误触关键标志
     let startX, startY;
+    let threshold = 8;          // 移动超过8px才算拖拽
 
+    // ==================== 鼠标事件 ====================
     btn.addEventListener('mousedown', e => {
         isDragging = true;
         hasDragged = false;
@@ -88,19 +92,56 @@ function makeDraggable() {
 
     document.addEventListener('mousemove', e => {
         if (!isDragging) return;
-        hasDragged = true;
         let newX = e.clientX - startX;
         let newY = e.clientY - startY;
+
+        // 边界限制（防止拖出屏幕）
+        newX = Math.max(10, Math.min(window.innerWidth - btn.offsetWidth - 10, newX));
+        newY = Math.max(10, Math.min(window.innerHeight - btn.offsetHeight - 10, newY));
+
         btn.style.left = newX + 'px';
         btn.style.top = newY + 'px';
+        if (Math.abs(e.clientX - (startX + btn.offsetLeft)) > threshold) hasDragged = true;
     });
 
     document.addEventListener('mouseup', () => {
         if (isDragging) {
             isDragging = false;
             if (hasDragged) {
-                localStorage.setItem('menuX', btn.style.left);
-                localStorage.setItem('menuY', btn.style.top);
+                localStorage.setItem('menuX', btn.offsetLeft);
+                localStorage.setItem('menuY', btn.offsetTop);
+            }
+        }
+    });
+
+    // ==================== 移动端触摸事件 ====================
+    btn.addEventListener('touchstart', e => {
+        isDragging = true;
+        hasDragged = false;
+        startX = e.touches[0].clientX - btn.offsetLeft;
+        startY = e.touches[0].clientY - btn.offsetTop;
+    });
+
+    document.addEventListener('touchmove', e => {
+        if (!isDragging) return;
+        let newX = e.touches[0].clientX - startX;
+        let newY = e.touches[0].clientY - startY;
+
+        // 边界限制
+        newX = Math.max(10, Math.min(window.innerWidth - btn.offsetWidth - 10, newX));
+        newY = Math.max(10, Math.min(window.innerHeight - btn.offsetHeight - 10, newY));
+
+        btn.style.left = newX + 'px';
+        btn.style.top = newY + 'px';
+        if (Math.abs(e.touches[0].clientX - (startX + btn.offsetLeft)) > threshold) hasDragged = true;
+    });
+
+    document.addEventListener('touchend', () => {
+        if (isDragging) {
+            isDragging = false;
+            if (hasDragged) {
+                localStorage.setItem('menuX', btn.offsetLeft);
+                localStorage.setItem('menuY', btn.offsetTop);
             }
         }
     });
@@ -159,10 +200,12 @@ window.onload = async function() {
     setTimeout(checkCompactMode, 150);
     setTimeout(checkCompactMode, 400);
 
-    document.getElementById('menu-toggle').addEventListener('click', function() {
-        // 如果刚刚拖拽过，就不触发菜单
+    // 菜单点击（防拖拽误触）
+    const toggleBtn = document.getElementById('menu-toggle');
+    toggleBtn.addEventListener('click', function(e) {
         if (!this.dataset.dragged) toggleMenu();
     });
+
     document.getElementById('menu-close').addEventListener('click', closeMenu);
 
     document.addEventListener('click', function(e) {
@@ -172,11 +215,13 @@ window.onload = async function() {
         }
     });
 
+    // 恢复主题
     if (localStorage.theme === 'light') {
         document.documentElement.classList.remove('dark');
     } else {
         document.documentElement.classList.add('dark');
     }
 
+    // 启用拖拽
     makeDraggable();
 };
