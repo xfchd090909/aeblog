@@ -1,22 +1,44 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>aeBlog</title>
+    <title>XFCHD 的个人博客</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="bg-zinc-950 text-zinc-200">
+<body class="bg-zinc-950 text-zinc-200 dark:bg-zinc-950 dark:text-zinc-200">
     <!-- 导航栏 -->
     <nav class="fixed top-0 left-0 right-0 z-50 bg-zinc-900/80 backdrop-blur-md border-b border-zinc-800">
         <div class="max-w-6xl mx-auto px-6 py-4">
             <div id="nav-container" class="flex items-center justify-between gap-8 transition-all duration-300 overflow-x-auto pb-1 scrollbar-gutter-stable">
+                <!-- 左侧导航 -->
                 <div class="flex gap-8 text-sm font-medium nav-left whitespace-nowrap">
                     <a href="#posts" class="hover:text-[#0068B5] transition">文章</a>
                     <a href="#contact" class="hover:text-[#0068B5] transition">联系</a>
                 </div>
-                <div id="beijing-time" class="text-sm font-medium text-zinc-200 tabular-nums text-right whitespace-nowrap transition-all duration-300 min-w-0 flex-1"></div>
+                
+                <!-- 右侧：北京时间 + 主题菜单 -->
+                <div class="flex items-center gap-6">
+                    <div id="beijing-time" class="text-sm font-medium text-zinc-200 tabular-nums whitespace-nowrap"></div>
+                    
+                    <!-- 主题切换菜单按钮 -->
+                    <div class="relative">
+                        <button id="theme-toggle" 
+                                class="w-9 h-9 flex items-center justify-center text-2xl hover:bg-zinc-800 rounded-xl transition">
+                            <!-- JS 动态切换图标 -->
+                        </button>
+                        
+                        <!-- 下拉菜单 -->
+                        <div id="theme-menu" 
+                             class="hidden absolute right-0 mt-2 w-20 bg-zinc-900 border border-zinc-700 rounded-2xl shadow-2xl py-2 z-50">
+                            <button onclick="switchTheme('light')" 
+                                    class="w-full py-2 flex justify-center text-2xl hover:bg-zinc-800 transition">☀️</button>
+                            <button onclick="switchTheme('dark')" 
+                                    class="w-full py-2 flex justify-center text-2xl hover:bg-zinc-800 transition">🌙</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -24,7 +46,7 @@
     <!-- 文章列表 -->
     <section id="posts" class="pt-24 pb-24">
         <div class="max-w-5xl mx-auto px-6">
-            <h2 class="text-4xl font-serif tracking-normal mb-12 text-center">多读书有助提升阅读理解能力</h2>
+            <h2 class="text-4xl font-serif tracking-normal mb-12 text-center">最近写的几篇</h2>
             <div id="post-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
         </div>
     </section>
