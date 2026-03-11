@@ -16,45 +16,79 @@ function hasValidToken() {
     return getCookie('cf_verified') === 'true';
 }
 
-// ====================== Turnstile 验证 ======================
-let turnstileSiteKey = '0x4AAAAAABuV_6cPPwlj1VPo';
+// ====================== 动态获取 sitekey（来自 Netlify 环境变量） ======================
+let turnstileSiteKey = null;
 
+async function loadTurnstileConfig() {
+    try {
+        const res = await fetch('/.netlify/functions/config');
+        const data = await res.json();
+        turnstileSiteKey = data.siteKey;
+        return true;
+    } catch (e) {
+        console.error('无法加载 Turnstile 配置');
+        return false;
+    }
+}
+
+// ====================== Turnstile 验证 ======================
 window.onTurnstileSuccess = function(token) {
     document.getElementById('verify-error').classList.add('hidden');
-    setCookie('cf_verified', 'true', 1);   // 1小时有效
-    document.getElementById('verify-overlay').classList.add('hidden');
+    verifyWithServer(token);
 };
 
+async function verifyWithServer(token) {
+    try {
+        const res = await fetch('/.netlify/functions/verify-turnstile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token })
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+            setCookie('cf_verified', 'true', 1);
+            document.getElementById('verify-overlay').classList.add('hidden');
+        } else {
+            document.getElementById('verify-error').textContent = '验证失败，请重试';
+            document.getElementById('verify-error').classList.remove('hidden');
+        }
+    } catch (e) {
+        document.getElementById('verify-error').textContent = '网络错误，请重试';
+        document.getElementById('verify-error').classList.remove('hidden');
+    }
+}
+
 function renderTurnstile() {
+    if (!turnstileSiteKey) return;
     const container = document.getElementById('turnstile-container');
     container.innerHTML = `
         <div class="cf-turnstile" 
              data-sitekey="${turnstileSiteKey}"
              data-theme="dark"
-             data-callback="onTurnstileSuccess">
-        </div>`;
+             data-callback="onTurnstileSuccess"
+             data-retry="auto"></div>`;
 }
 
 // ====================== 检查验证 ======================
-function checkVerification() {
+async function checkVerification() {
     if (hasValidToken()) return;
 
     const overlay = document.getElementById('verify-overlay');
     overlay.classList.remove('hidden');
-    renderTurnstile();
+
+    const loaded = await loadTurnstileConfig();
+    if (loaded) renderTurnstile();
 }
 
-// ====================== 提示词库 + 北京时间（保持原样） ======================
+// ====================== 北京时间 + 趣味文字 + compact 模式（保持不变） ======================
 let greetings = {};
 let currentQuote = '';
 let lastPeriod = '';
 let lastUsedQuote = '';
 
 async function loadGreetings() {
-    try {
-        const res = await fetch('data/greetings.json');
-        greetings = await res.json();
-    } catch (e) {}
+    try { const res = await fetch('data/greetings.json'); greetings = await res.json(); } catch (e) {}
 }
 
 function getPeriodKey(hour) {
@@ -77,8 +111,7 @@ function updateBeijingTime() {
 
         if (periodKey !== lastPeriod || !currentQuote) {
             if (greetings[periodKey] && greetings[periodKey].length > 0) {
-                let newQuote;
-                let attempts = 0;
+                let newQuote; let attempts = 0;
                 do {
                     const randomIndex = Math.floor(Math.random() * greetings[periodKey].length);
                     newQuote = greetings[periodKey][randomIndex];
@@ -99,7 +132,6 @@ function updateBeijingTime() {
     } catch (e) {}
 }
 
-// ====================== 智能 compact 模式（保持原样） ======================
 function checkCompactMode() {
     const container = document.getElementById('nav-container');
     const leftNav = document.querySelector('.nav-left');
@@ -113,7 +145,7 @@ function checkCompactMode() {
     }
 }
 
-// ====================== 文章列表（保持原样） ======================
+// ====================== 文章列表 ======================
 async function loadPosts() {
     const res = await fetch('data/posts.json');
     return await res.json();
@@ -143,6 +175,6 @@ window.onload = async function() {
     setTimeout(checkCompactMode, 150);
     setTimeout(checkCompactMode, 400);
 
-    // 启动 Cloudflare Turnstile 验证
+    // 启动 Cloudflare Turnstile（动态从 Netlify 获取密钥）
     checkVerification();
 };
