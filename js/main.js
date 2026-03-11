@@ -67,7 +67,34 @@ function checkCompactMode() {
     }
 }
 
-// ====================== 文章列表 + 弹性蓝条动画 ======================
+// ====================== 主题切换（深色/浅色） ======================
+function switchTheme(mode) {
+    if (mode === 'light') {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
+        localStorage.theme = 'light';
+    } else {
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
+        localStorage.theme = 'dark';
+    }
+    updateThemeIcon();
+    document.getElementById('theme-menu').classList.add('hidden');
+}
+
+function updateThemeIcon() {
+    const btn = document.getElementById('theme-toggle');
+    const isDark = document.documentElement.classList.contains('dark');
+    btn.textContent = isDark ? '🌙' : '☀️';
+}
+
+// ====================== 主题菜单展开/收起 ======================
+function toggleThemeMenu() {
+    const menu = document.getElementById('theme-menu');
+    menu.classList.toggle('hidden');
+}
+
+// ====================== 文章列表（已删除蓝条动画） ======================
 async function loadPosts() {
     const res = await fetch('data/posts.json');
     return await res.json();
@@ -76,30 +103,12 @@ async function loadPosts() {
 function renderPosts(posts) {
     const grid = document.getElementById('post-grid');
     grid.innerHTML = posts.map(post => `
-        <div class="card block" data-slug="${post.slug}">
+        <a href="post.html?slug=${post.slug}" class="card block">
             <div class="date">${post.date}</div>
             <div class="title">${post.title}</div>
             <p class="text-zinc-400 text-[15px] leading-relaxed mt-4">${post.excerpt}</p>
-        </div>
+        </a>
     `).join('');
-
-    // 为每个卡片绑定点击动画
-    document.querySelectorAll('#post-grid .card').forEach(card => {
-        card.addEventListener('click', function() {
-            const slug = this.getAttribute('data-slug');
-            
-            // 添加动画类
-            this.classList.add('animating');
-            
-            // 动画结束后跳转
-            this.addEventListener('transitionend', function handler(e) {
-                if (e.propertyName === 'transform' || e.propertyName === 'left') {
-                    window.location.href = `post.html?slug=${slug}`;
-                    this.removeEventListener('transitionend', handler);
-                }
-            });
-        });
-    });
 }
 
 // ====================== 初始化 ======================
@@ -114,4 +123,25 @@ window.onload = async function() {
     window.addEventListener('resize', () => requestAnimationFrame(checkCompactMode));
     setTimeout(checkCompactMode, 150);
     setTimeout(checkCompactMode, 400);
+
+    // 主题菜单事件
+    document.getElementById('theme-toggle').addEventListener('click', toggleThemeMenu);
+    
+    // 点击页面其他地方收起菜单
+    document.addEventListener('click', function(e) {
+        const menu = document.getElementById('theme-menu');
+        const btn = document.getElementById('theme-toggle');
+        if (!btn.contains(e.target)) {
+            menu.classList.add('hidden');
+        }
+    });
+
+    // 加载保存的主题
+    if (localStorage.theme === 'light') {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
+    } else {
+        document.documentElement.classList.add('dark');
+    }
+    updateThemeIcon();
 };
