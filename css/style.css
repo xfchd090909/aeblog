@@ -15,7 +15,6 @@ h1, h2, h3 {
     background-color: #ffffff;
     padding: 2rem;
     border-left: 5px solid #0068B5;
-    transition: transform 0.2s ease;
 }
 
 .dark #post-grid .card {
@@ -34,9 +33,6 @@ h1, h2, h3 {
 /* 阅读页 */
 #post-content pre {
     background-color: #f1f5f9;
-    padding: 1.75rem;
-    border-radius: 10px;
-    border-left: 4px solid #0068B5;
 }
 
 .dark #post-content pre {
@@ -49,4 +45,9 @@ h1, h2, h3 {
 }
 #theme-menu.open {
     transform: translateX(0);
+}
+
+/* 拖拽按钮触摸优化 */
+#menu-toggle {
+    touch-action: none;
 }
