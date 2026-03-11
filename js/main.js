@@ -3,7 +3,7 @@ let greetings = {};
 let currentQuote = '';
 let lastPeriod = '';
 let lastUsedQuote = '';
-let hasDragged = false;   // ← 提升为全局变量
+let hasDragged = false;   // ← 全局变量，确保点击事件能读取
 
 // ====================== 提示词库 + 北京时间 ======================
 async function loadGreetings() {
@@ -68,7 +68,7 @@ function checkCompactMode() {
     }
 }
 
-// ====================== 可拖动按钮（最终闭环版） ======================
+// ====================== 可拖动按钮（最终版：点击集成到拖拽结束） ======================
 function makeDraggable() {
     const btn = document.getElementById('menu-toggle');
     
@@ -79,7 +79,7 @@ function makeDraggable() {
     let isDragging = false;
     let startX = 0, startY = 0;
     let currentX = posX, currentY = posY;
-    const threshold = 3;   // 3px 防抖
+    const threshold = 8;   // 提高到8px，防止轻点误判
 
     // 鼠标
     btn.addEventListener('mousedown', e => {
@@ -92,9 +92,8 @@ function makeDraggable() {
 
     document.addEventListener('mousemove', e => {
         if (!isDragging) return;
-        const deltaX = Math.abs(e.clientX - (startX + currentX));
-        const deltaY = Math.abs(e.clientY - (startY + currentY));
-        if (deltaX > threshold || deltaY > threshold) hasDragged = true;
+        const delta = Math.max(Math.abs(e.clientX - (startX + currentX)), Math.abs(e.clientY - (startY + currentY)));
+        if (delta > threshold) hasDragged = true;
 
         currentX = Math.max(10, Math.min(window.innerWidth - btn.offsetWidth - 10, e.clientX - startX));
         currentY = Math.max(10, Math.min(window.innerHeight - btn.offsetHeight - 10, e.clientY - startY));
@@ -109,6 +108,8 @@ function makeDraggable() {
                 localStorage.setItem('menuX', currentX);
                 localStorage.setItem('menuY', currentY);
             }
+            // 拖拽结束时重置标志
+            hasDragged = false;
         }
     });
 
@@ -124,9 +125,8 @@ function makeDraggable() {
 
     document.addEventListener('touchmove', e => {
         if (!isDragging) return;
-        const deltaX = Math.abs(e.touches[0].clientX - (startX + currentX));
-        const deltaY = Math.abs(e.touches[0].clientY - (startY + currentY));
-        if (deltaX > threshold || deltaY > threshold) hasDragged = true;
+        const delta = Math.max(Math.abs(e.touches[0].clientX - (startX + currentX)), Math.abs(e.touches[0].clientY - (startY + currentY)));
+        if (delta > threshold) hasDragged = true;
 
         currentX = Math.max(10, Math.min(window.innerWidth - btn.offsetWidth - 10, e.touches[0].clientX - startX));
         currentY = Math.max(10, Math.min(window.innerHeight - btn.offsetHeight - 10, e.touches[0].clientY - startY));
@@ -142,6 +142,8 @@ function makeDraggable() {
                 localStorage.setItem('menuX', currentX);
                 localStorage.setItem('menuY', currentY);
             }
+            // 拖拽结束时重置标志
+            hasDragged = false;
         }
     });
 }
@@ -199,10 +201,10 @@ window.onload = async function() {
     setTimeout(checkCompactMode, 150);
     setTimeout(checkCompactMode, 400);
 
-    // 菜单点击（使用全局 hasDragged）
+    // 菜单点击逻辑（使用全局 hasDragged）
     document.getElementById('menu-toggle').addEventListener('click', function() {
         if (!hasDragged) toggleMenu();
-        hasDragged = false;   // 重置
+        hasDragged = false;   // 重置标志
     });
 
     document.getElementById('menu-close').addEventListener('click', closeMenu);
