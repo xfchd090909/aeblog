@@ -66,6 +66,34 @@ function checkCompactMode() {
     }
 }
 
+// ====================== 可自由拖动按钮 ======================
+function makeDraggable() {
+    const btn = document.getElementById('menu-toggle');
+    let isDragging = false;
+    let currentX, currentY, initialX, initialY;
+
+    btn.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        initialX = e.clientX - currentX;
+        initialY = e.clientY - currentY;
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+            e.preventDefault();
+            currentX = e.clientX - initialX;
+            currentY = e.clientY - initialY;
+            btn.style.left = currentX + 'px';
+            btn.style.top = currentY + 'px';
+            btn.style.right = 'auto';
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        isDragging = false;
+    });
+}
+
 // ====================== 独立菜单控制 ======================
 function toggleMenu() {
     const menu = document.getElementById('theme-menu');
@@ -77,13 +105,15 @@ function closeMenu() {
     menu.classList.remove('open');
 }
 
-// ====================== 全局深浅色切换 ======================
+// ====================== 全局深浅色切换（彻底修复） ======================
 function switchTheme(mode) {
     if (mode === 'light') {
         document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
         localStorage.theme = 'light';
     } else {
         document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
         localStorage.theme = 'dark';
     }
     closeMenu();
@@ -133,8 +163,13 @@ window.onload = async function() {
 
     // 恢复保存的主题
     if (localStorage.theme === 'light') {
+        document.documentElement.classList.add('light');
         document.documentElement.classList.remove('dark');
     } else {
         document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
     }
+
+    // 启用拖动功能
+    makeDraggable();
 };
