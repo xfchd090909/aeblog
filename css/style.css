@@ -6,30 +6,15 @@ body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* ==================== 全局深浅色切换（真正生效） ==================== */
-:root {
-    --bg-color: #18181b;
-    --text-color: #e4e4e7;
-    --card-bg: #27272a;
-}
-
-.light {
-    --bg-color: #f8fafc;
-    --text-color: #1f2937;
-    --card-bg: #ffffff;
-}
-
-body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-}
-
-/* 文章卡片全局适配 */
+/* ==================== 全局深浅色切换（彻底全局生效） ==================== */
 #post-grid .card {
-    background-color: var(--card-bg);
+    background-color: #18181b;
     padding: 2rem;
     border-left: 5px solid #0068B5;
-    transition: transform 0.2s ease;
+}
+
+.dark #post-grid .card {
+    background-color: #27272a;
 }
 
 #post-grid .card:hover {
@@ -39,9 +24,8 @@ body {
 #post-grid .card .title { color: #0068B5; }
 #post-grid .card .date { color: #0068B5; }
 
-/* 阅读页文章内容全局适配 */
+/* 阅读页全局适配 */
 .prose h1, .prose h2, .prose h3 { color: #0068B5; }
-.light .prose { color: var(--text-color); }
 
 #post-content pre {
     background-color: #18181b;
@@ -50,8 +34,8 @@ body {
     border-left: 4px solid #0068B5;
 }
 
-.light #post-content pre {
-    background-color: #f1f5f9;
+.dark #post-content pre {
+    background-color: #27272a;
 }
 
 /* 独立菜单动画 */
