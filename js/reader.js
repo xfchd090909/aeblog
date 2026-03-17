@@ -17,12 +17,12 @@ async function loadPostData() {
 
     // 拦截逻辑：如果文章是 NSFW 但开关没开
     if (postMeta.nsfw && localStorage.getItem('nsfw_enabled') !== 'true') {
-        document.getElementById('page-title').textContent = '访问受限';
-        document.getElementById('post-title').textContent = '⚠️ 内容受限';
+        document.getElementById('page-title').textContent = '非法访问';
+        document.getElementById('post-title').textContent = '⚠️ 非法访问';
         document.getElementById('post-content').innerHTML = `
             <div class="p-8 bg-red-500/5 border border-red-500/20 rounded-2xl text-center">
-                <p class="text-red-500 font-medium">此内容包含 NSFW 信息，已根据系统安全策略拦截。</p>
-                <p class="text-zinc-500 text-sm mt-2">请确认您的地理位置是否受限，或在首页设置中开启访问权限。</p>
+                <p class="text-red-500 font-medium">你正在使用非常规方式访问NSFW文章，当前操作不符合网站规范</p>
+                <p class="text-zinc-500 text-sm mt-2">请在首页开启NSFW设置再次进行访问</p>
             </div>`;
         return;
     }
