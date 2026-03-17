@@ -7,10 +7,10 @@
     "nsfw": false
   },
   {
-    "slug": "restricted-content",
-    "title": "限制级内容测试",
+    "slug": "posts2",
+    "title": "NSFW功能计划",
     "date": "2025-03-17",
-    "excerpt": "这是一个 NSFW 测试示例",
-    "nsfw": true
+    "excerpt": "已完成并投入使用",
+    "nsfw": false
   }
 ]
