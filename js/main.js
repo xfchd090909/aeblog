@@ -3,7 +3,7 @@ let greetings = {};
 let currentQuote = '';
 let lastPeriod = '';
 let lastUsedQuote = '';
-let hasDragged = false;   // 全局变量
+let hasDragged = false;
 
 // ====================== 提示词库 + 北京时间 ======================
 async function loadGreetings() {
@@ -33,124 +33,19 @@ function updateBeijingTime() {
 
         if (periodKey !== lastPeriod || !currentQuote) {
             if (greetings[periodKey] && greetings[periodKey].length > 0) {
-                let newQuote;
-                let attempts = 0;
-                do {
-                    const randomIndex = Math.floor(Math.random() * greetings[periodKey].length);
-                    newQuote = greetings[periodKey][randomIndex];
-                    attempts++;
-                } while (newQuote === lastUsedQuote && attempts < 10);
-                currentQuote = newQuote;
-                lastUsedQuote = newQuote;
+                let availableQuotes = greetings[periodKey].filter(q => q !== lastUsedQuote);
+                if (availableQuotes.length === 0) availableQuotes = greetings[periodKey];
+                const randomIndex = Math.floor(Math.random() * availableQuotes.length);
+                currentQuote = availableQuotes[randomIndex];
+                lastUsedQuote = currentQuote;
+                lastPeriod = periodKey;
             }
-            lastPeriod = periodKey;
         }
-
-        if (currentQuote) {
-            timeEl.textContent = currentQuote + '：' + datePart + ' ' + timePart;
-        } else {
-            timeEl.textContent = datePart + ' ' + timePart;
-        }
+        timeEl.textContent = `${timeStr} · ${currentQuote || '载入中...'}`;
     } catch (e) {}
 }
 
-// ====================== 智能 compact 模式 ======================
-function checkCompactMode() {
-    const container = document.getElementById('nav-container');
-    const leftNav = document.querySelector('.nav-left');
-    const timeEl = document.getElementById('beijing-time');
-    if (!leftNav || !timeEl) return;
-    const gap = timeEl.getBoundingClientRect().left - leftNav.getBoundingClientRect().right;
-    if (gap < 35 || timeEl.scrollWidth > timeEl.clientWidth + 8) {
-        container.classList.add('compact');
-    } else {
-        container.classList.remove('compact');
-    }
-}
-
-// ====================== 可拖动按钮（最终版：点击集成到拖拽结束） ======================
-function makeDraggable() {
-    const btn = document.getElementById('menu-toggle');
-    
-    let posX = parseFloat(localStorage.getItem('menuX')) || (window.innerWidth - 80);
-    let posY = parseFloat(localStorage.getItem('menuY')) || 24;
-    btn.style.transform = `translate(${posX}px, ${posY}px)`;
-
-    let isDragging = false;
-    let startX = 0, startY = 0;
-    let currentX = posX, currentY = posY;
-    const threshold = 8;
-
-    // 鼠标
-    btn.addEventListener('mousedown', e => {
-        isDragging = true;
-        hasDragged = false;
-        startX = e.clientX - currentX;
-        startY = e.clientY - currentY;
-        btn.style.transition = 'none';
-    });
-
-    document.addEventListener('mousemove', e => {
-        if (!isDragging) return;
-        if (Math.abs(e.clientX - (startX + currentX)) > threshold || Math.abs(e.clientY - (startY + currentY)) > threshold) {
-            hasDragged = true;
-        }
-        currentX = Math.max(10, Math.min(window.innerWidth - btn.offsetWidth - 10, e.clientX - startX));
-        currentY = Math.max(10, Math.min(window.innerHeight - btn.offsetHeight - 10, e.clientY - startY));
-        btn.style.transform = `translate(${currentX}px, ${currentY}px)`;
-    });
-
-    document.addEventListener('mouseup', () => {
-        if (isDragging) {
-            isDragging = false;
-            btn.style.transition = 'transform 0.2s ease';
-            if (!hasDragged) {
-                toggleMenu();   // 纯点击 → 展开菜单
-            } else if (hasDragged) {
-                localStorage.setItem('menuX', currentX);
-                localStorage.setItem('menuY', currentY);
-            }
-            hasDragged = false;
-        }
-    });
-
-    // 移动端
-    btn.addEventListener('touchstart', e => {
-        isDragging = true;
-        hasDragged = false;
-        startX = e.touches[0].clientX - currentX;
-        startY = e.touches[0].clientY - currentY;
-        btn.style.transition = 'none';
-        e.preventDefault();
-    }, { passive: false });
-
-    document.addEventListener('touchmove', e => {
-        if (!isDragging) return;
-        if (Math.abs(e.touches[0].clientX - (startX + currentX)) > threshold || Math.abs(e.touches[0].clientY - (startY + currentY)) > threshold) {
-            hasDragged = true;
-        }
-        currentX = Math.max(10, Math.min(window.innerWidth - btn.offsetWidth - 10, e.touches[0].clientX - startX));
-        currentY = Math.max(10, Math.min(window.innerHeight - btn.offsetHeight - 10, e.touches[0].clientY - startY));
-        btn.style.transform = `translate(${currentX}px, ${currentY}px)`;
-        e.preventDefault();
-    }, { passive: false });
-
-    document.addEventListener('touchend', () => {
-        if (isDragging) {
-            isDragging = false;
-            btn.style.transition = 'transform 0.2s ease';
-            if (!hasDragged) {
-                toggleMenu();   // 纯点击 → 展开菜单
-            } else if (hasDragged) {
-                localStorage.setItem('menuX', currentX);
-                localStorage.setItem('menuY', currentY);
-            }
-            hasDragged = false;
-        }
-    });
-}
-
-// ====================== 菜单控制 ======================
+// ====================== 侧边栏与主题控制 ======================
 function toggleMenu() {
     const menu = document.getElementById('theme-menu');
     menu.classList.toggle('open');
@@ -161,7 +56,6 @@ function closeMenu() {
     menu.classList.remove('open');
 }
 
-// ====================== 主题切换 ======================
 function switchTheme(mode) {
     if (mode === 'light') {
         document.documentElement.classList.remove('dark');
@@ -173,7 +67,119 @@ function switchTheme(mode) {
     closeMenu();
 }
 
-// ====================== 文章列表 ======================
+// ====================== NSFW 逻辑无缝整合 ======================
+async function initNSFWLogic() {
+    const nsfwSetting = document.getElementById('nsfw-setting');
+    const nsfwToggle = document.getElementById('nsfw-toggle');
+    const nsfwKnob = document.getElementById('nsfw-knob');
+
+    try {
+        const res = await fetch('/api/ipinfo');
+        const data = await res.json();
+        
+        // 从后端返回的数据中判断是否属于严管地区
+        if (data.restrictedRegions.includes(data.country)) {
+            localStorage.setItem('nsfw_enabled', 'false');
+            nsfwSetting.classList.add('hidden'); // 严格模式下隐藏开关
+        } else {
+            nsfwSetting.classList.remove('hidden');
+            nsfwSetting.classList.add('flex');
+            
+            let isEnabled = localStorage.getItem('nsfw_enabled') === 'true';
+            updateNSFWUI(isEnabled);
+
+            nsfwToggle.onclick = async () => {
+                isEnabled = !isEnabled;
+                localStorage.setItem('nsfw_enabled', isEnabled);
+                updateNSFWUI(isEnabled);
+                const posts = await loadPosts();
+                renderPosts(posts);
+            };
+        }
+    } catch (e) {
+        localStorage.setItem('nsfw_enabled', 'false');
+    }
+}
+
+function updateNSFWUI(isEnabled) {
+    const btn = document.getElementById('nsfw-toggle');
+    const knob = document.getElementById('nsfw-knob');
+    if (isEnabled) {
+        btn.classList.add('bg-red-500');
+        btn.classList.remove('bg-zinc-200', 'dark:bg-zinc-700');
+        knob.style.transform = 'translateX(20px)';
+    } else {
+        btn.classList.remove('bg-red-500');
+        btn.classList.add('bg-zinc-200', 'dark:bg-zinc-700');
+        knob.style.transform = 'translateX(0)';
+    }
+}
+
+// ====================== 拖拽与渲染逻辑 ======================
+function makeDraggable() {
+    const btn = document.getElementById('menu-toggle');
+    let isDragging = false;
+    let startX, startY, initialX, initialY;
+
+    let savedX = localStorage.getItem('menuX');
+    let savedY = localStorage.getItem('menuY');
+    
+    if (savedX !== null && savedY !== null) {
+        btn.style.left = '0px';
+        btn.style.top = '0px';
+        btn.style.transform = `translate(${savedX}px, ${savedY}px)`;
+    } else {
+        const initialTranslateX = window.innerWidth - 80;
+        const initialTranslateY = 24;
+        btn.style.left = '0px';
+        btn.style.top = '0px';
+        btn.style.transform = `translate(${initialTranslateX}px, ${initialTranslateY}px)`;
+    }
+
+    btn.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        hasDragged = false;
+        const touch = e.touches[0];
+        const style = window.getComputedStyle(btn);
+        const matrix = new WebKitCSSMatrix(style.transform);
+        initialX = matrix.m41;
+        initialY = matrix.m42;
+        startX = touch.clientX;
+        startY = touch.clientY;
+        btn.style.transition = 'none';
+    }, { passive: true });
+
+    document.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        const touch = e.touches[0];
+        const dx = touch.clientX - startX;
+        const dy = touch.clientY - startY;
+        if (Math.abs(dx) > 5 || Math.abs(dy) > 5) hasDragged = true;
+        const newX = Math.min(Math.max(0, initialX + dx), window.innerWidth - 44);
+        const newY = Math.min(Math.max(0, initialY + dy), window.innerHeight - 44);
+        btn.style.transform = `translate(${newX}px, ${newY}px)`;
+    }, { passive: false });
+
+    document.addEventListener('touchend', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        btn.style.transition = 'all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28)';
+        const style = window.getComputedStyle(btn);
+        const matrix = new WebKitCSSMatrix(style.transform);
+        localStorage.setItem('menuX', matrix.m41);
+        localStorage.setItem('menuY', matrix.m42);
+    });
+
+    btn.addEventListener('click', (e) => {
+        if (hasDragged) {
+            e.preventDefault();
+            e.stopPropagation();
+        } else {
+            toggleMenu();
+        }
+    });
+}
+
 async function loadPosts() {
     const res = await fetch('data/posts.json');
     return await res.json();
@@ -181,8 +187,14 @@ async function loadPosts() {
 
 function renderPosts(posts) {
     const grid = document.getElementById('post-grid');
-    grid.innerHTML = posts.map(post => `
-        <a href="post.html?slug=${post.slug}" class="card block">
+    const isNSFWEnabled = localStorage.getItem('nsfw_enabled') === 'true';
+    
+    // 核心过滤逻辑
+    const filtered = posts.filter(post => !post.nsfw || isNSFWEnabled);
+
+    grid.innerHTML = filtered.map(post => `
+        <a href="post.html?slug=${post.slug}" class="card block relative">
+            ${post.nsfw ? '<span class="absolute top-4 right-4 text-[10px] font-bold text-red-500 border border-red-500 px-1.5 py-0.5 rounded">18+</span>' : ''}
             <div class="date">${post.date}</div>
             <div class="title">${post.title}</div>
             <p class="text-zinc-400 dark:text-zinc-400 text-[15px] leading-relaxed mt-4">${post.excerpt}</p>
@@ -190,11 +202,24 @@ function renderPosts(posts) {
     `).join('');
 }
 
+function checkCompactMode() {
+    const navContainer = document.getElementById('nav-container');
+    const navLeft = navContainer.querySelector('.nav-left');
+    if (navLeft.scrollWidth > navLeft.clientWidth) {
+        navContainer.classList.add('compact');
+    } else {
+        navContainer.classList.remove('compact');
+    }
+}
+
 // ====================== 初始化 ======================
 window.onload = async function() {
     await loadGreetings();
     updateBeijingTime();
     setInterval(updateBeijingTime, 1000);
+    
+    // 初始化 NSFW 与地理位置检测
+    await initNSFWLogic();
     
     const posts = await loadPosts();
     renderPosts(posts);
@@ -214,9 +239,7 @@ window.onload = async function() {
 
     if (localStorage.theme === 'light') {
         document.documentElement.classList.remove('dark');
-    } else {
-        document.documentElement.classList.add('dark');
     }
-
+    
     makeDraggable();
 };
