@@ -10,42 +10,40 @@ h1, h2, h3 {
     font-family: Georgia, 'Times New Roman', serif;
 }
 
-/* 文章卡片修复 */
+/* --- 文章卡片：已彻底移除悬停与动画效果 --- */
 #post-grid .card {
     background-color: #ffffff;
     padding: 2rem;
     border-left: 5px solid #0068B5;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    /* 确保卡片宽度占满网格单元格 */
-    width: 100%;
+    /* 移除 transition */
+    width: 100%; 
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
 }
 
 .dark #post-grid .card {
     background-color: #27272a;
 }
 
+/* 彻底移除 #post-grid .card:hover 中的 transform 和 box-shadow */
 #post-grid .card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    transform: none;
+    box-shadow: none;
 }
 
 #post-grid .card .title {
     font-size: 1.25rem;
     font-weight: 600;
-    line-height: 1.4;
     color: #0068B5;
     margin-bottom: 0.75rem;
 }
 
 #post-grid .card .date {
     font-size: 0.875rem;
-    color: #71717a; /* zinc-400 */
+    color: #71717a;
 }
 
-/* 动画定义 */
+/* --- 加载动画 --- */
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
@@ -54,7 +52,7 @@ h1, h2, h3 {
     animation: spin 0.8s linear infinite;
 }
 
-/* 菜单动画 */
+/* --- 菜单行为 --- */
 #theme-menu {
     transform: translateX(100%); 
     transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
@@ -66,4 +64,13 @@ h1, h2, h3 {
 
 #menu-toggle {
     touch-action: none;
+}
+
+/* --- NSFW 开关状态 --- */
+#nsfw-toggle.active {
+    background-color: #0068B5;
+}
+
+#nsfw-toggle.active #nsfw-knob {
+    transform: translateX(20px);
 }
