@@ -33,10 +33,10 @@
     <section id="posts" class="pt-24 pb-24">
         <div class="max-w-5xl mx-auto px-6">
             <h2 class="text-4xl font-serif tracking-normal mb-12 text-center">多读两篇文章...</h2>
-            <div id="post-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 min-h-[300px] items-center justify-center">
-                <div id="loading-spinner" class="col-span-full flex flex-col items-center gap-4">
+            <div id="post-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 min-h-[300px] items-start">
+                <div id="loading-spinner" class="col-span-full py-20 flex flex-col items-center gap-4">
                     <div class="w-10 h-10 border-4 border-zinc-200 border-t-[#0068B5] rounded-full animate-spin"></div>
-                    <p class="text-sm text-zinc-400 font-medium">加载中...</p>
+                    <p class="text-sm text-zinc-400 font-medium tracking-wider">读取中</p>
                 </div>
             </div>
         </div>
@@ -82,15 +82,6 @@
                         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                     </svg>
                     <span class="text-xs">深色</span>
-                </button>
-            </div>
-            <div id="nsfw-setting" class="hidden justify-between items-center pt-8 border-t border-zinc-100 dark:border-zinc-800">
-                <div class="flex flex-col">
-                    <span class="text-sm font-medium">NSFW 内容</span>
-                    <span class="text-[10px] text-zinc-400">开启后显示NSFW内容</span>
-                </div>
-                <button id="nsfw-toggle" class="w-11 h-6 rounded-full bg-zinc-200 dark:bg-zinc-700 relative transition-all duration-300 shadow-inner">
-                    <div id="nsfw-knob" class="w-4 h-4 bg-white rounded-full absolute top-1 left-1 transition-transform duration-300 shadow-sm"></div>
                 </button>
             </div>
         </div>
