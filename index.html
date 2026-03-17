@@ -44,32 +44,37 @@
         </div>
     </section>
 
-    <div id="theme-menu" class="fixed top-0 right-0 h-full w-72 bg-white dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-700 shadow-2xl translate-x-full transition-transform duration-300 z-[999] flex flex-col">
-        <div class="p-6 flex justify-between items-center border-b border-zinc-200 dark:border-zinc-700">
-            <span class="text-lg font-medium">设置</span>
-            <button id="menu-close" class="text-3xl leading-none text-zinc-400 hover:text-black dark:hover:text-white">×</button>
+    <div id="theme-menu" class="fixed top-0 right-0 h-full w-72 bg-white dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-700 shadow-2xl z-[999] flex flex-col">
+    <div class="p-6 flex justify-between items-center border-b border-zinc-200 dark:border-zinc-700">
+        <span class="text-lg font-medium">设置</span>
+        <button id="menu-close" class="text-3xl leading-none text-zinc-400 hover:text-black dark:hover:text-white">×</button>
+    </div>
+    
+    <div class="flex-1 p-8">
+        <div class="text-xs font-bold text-zinc-400 mb-6 tracking-widest uppercase">外观主题</div>
+        <div class="flex justify-around items-center mb-12">
+            <button onclick="switchTheme('light')" class="flex flex-col items-center gap-4 text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white transition">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path></svg>
+                <span class="text-xs">浅色</span>
+            </button>
+            <button onclick="switchTheme('dark')" class="flex flex-col items-center gap-4 text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white transition">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <span class="text-xs">深色</span>
+            </button>
         </div>
-        
-        <div class="flex-1 p-8 space-y-12">
-            <div class="flex justify-around items-center">
-                <button onclick="switchTheme('light')" class="flex flex-col items-center gap-4 text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white transition">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path></svg>
-                    <span class="text-xs">浅色</span>
-                </button>
-                <button onclick="switchTheme('dark')" class="flex flex-col items-center gap-4 text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white transition">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                    <span class="text-xs">深色</span>
-                </button>
-            </div>
 
-            <div id="nsfw-setting" class="hidden flex justify-between items-center pt-8 border-t border-zinc-100 dark:border-zinc-800">
-                <span class="text-sm font-medium text-zinc-600 dark:text-zinc-400">NSFW 内容</span>
-                <button id="nsfw-toggle" class="w-11 h-6 rounded-full bg-zinc-200 dark:bg-zinc-700 relative transition-colors duration-300">
-                    <div id="nsfw-knob" class="w-4 h-4 bg-white rounded-full absolute top-1 left-1 transition-transform duration-300 translate-x-0 shadow-sm"></div>
-                </button>
+        <div id="nsfw-setting" class="hidden justify-between items-center pt-8 border-t border-zinc-100 dark:border-zinc-800">
+            <div class="flex flex-col">
+                <span class="text-sm font-medium">NSFW 内容</span>
+                <span class="text-[10px] text-zinc-400">开启后显示 18+ 内容</span>
             </div>
+            <button id="nsfw-toggle" class="w-11 h-6 rounded-full bg-zinc-200 dark:bg-zinc-700 relative transition-all duration-300 shadow-inner">
+                <div id="nsfw-knob" class="w-4 h-4 bg-white rounded-full absolute top-1 left-1 transition-transform duration-300 shadow-sm"></div>
+            </button>
         </div>
     </div>
+</div>
+
 
     <script src="js/main.js"></script>
 </body>
