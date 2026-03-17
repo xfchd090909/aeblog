@@ -10,7 +10,7 @@ async function loadGreetings() {
     try {
         const res = await fetch('data/greetings.json');
         greetings = await res.json();
-    } catch (e) {}
+    } catch (e) { console.error("Failed to load greetings"); }
 }
 
 function getPeriodKey(hour) {
@@ -24,6 +24,8 @@ function getPeriodKey(hour) {
 function updateBeijingTime() {
     try {
         const timeEl = document.getElementById('beijing-time');
+        if (!timeEl) return;
+        
         const now = new Date();
         const options = { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
         let timeStr = now.toLocaleString('zh-CN', options).replace(/\//g, '-');
@@ -67,20 +69,18 @@ function switchTheme(mode) {
     closeMenu();
 }
 
-// ====================== NSFW 逻辑无缝整合 ======================
+// ====================== NSFW 逻辑 ======================
 async function initNSFWLogic() {
     const nsfwSetting = document.getElementById('nsfw-setting');
     const nsfwToggle = document.getElementById('nsfw-toggle');
-    const nsfwKnob = document.getElementById('nsfw-knob');
 
     try {
         const res = await fetch('/api/ipinfo');
         const data = await res.json();
         
-        // 从后端返回的数据中判断是否属于严管地区
-        if (data.restrictedRegions.includes(data.country)) {
+        if (data.restrictedRegions && data.restrictedRegions.includes(data.country)) {
             localStorage.setItem('nsfw_enabled', 'false');
-            nsfwSetting.classList.add('hidden'); // 严格模式下隐藏开关
+            nsfwSetting.classList.add('hidden');
         } else {
             nsfwSetting.classList.remove('hidden');
             nsfwSetting.classList.add('flex');
@@ -118,6 +118,8 @@ function updateNSFWUI(isEnabled) {
 // ====================== 拖拽与渲染逻辑 ======================
 function makeDraggable() {
     const btn = document.getElementById('menu-toggle');
+    if (!btn) return;
+
     let isDragging = false;
     let startX, startY, initialX, initialY;
 
@@ -125,14 +127,10 @@ function makeDraggable() {
     let savedY = localStorage.getItem('menuY');
     
     if (savedX !== null && savedY !== null) {
-        btn.style.left = '0px';
-        btn.style.top = '0px';
         btn.style.transform = `translate(${savedX}px, ${savedY}px)`;
     } else {
         const initialTranslateX = window.innerWidth - 80;
         const initialTranslateY = 24;
-        btn.style.left = '0px';
-        btn.style.top = '0px';
         btn.style.transform = `translate(${initialTranslateX}px, ${initialTranslateY}px)`;
     }
 
@@ -187,9 +185,9 @@ async function loadPosts() {
 
 function renderPosts(posts) {
     const grid = document.getElementById('post-grid');
+    if (!grid) return;
     const isNSFWEnabled = localStorage.getItem('nsfw_enabled') === 'true';
     
-    // 核心过滤逻辑
     const filtered = posts.filter(post => !post.nsfw || isNSFWEnabled);
 
     grid.innerHTML = filtered.map(post => `
@@ -202,44 +200,34 @@ function renderPosts(posts) {
     `).join('');
 }
 
-function checkCompactMode() {
-    const navContainer = document.getElementById('nav-container');
-    const navLeft = navContainer.querySelector('.nav-left');
-    if (navLeft.scrollWidth > navLeft.clientWidth) {
-        navContainer.classList.add('compact');
-    } else {
-        navContainer.classList.remove('compact');
-    }
-}
-
 // ====================== 初始化 ======================
 window.onload = async function() {
+    // 立即应用主题，防止白屏闪烁
+    if (localStorage.theme === 'light') {
+        document.documentElement.classList.remove('dark');
+    } else {
+        document.documentElement.classList.add('dark');
+    }
+
     await loadGreetings();
     updateBeijingTime();
     setInterval(updateBeijingTime, 1000);
     
-    // 初始化 NSFW 与地理位置检测
     await initNSFWLogic();
     
     const posts = await loadPosts();
     renderPosts(posts);
     
-    window.addEventListener('resize', () => requestAnimationFrame(checkCompactMode));
-    setTimeout(checkCompactMode, 150);
-    setTimeout(checkCompactMode, 400);
+    makeDraggable();
 
     document.getElementById('menu-close').addEventListener('click', closeMenu);
 
+    // 点击外部关闭菜单
     document.addEventListener('click', function(e) {
         const menu = document.getElementById('theme-menu');
-        if (!e.target.closest('#theme-menu') && !e.target.closest('#menu-toggle')) {
-            menu.classList.remove('open');
+        const btn = document.getElementById('menu-toggle');
+        if (menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) {
+            closeMenu();
         }
     });
-
-    if (localStorage.theme === 'light') {
-        document.documentElement.classList.remove('dark');
-    }
-    
-    makeDraggable();
 };
