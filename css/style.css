@@ -31,24 +31,22 @@ h1, h2, h3 {
     color: #0068B5;
 }
 
-/* 阅读页代码块 */
-#post-content pre {
-    background-color: #f1f5f9;
+/* 动画定义 */
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
-.dark #post-content pre {
-    background-color: #27272a;
+.animate-spin {
+    animation: spin 1s linear infinite;
 }
 
 /* 菜单动画修复 */
 #theme-menu {
-    /* 核心修复：初始状态将菜单完全移出屏幕右侧 */
     transform: translateX(100%); 
     transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 #theme-menu.open {
-    /* 当 JavaScript 添加 .open 类时移入屏幕 */
     transform: translateX(0);
 }
 
