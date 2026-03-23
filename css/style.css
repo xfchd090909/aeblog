@@ -6,9 +6,33 @@ body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-h1, h2, h3 {
+/* --- 恢复 Markdown 标题样式（覆盖 Tailwind Preflight） --- */
+h1, h2, h3, h4, h5, h6 {
     font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 700; /* 恢复加粗 */
+    line-height: 1.25;
+    margin-top: 1.5em; /* 增加顶部间距 */
+    margin-bottom: 0.5em; /* 增加底部间距 */
 }
+
+h1 { 
+    font-size: 2.25rem; 
+}
+
+h2 { 
+    font-size: 1.75rem; 
+    border-bottom: 1px solid #e5e7eb; /* 类似 GitHub 的 h2 下划线分割 */
+    padding-bottom: 0.3em;
+}
+
+h3 { 
+    font-size: 1.5rem; 
+}
+
+h4 { 
+    font-size: 1.25rem; 
+}
+
 
 /* --- 文章卡片：已彻底移除悬停与动画效果 --- */
 #post-grid .card {
