@@ -1,9 +1,8 @@
 ## 新站点迁移及更新公告
-
+<br>
 由于原网站 `aeafx.netlify.app` 面临技术迭代问题，我们完成了架构重构。
 即日起，我们将迁移至新网站 <span class="text-highlight">aeBlog.netlify.app</span>。
-
-
+<br>
 ## 后续发展规划
 
 <div class="info-box">
