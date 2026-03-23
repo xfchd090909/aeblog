@@ -2,105 +2,102 @@
 @tailwind components;
 @tailwind utilities;
 
+/* --- 定义颜色变量 --- */
+:root {
+    --bg-page: #ffffff;
+    --bg-card: #ffffff;
+    --text-main: #1f2937;
+    --text-muted: #71717a;
+    --accent-blue: #0068B5;
+    --border-color: #e5e7eb;
+    
+    /* 重点文本框：初始为“不可读”状态（白底+近乎白色的字） */
+    --box-bg: #ffffff;
+    --box-text: #f9f9f9; /* 极低对比度 */
+    --box-border: #e2e8f0;
+}
+
+/* --- 暗黑模式变量 --- */
+.dark {
+    --bg-page: #18181b;
+    --bg-card: #27272a;
+    --text-main: #f4f4f5;
+    --text-muted: #a1a1aa;
+    --accent-blue: #3b82f6;
+    --border-color: #3f3f46;
+
+    /* 暗黑模式下的不可读状态（深色底+近乎深色的字） */
+    --box-bg: #27272a;
+    --box-text: #2a2a2d; /* 极低对比度 */
+    --box-border: #3f3f46;
+}
+
 body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-page);
+    color: var(--text-main);
+    font-family: system-ui, -apple-system, sans-serif;
+    transition: background-color 0.3s, color 0.3s;
 }
 
-/* --- 1. 基础 Markdown 渲染修复 --- */
+/* --- 动态标题样式 --- */
 h1, h2, h3, h4 {
-    font-family: Georgia, 'Times New Roman', serif;
+    font-family: Georgia, serif;
     font-weight: 700;
-    line-height: 1.3;
-    margin-top: 1.5em;
-    margin-bottom: 0.5em;
-    color: #1f2937;
+    color: var(--text-main);
 }
 
-h1 { font-size: 2.25rem; }
-h2 { 
-    font-size: 1.75rem; 
-    color: #0068B5; /* 统一标题色 */
-    border-left: 5px solid #0068B5;
+h2 {
+    font-size: 1.75rem;
+    border-left: 5px solid var(--accent-blue);
     padding-left: 12px;
-}
-h3 { font-size: 1.4rem; color: #374151; }
-
-/* 修复列表样式，因为 Tailwind 会移除它们 */
-.md-content ul {
-    list-style-type: disc;
-    padding-left: 1.5rem;
-    margin: 1rem 0;
+    margin: 1.5em 0 0.8em;
 }
 
-/* --- 2. 重点文字框 (Focus Boxes) --- */
-
-/* 蓝色/灰色 基础信息框 */
-.info-box {
-    background-color: #f8fafc;
-    border: 1px solid #e2e8f0;
-    padding: 1.25rem;
+/* --- 重点文本框 (Focus Boxes)：强制不可读设计 --- */
+.info-box, .alert-box {
+    background-color: var(--box-bg);
+    border: 1px solid var(--box-border);
+    padding: 1.5rem;
     border-radius: 8px;
     margin: 1.5rem 0;
+    
+    /* 核心需求：文本颜色与背景高度一致 */
+    color: var(--box-text);
+    user-select: none; /* 防止用户通过划选轻松识读 */
+    transition: all 0.3s ease;
 }
 
-/* 红色 警告/管理信息框 */
-.alert-box {
-    background-color: #fef2f2;
-    border-left: 4px solid #ef4444;
-    padding: 1.25rem;
-    border-radius: 0 8px 8px 0;
-    margin: 1.5rem 0;
-}
+/* 如果你希望鼠标悬停时能看见（可选），可以删掉下面这段 */
+/* .info-box:hover, .alert-box:hover { color: var(--text-main); user-select: auto; } */
 
-.alert-box h3 {
-    color: #991b1b;
+.info-box h3, .alert-box h3 {
+    /* 标题可以保持可见，或者同样设为不可读 */
+    color: var(--box-text); 
     margin-top: 0;
 }
 
-/* --- 3. 强调与链接样式 --- */
-.text-highlight {
-    color: #0068B5;
-    font-weight: 600;
-}
-
-.md-content code {
-    color: #0068B5;
-    background: #f1f5f9;
-    padding: 0.2rem 0.4rem;
-    border-radius: 4px;
-    font-family: monospace;
-}
-
-/* --- 以下为你原有的 CSS 逻辑 (保持不变) --- */
+/* --- 文章卡片与其它组件同步 --- */
 #post-grid .card {
-    background-color: #ffffff;
+    background-color: var(--bg-card);
+    border-left: 5px solid var(--accent-blue);
     padding: 2rem;
-    border-left: 5px solid #0068B5;
-    width: 100%; 
-    display: flex;
-    flex-direction: column;
+    width: 100%;
 }
-
-.dark #post-grid .card { background-color: #27272a; }
-
-#post-grid .card:hover { transform: none; box-shadow: none; }
 
 #post-grid .card .title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #0068B5;
-    margin-bottom: 0.75rem;
+    color: var(--accent-blue);
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
-.animate-spin { animation: spin 0.8s linear infinite; }
+#post-grid .card .date {
+    color: var(--text-muted);
+}
 
+/* --- 菜单与开关 --- */
 #theme-menu {
-    transform: translateX(100%); 
-    transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+    background-color: var(--bg-card);
+    border-left: 1px solid var(--border-color);
 }
-#theme-menu.open { transform: translateX(0); }
-#menu-toggle { touch-action: none; }
 
-#nsfw-toggle.active { background-color: #0068B5; }
-#nsfw-toggle.active #nsfw-knob { transform: translateX(20px); }
+#nsfw-toggle.active {
+    background-color: var(--accent-blue);
+}
