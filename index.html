@@ -6,97 +6,74 @@
     <title>aeBlog</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { darkMode: 'class' }
+        tailwind.config = { 
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0068B5',
+                    }
+                }
+            }
+        }
     </script>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-200 transition-colors">
+<body class="transition-colors">
     <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
         <div class="max-w-6xl mx-auto px-6 py-4">
-            <div id="nav-container" class="flex items-center justify-between gap-8 transition-all duration-300 overflow-x-auto pb-1 scrollbar-gutter-stable">
-                <div class="flex gap-8 text-sm font-medium nav-left whitespace-nowrap">
-                    <a href="#posts" class="hover:text-[#0068B5] dark:text-zinc-200 transition">文章</a>
-                    <a href="#contact" class="hover:text-[#0068B5] dark:text-zinc-200 transition">联系</a>
+            <div class="flex items-center justify-between">
+                <div class="flex gap-8 text-sm font-medium">
+                    <a href="#posts" class="hover:text-primary transition">文章</a>
+                    <a href="#contact" class="hover:text-primary transition">联系</a>
                 </div>
-                <div id="beijing-time" class="text-sm font-medium text-zinc-700 dark:text-zinc-200 tabular-nums whitespace-nowrap"></div>
+                <div id="beijing-time" class="text-sm font-mono text-zinc-500"></div>
             </div>
         </div>
     </nav>
 
-    <button id="menu-toggle" class="fixed z-[999] w-11 h-11 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-2xl flex items-center justify-center shadow-2xl cursor-move active:cursor-grabbing transition-all touch-action-none">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+    <button id="menu-toggle" class="fixed bottom-8 right-8 z-[1000] w-12 h-12 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"></circle>
-            <path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"></path>
+            <path d="M12 8v8M8 12h8"></path>
         </svg>
     </button>
 
-    <section id="posts" class="pt-24 pb-24">
-        <div class="max-w-5xl mx-auto px-6">
-            <h2 class="text-4xl font-serif tracking-normal mb-12 text-center">多读两篇文章...</h2>
-            <div id="post-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 min-h-[300px] items-start">
-                <div id="loading-spinner" class="col-span-full py-20 flex flex-col items-center gap-4">
-                    <div class="w-10 h-10 border-4 border-zinc-200 border-t-[#0068B5] rounded-full animate-spin"></div>
-                    <p class="text-sm text-zinc-400 font-medium tracking-wider">读取中</p>
-                </div>
-            </div>
+    <div id="theme-menu" class="fixed top-0 right-0 h-full w-72 z-[1001] shadow-2xl flex flex-col">
+        <div class="p-6 flex justify-between items-center border-b border-zinc-200 dark:border-zinc-800">
+            <span class="font-bold">设置中心</span>
+            <button id="menu-close" class="text-2xl p-2">&times;</button>
         </div>
-    </section>
-
-    <section id="contact" class="py-24 bg-white dark:bg-zinc-900">
-        <div class="max-w-md mx-auto text-center px-6">
-            <h2 class="text-4xl font-serif tracking-normal mb-8">保持联系</h2>
-            <div class="flex justify-center items-center gap-12">
-                <a href="mailto:teada2024@163.com" class="text-zinc-400 hover:text-[#0068B5] dark:hover:text-white transition-colors" title="163 Mail">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-                    </svg>
-                </a>
-                <a href="mailto:xfchd090909@gmail.com" class="text-zinc-400 hover:text-[#0068B5] dark:hover:text-white transition-colors" title="Gmail">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h8"/>
-                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-                        <path d="M19 16v6"/><path d="M16 19h6"/>
-                    </svg>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <div id="theme-menu" class="fixed top-0 right-0 h-full w-72 bg-white dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-700 shadow-2xl z-[999] flex flex-col">
-        <div class="p-6 flex justify-between items-center border-b border-zinc-200 dark:border-zinc-700">
-            <span class="text-lg font-medium">设置</span>
-            <button id="menu-close" class="text-3xl leading-none text-zinc-400 hover:text-black dark:hover:text-white">×</button>
-        </div>
-        <div class="flex-1 p-8">
-            <div class="text-xs font-bold text-zinc-400 mb-6 tracking-widest uppercase">外观主题</div>
-            <div class="flex justify-around items-center mb-12">
-                <button onclick="switchTheme('light')" class="flex flex-col items-center gap-4 text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white transition">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <circle cx="12" cy="12" r="5"></circle>
-                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
-                    </svg>
-                    <span class="text-xs">浅色</span>
-                </button>
-                <button onclick="switchTheme('dark')" class="flex flex-col items-center gap-4 text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white transition">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                    <span class="text-xs">深色</span>
-                </button>
-            </div>
-            
-            <div id="nsfw-setting" class="hidden justify-between items-center pt-8 border-t border-zinc-100 dark:border-zinc-800">
-                <div class="flex flex-col">
-                    <span class="text-sm font-medium">NSFW 内容</span>
-                    <span class="text-[10px] text-zinc-400">显示受限内容</span>
-                </div>
-                <button id="nsfw-toggle" class="w-11 h-6 rounded-full bg-zinc-200 dark:bg-zinc-700 relative transition-all duration-300 shadow-inner">
-                    <div id="nsfw-knob" class="w-4 h-4 bg-white rounded-full absolute top-1 left-1 transition-transform duration-300 shadow-sm"></div>
-                </button>
+        <div class="p-8">
+            <p class="text-xs uppercase tracking-widest text-zinc-400 mb-6">外观</p>
+            <div class="flex gap-4">
+                <button onclick="document.documentElement.classList.remove('dark')" class="flex-1 p-4 border rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">浅色</button>
+                <button onclick="document.documentElement.classList.add('dark')" class="flex-1 p-4 border rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">深色</button>
             </div>
         </div>
     </div>
 
+    <main class="pt-24 max-w-5xl mx-auto px-6">
+        <h2 class="section-title text-3xl mb-12">多读两篇文章...</h2>
+        
+        <div class="info-box">
+            <h3 class="font-bold mb-2">这是一段受限信息</h3>
+            <p>由于安全或隐私设置，此段文字默认不可见。请将鼠标悬停在此处以显示内容。</p>
+        </div>
+
+        <div id="post-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            </div>
+    </main>
+
     <script src="js/main.js"></script>
+    <script>
+        // 侧边栏开关逻辑修复
+        const menu = document.getElementById('theme-menu');
+        const toggle = document.getElementById('menu-toggle');
+        const close = document.getElementById('menu-close');
+
+        toggle.addEventListener('click', () => menu.classList.add('active'));
+        close.addEventListener('click', () => menu.classList.remove('active'));
+    </script>
 </body>
 </html>
