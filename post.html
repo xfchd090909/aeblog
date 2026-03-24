@@ -3,48 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title">阅读 - aeBlog</title>
-    
+    <title id="page-title">阅读</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = { darkMode: 'class' }
-        
-        // 核心：立即同步主页的主题设置，防止白屏闪烁
-        function initTheme() {
-            const theme = localStorage.getItem('theme');
-            if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
-        }
-        initTheme();
-    </script>
-
     <link rel="stylesheet" href="css/style.css">
-    
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 </head>
-
-<body class="bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-200 transition-colors duration-300">
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800 transition-colors">
+<body class="bg-zinc-950 text-zinc-200">
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-zinc-900/80 backdrop-blur-md border-b border-zinc-800">
         <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
             <a href="index.html" class="text-2xl font-bold tracking-tighter text-[#0068B5]">aeBlog</a>
-            <a href="index.html" class="text-sm font-medium hover:text-[#0068B5] transition">← 返回首页</a>
+            <a href="index.html" class="text-sm font-medium hover:text-[#0068B5] transition">← 返回</a>
         </div>
     </nav>
 
-    <main class="max-w-3xl mx-auto px-6 pt-32 pb-20">
-        <header id="post-header" class="mb-12">
-            <div id="post-date" class="text-sm font-mono text-[#0068B5] mb-4"></div>
-            <h1 id="post-title" class="text-4xl md:text-5xl font-serif tracking-tight leading-tight text-zinc-900 dark:text-zinc-100">
-                </h1>
-        </header>
-
-        <article id="post-content" class="prose prose-zinc dark:prose-invert max-w-none text-zinc-700 dark:text-zinc-300 text-lg leading-relaxed">
-            </article>
+    <main class="max-w-3xl mx-auto px-6 pt-24 pb-20">
+        <div id="post-header" class="mb-12">
+            <div id="post-date" class="text-sm text-[#0068B5] mb-3"></div>
+            <h1 id="post-title" class="text-5xl font-serif tracking-normal leading-tight"></h1>
+        </div>
+        <article id="post-content" class="prose prose-invert max-w-none text-zinc-300 text-lg leading-relaxed"></article>
     </main>
 
     <script src="js/reader.js"></script>
