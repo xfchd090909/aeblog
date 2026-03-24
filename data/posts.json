@@ -5,5 +5,12 @@
     "date": "2026-03-11",
     "excerpt": "从aeafx到aeBlog更新信息",
     "nsfw": false
+  },
+  {
+    "slug": "posts2",
+    "title": "更新公告2",
+    "date": "2026-03-25",
+    "excerpt": "网页已知问题及新功能",
+    "nsfw": false
   }
 ]
