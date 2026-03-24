@@ -16,87 +16,125 @@
             <div id="nav-container" class="flex items-center justify-between gap-8 transition-all duration-300 overflow-x-auto pb-1 scrollbar-gutter-stable">
                 <div class="flex gap-8 text-sm font-medium nav-left whitespace-nowrap">
                     <a href="#posts" class="hover:text-[#0068B5] dark:text-zinc-200 transition">碎碎念</a>
-                    <a href="#contact" class="hover:text-[#0068B5] dark:text-zinc-200 transition">保持联系</a>
+                    <a href="#contact" class="hover:text-[#0068B5] dark:text-zinc-200 transition">联系</a>
                 </div>
-                <div id="beijing-time" class="text-sm font-medium text-zinc-700 dark:text-zinc-200 tabular-nums whitespace-nowrap"></div>
+                
+                <a href="index.html" class="text-2xl font-bold tracking-tighter text-[#0068B5] shrink-0">aeBlog</a>
+                
+                <div class="flex items-center gap-6 nav-right whitespace-nowrap">
+                    <span id="beijing-time" class="text-xs font-mono text-zinc-400">00:00:00</span>
+                    <button id="menu-toggle" class="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
     </nav>
 
-    <button id="menu-toggle" class="fixed z-[999] w-11 h-11 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-2xl flex items-center justify-center shadow-2xl cursor-move active:cursor-grabbing transition-all touch-none text-zinc-600 dark:text-zinc-400">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/>
-            <line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/>
-            <line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/>
-            <line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/>
-            <line x1="17" y1="16" x2="23" y2="16"/>
-        </svg>
-    </button>
+    <main class="max-w-4xl mx-auto px-6 pt-32 pb-20">
+        <section class="mb-20">
+            <div class="flex items-baseline gap-4 mb-2">
+                <h1 id="greeting-title" class="text-4xl font-bold tracking-tight">载入中...</h1>
+                <span id="greeting-period" class="text-zinc-400 font-medium">Hello</span>
+            </div>
+            <p id="greeting-quote" class="text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-2xl italic">
+                正在为您准备今日份的灵感...
+            </p>
+        </section>
 
-    <section id="posts" class="pt-24 pb-24">
-        <div class="max-w-5xl mx-auto px-6">
-            <h2 class="text-4xl font-serif tracking-normal mb-12 text-center text-zinc-800 dark:text-zinc-100">近期碎碎念 & 归档</h2>
-            <div id="post-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 min-h-[300px] items-start">
-                <div id="loading-spinner" class="col-span-full py-20 flex flex-col items-center gap-4">
-                    <div class="w-10 h-10 border-4 border-zinc-200 border-t-[#0068B5] rounded-full animate-spin"></div>
-                    <p class="text-sm text-zinc-400 font-medium tracking-wider">正在翻阅旧账...</p>
+        <section id="posts" class="mb-20">
+            <h2 class="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-8 flex items-center gap-4">
+                RECENT POSTS
+                <div class="h-px bg-zinc-200 dark:bg-zinc-800 flex-1"></div>
+            </h2>
+            <div id="posts-container" class="grid gap-1">
+                </div>
+        </section>
+
+        <section id="contact">
+            <h2 class="text-xs font-bold uppercase tracking-widest text-zinc-400 mb-8 flex items-center gap-4">
+                SAY HELLO
+                <div class="h-px bg-zinc-200 dark:bg-zinc-800 flex-1"></div>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <a href="mailto:teada2024@163.com" class="p-6 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl hover:border-[#0068B5] transition-colors group">
+                    <div class="text-xs text-zinc-400 mb-1">Email</div>
+                    <div class="font-medium group-hover:text-[#0068B5] transition-colors">teada2024@163.com</div>
+                </a>
+                <div class="p-6 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl">
+                    <div class="text-xs text-zinc-400 mb-1">Location</div>
+                    <div class="font-medium">Chongqing, China</div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
-    <section id="contact" class="py-24 bg-white dark:bg-zinc-900 border-t border-zinc-100 dark:border-zinc-800">
-        <div class="max-w-md mx-auto text-center px-6">
-            <h2 class="text-4xl font-serif tracking-normal mb-8">在这里找到我</h2>
-            <div class="flex justify-center items-center gap-12">
-                <a href="mailto:teada2024@163.com" class="text-zinc-400 hover:text-[#0068B5] dark:hover:text-white transition-colors" title="163 Mail">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-                    </svg>
-                </a>
-                <a href="mailto:xfchd090909@gmail.com" class="text-zinc-400 hover:text-[#0068B5] dark:hover:text-white transition-colors" title="Gmail">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h8"/>
-                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-                        <path d="M19 16v6"/><path d="M16 19h6"/>
-                    </svg>
-                </a>
+    <footer class="max-w-4xl mx-auto px-6 py-12 border-t border-zinc-200 dark:border-zinc-800">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-zinc-400">
+            <div>© 2025 aeBlog. Built with Studio Aesthetic.</div>
+            <div class="flex gap-8 uppercase tracking-widest">
+                <a href="#" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition">Twitter</a>
+                <a href="#" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition">Github</a>
+                <a href="#" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition">RSS</a>
             </div>
         </div>
-    </section>
+    </footer>
 
-    <div id="theme-menu" class="fixed top-0 right-0 h-full w-72 bg-white dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-700 shadow-2xl z-[999] flex flex-col">
-        <div class="p-6 flex justify-between items-center border-b border-zinc-200 dark:border-zinc-700">
-            <span class="text-lg font-medium">界面配置</span>
-            <button id="menu-close" class="text-3xl leading-none text-zinc-400 hover:text-black dark:hover:text-white">×</button>
-        </div>
-        <div class="flex-1 p-8">
-            <div class="text-xs font-bold text-zinc-400 mb-6 tracking-widest uppercase">外观主题</div>
-            <div class="flex justify-around items-center mb-12">
-                <button onclick="switchTheme('light')" class="flex flex-col items-center gap-4 text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white transition">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <circle cx="12" cy="12" r="5"></circle>
-                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+    <div id="theme-menu" class="fixed top-0 right-0 h-full w-80 bg-white dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-800 z-[1000] transform translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] shadow-2xl">
+        <div class="p-8 h-full flex flex-col">
+            <div class="flex justify-between items-center mb-12">
+                <h3 class="text-lg font-bold">设置</h3>
+                <button id="menu-close" class="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
-                    <span class="text-xs">浅色</span>
-                </button>
-                <button onclick="switchTheme('dark')" class="flex flex-col items-center gap-4 text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-white transition">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                    <span class="text-xs">深色</span>
                 </button>
             </div>
-            
-            <div id="nsfw-setting" class="hidden justify-between items-center pt-8 border-t border-zinc-100 dark:border-zinc-800">
-                <div class="flex flex-col">
-                    <span class="text-sm font-medium">Not Safe For Work</span>
-                    <span class="text-[10px] text-zinc-400">显示受限内容</span>
+
+            <div class="space-y-8">
+                <div>
+                    <label class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest block mb-4">外观主题</label>
+                    <div class="grid grid-cols-2 gap-2 p-1 bg-zinc-100 dark:bg-zinc-800 rounded-xl">
+                        <button onclick="setTheme('light')" class="flex items-center justify-center gap-2 py-2 px-4 rounded-lg transition theme-btn-light">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                            <span class="text-xs font-medium">浅色</span>
+                        </button>
+                        <button onclick="setTheme('dark')" class="flex items-center justify-center gap-2 py-2 px-4 rounded-lg transition theme-btn-dark">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                            <span class="text-xs font-medium">深色</span>
+                        </button>
+                    </div>
                 </div>
-                <button id="nsfw-toggle" class="w-11 h-6 rounded-full bg-zinc-200 dark:bg-zinc-700 relative transition-all duration-300 shadow-inner">
-                    <div id="nsfw-knob" class="w-4 h-4 bg-white rounded-full absolute top-1 left-1 transition-transform duration-300 shadow-sm"></div>
-                </button>
-            </div>
+
+                <div id="nsfw-setting" class="hidden justify-between items-center pt-8 border-t border-zinc-100 dark:border-zinc-800">
+                    <div class="flex flex-col">
+                        <span class="text-sm font-medium">Not Safe For Work</span>
+                        <span class="text-[10px] text-zinc-400">显示受限内容</span>
+                    </div>
+                    <button id="nsfw-toggle" class="w-11 h-6 rounded-full bg-zinc-200 dark:bg-zinc-700 relative transition-all duration-300 shadow-inner">
+                        <div id="nsfw-knob" class="w-4 h-4 bg-white rounded-full absolute top-1 left-1 transition-transform duration-300 shadow-sm"></div>
+                    </button>
+                </div>
+
+                <div class="pt-8 border-t border-zinc-100 dark:border-zinc-800">
+                    <a href="https://aeblogfb.netlify.app" target="_blank" rel="noopener noreferrer" class="flex justify-between items-center group cursor-pointer">
+                        <div class="flex flex-col">
+                            <span class="text-sm font-medium group-hover:text-[#0068B5] dark:group-hover:text-white transition-colors">意见反馈</span>
+                            <span class="text-[10px] text-zinc-400">帮助我们改进 aeBlog</span>
+                        </div>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-400 group-hover:text-[#0068B5] dark:group-hover:text-white transition-colors">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                    </a>
+                </div>
+                </div>
         </div>
     </div>
 
@@ -108,12 +146,39 @@
                 <p>但若你通过反审查工具绕过内容审查严格地区的限制，请务必谨慎及评估自身行为，并选择关闭，如果你执意开启，我们将不对任何因违规操作而产生的后果承担责任。</p>
             </div>
             <div class="mt-8 flex gap-3">
-                <button id="nsfw-cancel" class="flex-1 px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition">取消</button>
-                <button id="nsfw-confirm" disabled class="flex-1 px-4 py-2.5 rounded-xl bg-red-500 text-white text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all">确认开启 (5s)</button>
+                <button id="nsfw-cancel" class="flex-1 px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 font-medium hover:bg-zinc-200 dark:hover:bg-zinc-700 transition">取消</button>
+                <button id="nsfw-confirm" class="flex-1 px-4 py-3 rounded-xl bg-red-500 text-white font-medium hover:bg-red-600 transition shadow-lg shadow-red-500/20">确认开启</button>
             </div>
         </div>
     </div>
 
     <script src="js/main.js"></script>
+    <script>
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+            }
+            updateThemeButtons();
+        }
+
+        function updateThemeButtons() {
+            const isDark = document.documentElement.classList.contains('dark');
+            const lightBtn = document.querySelector('.theme-btn-light');
+            const darkBtn = document.querySelector('.theme-btn-dark');
+            
+            if (isDark) {
+                darkBtn.classList.add('bg-white', 'dark:bg-zinc-700', 'shadow-sm', 'text-[#0068B5]', 'dark:text-white');
+                lightBtn.classList.remove('bg-white', 'dark:bg-zinc-700', 'shadow-sm', 'text-[#0068B5]', 'dark:text-white');
+            } else {
+                lightBtn.classList.add('bg-white', 'shadow-sm', 'text-[#0068B5]');
+                darkBtn.classList.remove('bg-white', 'dark:bg-zinc-700', 'shadow-sm', 'text-[#0068B5]', 'dark:text-white');
+            }
+        }
+        updateThemeButtons();
+    </script>
 </body>
 </html>
