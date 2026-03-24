@@ -61,10 +61,10 @@ function closeMenu() {
 function switchTheme(mode) {
     if (mode === 'light') {
         document.documentElement.classList.remove('dark');
-        localStorage.theme = 'light';
+        localStorage.setItem('theme', 'light');
     } else {
         document.documentElement.classList.add('dark');
-        localStorage.theme = 'dark';
+        localStorage.setItem('theme', 'dark');
     }
     closeMenu();
 }
@@ -76,14 +76,12 @@ function showNSFWModal(onConfirm) {
     const confirmBtn = document.getElementById('nsfw-confirm');
     const cancelBtn = document.getElementById('nsfw-cancel');
     
-    // 显示弹窗
     modal.classList.remove('hidden');
     modal.classList.add('flex');
     setTimeout(() => {
         content.classList.remove('scale-95', 'opacity-0');
     }, 10);
 
-    // 5秒冷静时间
     let timeLeft = 5;
     confirmBtn.disabled = true;
     confirmBtn.innerText = `确认开启 (${timeLeft}s)`;
@@ -136,9 +134,7 @@ async function initNSFWLogic() {
 
             nsfwToggle.onclick = () => {
                 const currentStatus = localStorage.getItem('nsfw_enabled') === 'true';
-                
                 if (!currentStatus) {
-                    // 如果当前是关闭状态，点击则显示冷静弹窗
                     showNSFWModal(async () => {
                         localStorage.setItem('nsfw_enabled', 'true');
                         updateNSFWUI(true);
@@ -146,7 +142,6 @@ async function initNSFWLogic() {
                         renderPosts(posts);
                     });
                 } else {
-                    // 如果当前是开启状态，点击则直接关闭
                     localStorage.setItem('nsfw_enabled', 'false');
                     updateNSFWUI(false);
                     loadPosts().then(posts => renderPosts(posts));
@@ -206,7 +201,7 @@ function makeDraggable() {
 
     document.addEventListener('touchmove', (e) => {
         if (!isDragging) return;
-        e.preventDefault(); // 拦截下拉刷新
+        e.preventDefault();
         const touch = e.touches[0];
         const dx = touch.clientX - startX;
         const dy = touch.clientY - startY;
@@ -245,7 +240,6 @@ function renderPosts(posts) {
     const grid = document.getElementById('post-grid');
     if (!grid) return;
     const isNSFWEnabled = localStorage.getItem('nsfw_enabled') === 'true';
-    
     const filtered = posts.filter(post => !post.nsfw || isNSFWEnabled);
 
     grid.innerHTML = filtered.map(post => `
@@ -260,32 +254,34 @@ function renderPosts(posts) {
 
 // ====================== 初始化 ======================
 window.onload = async function() {
-    if (localStorage.theme === 'light') {
-        document.documentElement.classList.remove('dark');
-    } else {
-        document.documentElement.classList.add('dark');
-    }
-
+    // 主题初始化已由 HTML Head 脚本处理，此处删除冗余逻辑
     await loadGreetings();
     updateBeijingTime();
     setInterval(updateBeijingTime, 1000);
-    
     await initNSFWLogic();
-    
     const posts = await loadPosts();
     renderPosts(posts);
-    
     makeDraggable();
 
     document.getElementById('menu-close').addEventListener('click', closeMenu);
-
     document.addEventListener('click', function(e) {
         const menu = document.getElementById('theme-menu');
         const btn = document.getElementById('menu-toggle');
         const nsfwModal = document.getElementById('nsfw-modal');
-        // 排除掉开启弹窗时的外部点击干扰
         if (menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target) && nsfwModal.classList.contains('hidden')) {
             closeMenu();
         }
     });
 };
+
+// ====================== 系统主题实时监听 ======================
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+    // 只有在用户没手动固定主题的情况下，才跟随系统实时改变
+    if (!localStorage.getItem('theme')) {
+        if (e.matches) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    }
+});
