@@ -11,7 +11,7 @@
     --accent-blue: #0068B5;
     --border-color: #e5e7eb;
     
-    /* 重点文本框：修复为正常可读状态 */
+    /* 重点文本框：正常可读状态（style2修复版） */
     --box-bg: #f8fafc;
     --box-text: #1f2937; 
     --box-border: #e2e8f0;
@@ -25,8 +25,7 @@
     --text-muted: #a1a1aa;
     --accent-blue: #3b82f6;
     --border-color: #3f3f46;
-
-    /* 暗黑模式下的可读状态 */
+    /* 暗黑模式下的可读状态（style2修复版） */
     --box-bg: #27272a;
     --box-text: #f4f4f5;
     --box-border: #3f3f46;
@@ -45,7 +44,6 @@ h1, h2, h3, h4 {
     font-weight: 700;
     color: var(--text-main);
 }
-
 h2 {
     font-size: 1.75rem;
     border-left: 5px solid var(--accent-blue);
@@ -53,26 +51,59 @@ h2 {
     margin: 1.5em 0 0.8em;
 }
 
-/* --- 重点文本框 (Focus Boxes)：修复不可读问题 --- */
+/* --- 重点文本框 (Focus Boxes)：可读版+悬停交互（融合style1+style2） --- */
 .info-box, .alert-box {
     background-color: var(--box-bg);
     border: 1px solid var(--box-border);
     padding: 1.5rem;
     border-radius: 8px;
     margin: 1.5rem 0;
-    
-    /* 恢复正常对比度，允许用户划选 */
+    /* 正常对比度，允许用户划选（style2） */
     color: var(--box-text);
     user-select: text; 
     transition: all 0.3s ease;
 }
-
-/* 移除之前的 hover 隐藏逻辑，确保始终可见 */
+/* 悬停高亮边框+文本适配（融合双样式优势） */
 .info-box:hover, .alert-box:hover {
     border-color: var(--accent-blue);
+    color: var(--text-main);
+}
+/* 重点文本框标题样式（继承style1） */
+.info-box h3, .alert-box h3 {
+    color: var(--box-text); 
+    margin-top: 0;
+    transition: color 0.3s ease;
+}
+/* 文本框标题随悬停同步变色 */
+.info-box:hover h3, .alert-box:hover h3 {
+    color: var(--text-main);
 }
 
+/* --- 文本高亮样式（style2） --- */
 .text-highlight {
     color: var(--accent-blue);
     font-weight: 600;
+}
+
+/* --- 文章卡片样式（完整保留style1） --- */
+#post-grid .card {
+    background-color: var(--bg-card);
+    border-left: 5px solid var(--accent-blue);
+    padding: 2rem;
+    width: 100%;
+}
+#post-grid .card .title {
+    color: var(--accent-blue);
+}
+#post-grid .card .date {
+    color: var(--text-muted);
+}
+
+/* --- 菜单与NSFW开关样式（完整保留style1） --- */
+#theme-menu {
+    background-color: var(--bg-card);
+    border-left: 1px solid var(--border-color);
+}
+#nsfw-toggle.active {
+    background-color: var(--accent-blue);
 }
