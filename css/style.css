@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* --- 全局颜色变量定义（主用style2修复版，兼容style1全功能）--- */
+/* --- 全局颜色变量定义 --- */
 :root {
     --bg-page: #ffffff;
     --bg-card: #ffffff;
@@ -10,13 +10,11 @@
     --text-muted: #71717a;
     --accent-blue: #0068B5;
     --border-color: #e5e7eb;
-    /* 重点文本框：style2修复版 高对比度可读状态（核心优化） */
     --box-bg: #f8fafc;
     --box-text: #1f2937;
     --box-border: #e2e8f0;
 }
 
-/* --- 暗黑模式变量（同步修复，保留style1原有变量映射）--- */
 .dark {
     --bg-page: #18181b;
     --bg-card: #27272a;
@@ -24,81 +22,98 @@
     --text-muted: #a1a1aa;
     --accent-blue: #3b82f6;
     --border-color: #3f3f46;
-    /* 重点文本框：style2修复版 暗黑模式高对比度 */
     --box-bg: #27272a;
     --box-text: #f4f4f5;
     --box-border: #3f3f46;
 }
 
-/* --- 全局基础样式（统一过渡，兼容双版本）--- */
-body {
-    background-color: var(--bg-page);
-    color: var(--text-main);
-    font-family: system-ui, -apple-system, sans-serif;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-/* --- 标题样式（双版本一致，保留原设计）--- */
+/* --- 标题样式修复 --- */
 h1, h2, h3, h4 {
     font-family: Georgia, serif;
     font-weight: 700;
     color: var(--text-main);
 }
-h2 {
+
+/* 【修复点1】仅在文章内容区和信息框内显示蓝色左边框 */
+/* 这样主页的“多读两篇文章”和页脚“保持联系”就不会被误伤 */
+#post-content h2, .info-box h2, .alert-box h2 {
     font-size: 1.75rem;
     border-left: 5px solid var(--accent-blue);
     padding-left: 12px;
     margin: 1.5em 0 0.8em;
 }
 
-/* --- 重点文本框 (Focus Boxes)：style2修复版+hover强化，保留标签基础样式 --- */
+/* 确保主页特定区域的标题没有边框 */
+#posts h2, #contact h2 {
+    border-left: none;
+    padding-left: 0;
+}
+
+/* --- 重点文本框 --- */
 .info-box, .alert-box {
     background-color: var(--box-bg);
     border: 1px solid var(--box-border);
     padding: 1.5rem;
     border-radius: 8px;
     margin: 1.5rem 0;
-    /* 高对比度可读+允许划选（style2核心修复） */
     color: var(--box-text);
     user-select: text;
     transition: all 0.3s ease;
 }
-/* hover边框高亮（style2交互优化） */
+
 .info-box:hover, .alert-box:hover {
     border-color: var(--accent-blue);
 }
-/* 保留style1的文本框标题基础样式，继承高对比度颜色 */
+
 .info-box h3, .alert-box h3 {
     margin-top: 0;
     color: var(--box-text);
 }
 
-/* --- style1核心功能：文章卡片样式（完整保留，无修改）--- */
-#post-grid .card {
-    background-color: var(--bg-card);
-    border-left: 5px solid var(--accent-blue);
-    padding: 2rem;
-    width: 100%;
-}
-#post-grid .card .title {
-    color: var(--accent-blue);
-}
-#post-grid .card .date {
-    color: var(--text-muted);
-}
-
-/* --- style1核心功能：侧边菜单+NSFW开关（完整保留，支持收起/展开）--- */
+/* --- 侧边菜单修复 --- */
 #theme-menu {
     background-color: var(--bg-card);
     border-left: 1px solid var(--border-color);
-    transition: all 0.3s ease; /* 加过渡，匹配全局交互节奏 */
-}
-#nsfw-toggle.active {
-    background-color: var(--accent-blue);
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 18rem; 
+    /* 【修复点2】默认强制隐藏在屏幕右侧外 */
+    transform: translateX(100%); 
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+    box-shadow: -10px 0 15px -3px rgba(0, 0, 0, 0.1);
 }
 
-/* --- style2新增：文本高亮样式（实用扩展，无冲突）--- */
-.text-highlight {
-    color: var(--accent-blue);
-    font-weight: 600;
+/* 当 JS 给菜单添加 .open 类时，滑入屏幕 */
+#theme-menu.open {
+    transform: translateX(0);
+}
+
+/* --- 文章卡片样式 (保持原样) --- */
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 2rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    border-color: var(--accent-blue);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
+}
+
+.card .date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.card .title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-main);
 }
