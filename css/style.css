@@ -11,9 +11,9 @@
     --accent-blue: #0068B5;
     --border-color: #e5e7eb;
     
-    /* 重点文本框：初始为“不可读”状态（白底+近乎白色的字） */
-    --box-bg: #ffffff;
-    --box-text: #f9f9f9; /* 极低对比度 */
+    /* 重点文本框：修复为正常可读状态 */
+    --box-bg: #f8fafc;
+    --box-text: #1f2937; 
     --box-border: #e2e8f0;
 }
 
@@ -26,9 +26,9 @@
     --accent-blue: #3b82f6;
     --border-color: #3f3f46;
 
-    /* 暗黑模式下的不可读状态（深色底+近乎深色的字） */
+    /* 暗黑模式下的可读状态 */
     --box-bg: #27272a;
-    --box-text: #2a2a2d; /* 极低对比度 */
+    --box-text: #f4f4f5;
     --box-border: #3f3f46;
 }
 
@@ -53,7 +53,7 @@ h2 {
     margin: 1.5em 0 0.8em;
 }
 
-/* --- 重点文本框 (Focus Boxes)：强制不可读设计 --- */
+/* --- 重点文本框 (Focus Boxes)：修复不可读问题 --- */
 .info-box, .alert-box {
     background-color: var(--box-bg);
     border: 1px solid var(--box-border);
@@ -61,43 +61,18 @@ h2 {
     border-radius: 8px;
     margin: 1.5rem 0;
     
-    /* 核心需求：文本颜色与背景高度一致 */
+    /* 恢复正常对比度，允许用户划选 */
     color: var(--box-text);
-    user-select: none; /* 防止用户通过划选轻松识读 */
+    user-select: text; 
     transition: all 0.3s ease;
 }
 
-/* 如果你希望鼠标悬停时能看见（可选），可以删掉下面这段 */
-/* .info-box:hover, .alert-box:hover { color: var(--text-main); user-select: auto; } */
-
-.info-box h3, .alert-box h3 {
-    /* 标题可以保持可见，或者同样设为不可读 */
-    color: var(--box-text); 
-    margin-top: 0;
+/* 移除之前的 hover 隐藏逻辑，确保始终可见 */
+.info-box:hover, .alert-box:hover {
+    border-color: var(--accent-blue);
 }
 
-/* --- 文章卡片与其它组件同步 --- */
-#post-grid .card {
-    background-color: var(--bg-card);
-    border-left: 5px solid var(--accent-blue);
-    padding: 2rem;
-    width: 100%;
-}
-
-#post-grid .card .title {
+.text-highlight {
     color: var(--accent-blue);
-}
-
-#post-grid .card .date {
-    color: var(--text-muted);
-}
-
-/* --- 菜单与开关 --- */
-#theme-menu {
-    background-color: var(--bg-card);
-    border-left: 1px solid var(--border-color);
-}
-
-#nsfw-toggle.active {
-    background-color: var(--accent-blue);
+    font-weight: 600;
 }
