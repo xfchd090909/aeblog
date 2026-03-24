@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* --- 全局颜色变量定义（主用style2修复版，兼容style1全功能）--- */
+/* --- 定义颜色变量 --- */
 :root {
     --bg-page: #ffffff;
     --bg-card: #ffffff;
@@ -10,13 +10,14 @@
     --text-muted: #71717a;
     --accent-blue: #0068B5;
     --border-color: #e5e7eb;
-    /* 重点文本框：style2修复版 高对比度可读状态（核心优化） */
-    --box-bg: #f8fafc;
-    --box-text: #1f2937;
+    
+    /* 重点文本框：初始为“不可读”状态（白底+近乎白色的字） */
+    --box-bg: #ffffff;
+    --box-text: #f9f9f9; /* 极低对比度 */
     --box-border: #e2e8f0;
 }
 
-/* --- 暗黑模式变量（同步修复，保留style1原有变量映射）--- */
+/* --- 暗黑模式变量 --- */
 .dark {
     --bg-page: #18181b;
     --bg-card: #27272a;
@@ -24,13 +25,13 @@
     --text-muted: #a1a1aa;
     --accent-blue: #3b82f6;
     --border-color: #3f3f46;
-    /* 重点文本框：style2修复版 暗黑模式高对比度 */
+
+    /* 暗黑模式下的不可读状态（深色底+近乎深色的字） */
     --box-bg: #27272a;
-    --box-text: #f4f4f5;
+    --box-text: #2a2a2d; /* 极低对比度 */
     --box-border: #3f3f46;
 }
 
-/* --- 全局基础样式（统一过渡，兼容双版本）--- */
 body {
     background-color: var(--bg-page);
     color: var(--text-main);
@@ -38,12 +39,13 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
-/* --- 标题样式（双版本一致，保留原设计）--- */
+/* --- 动态标题样式 --- */
 h1, h2, h3, h4 {
     font-family: Georgia, serif;
     font-weight: 700;
     color: var(--text-main);
 }
+
 h2 {
     font-size: 1.75rem;
     border-left: 5px solid var(--accent-blue);
@@ -51,54 +53,51 @@ h2 {
     margin: 1.5em 0 0.8em;
 }
 
-/* --- 重点文本框 (Focus Boxes)：style2修复版+hover强化，保留标签基础样式 --- */
+/* --- 重点文本框 (Focus Boxes)：强制不可读设计 --- */
 .info-box, .alert-box {
     background-color: var(--box-bg);
     border: 1px solid var(--box-border);
     padding: 1.5rem;
     border-radius: 8px;
     margin: 1.5rem 0;
-    /* 高对比度可读+允许划选（style2核心修复） */
+    
+    /* 核心需求：文本颜色与背景高度一致 */
     color: var(--box-text);
-    user-select: text;
+    user-select: none; /* 防止用户通过划选轻松识读 */
     transition: all 0.3s ease;
 }
-/* hover边框高亮（style2交互优化） */
-.info-box:hover, .alert-box:hover {
-    border-color: var(--accent-blue);
-}
-/* 保留style1的文本框标题基础样式，继承高对比度颜色 */
+
+/* 如果你希望鼠标悬停时能看见（可选），可以删掉下面这段 */
+/* .info-box:hover, .alert-box:hover { color: var(--text-main); user-select: auto; } */
+
 .info-box h3, .alert-box h3 {
+    /* 标题可以保持可见，或者同样设为不可读 */
+    color: var(--box-text); 
     margin-top: 0;
-    color: var(--box-text);
 }
 
-/* --- style1核心功能：文章卡片样式（完整保留，无修改）--- */
+/* --- 文章卡片与其它组件同步 --- */
 #post-grid .card {
     background-color: var(--bg-card);
     border-left: 5px solid var(--accent-blue);
     padding: 2rem;
     width: 100%;
 }
+
 #post-grid .card .title {
     color: var(--accent-blue);
 }
+
 #post-grid .card .date {
     color: var(--text-muted);
 }
 
-/* --- style1核心功能：侧边菜单+NSFW开关（完整保留，支持收起/展开）--- */
+/* --- 菜单与开关 --- */
 #theme-menu {
     background-color: var(--bg-card);
     border-left: 1px solid var(--border-color);
-    transition: all 0.3s ease; /* 加过渡，匹配全局交互节奏 */
-}
-#nsfw-toggle.active {
-    background-color: var(--accent-blue);
 }
 
-/* --- style2新增：文本高亮样式（实用扩展，无冲突）--- */
-.text-highlight {
-    color: var(--accent-blue);
-    font-weight: 600;
+#nsfw-toggle.active {
+    background-color: var(--accent-blue);
 }
