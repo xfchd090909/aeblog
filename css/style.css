@@ -1,90 +1,103 @@
-/* --- 变量定义 --- */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- 定义颜色变量 --- */
 :root {
-    --bg-page: #f9fafb; /* zinc-50 */
+    --bg-page: #ffffff;
     --bg-card: #ffffff;
-    --text-main: #18181b; /* zinc-900 */
-    --text-muted: #71717a; /* zinc-500 */
+    --text-main: #1f2937;
+    --text-muted: #71717a;
     --accent-blue: #0068B5;
     --border-color: #e5e7eb;
     
-    /* 重点文本框：初始为“不可读”状态（低对比度） */
+    /* 重点文本框：初始为“不可读”状态（白底+近乎白色的字） */
     --box-bg: #ffffff;
-    --box-text: #f3f4f6; 
+    --box-text: #f9f9f9; /* 极低对比度 */
     --box-border: #e2e8f0;
 }
 
 /* --- 暗黑模式变量 --- */
 .dark {
-    --bg-page: #09090b; /* zinc-950 */
-    --bg-card: #18181b; /* zinc-900 */
-    --text-main: #e4e4e7; /* zinc-200 */
-    --text-muted: #a1a1aa; /* zinc-400 */
+    --bg-page: #18181b;
+    --bg-card: #27272a;
+    --text-main: #f4f4f5;
+    --text-muted: #a1a1aa;
     --accent-blue: #3b82f6;
-    --border-color: #27272a;
+    --border-color: #3f3f46;
 
-    --box-bg: #18181b;
-    --box-text: #202023; 
-    --box-border: #27272a;
+    /* 暗黑模式下的不可读状态（深色底+近乎深色的字） */
+    --box-bg: #27272a;
+    --box-text: #2a2a2d; /* 极低对比度 */
+    --box-border: #3f3f46;
 }
 
-/* --- 基础样式修复 --- */
 body {
     background-color: var(--bg-page);
     color: var(--text-main);
     font-family: system-ui, -apple-system, sans-serif;
     transition: background-color 0.3s, color 0.3s;
-    margin: 0;
-}
-
-/* 侧边栏初始状态：隐藏在右侧 */
-#theme-menu {
-    transform: translateX(100%);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background-color: var(--bg-card);
-    border-left: 1px solid var(--border-color);
-}
-
-#theme-menu.active {
-    transform: translateX(0);
 }
 
 /* --- 动态标题样式 --- */
-h2.section-title {
+h1, h2, h3, h4 {
     font-family: Georgia, serif;
     font-weight: 700;
-    border-left: 5px solid var(--accent-blue);
-    padding-left: 12px;
+    color: var(--text-main);
 }
 
-/* --- 重点文本框 (Focus Boxes) --- */
+h2 {
+    font-size: 1.75rem;
+    border-left: 5px solid var(--accent-blue);
+    padding-left: 12px;
+    margin: 1.5em 0 0.8em;
+}
+
+/* --- 重点文本框 (Focus Boxes)：强制不可读设计 --- */
 .info-box, .alert-box {
     background-color: var(--box-bg);
     border: 1px solid var(--box-border);
     padding: 1.5rem;
     border-radius: 8px;
     margin: 1.5rem 0;
+    
+    /* 核心需求：文本颜色与背景高度一致 */
     color: var(--box-text);
-    user-select: none; 
-    transition: all 0.4s ease;
+    user-select: none; /* 防止用户通过划选轻松识读 */
+    transition: all 0.3s ease;
 }
 
-/* 修复：选中或悬停时允许阅读（增强可用性） */
-.info-box:hover, .alert-box:hover {
-    color: var(--text-main);
-    border-color: var(--accent-blue);
-    user-select: auto;
+/* 如果你希望鼠标悬停时能看见（可选），可以删掉下面这段 */
+/* .info-box:hover, .alert-box:hover { color: var(--text-main); user-select: auto; } */
+
+.info-box h3, .alert-box h3 {
+    /* 标题可以保持可见，或者同样设为不可读 */
+    color: var(--box-text); 
+    margin-top: 0;
 }
 
-/* --- 文章卡片同步 --- */
-.post-card {
+/* --- 文章卡片与其它组件同步 --- */
+#post-grid .card {
     background-color: var(--bg-card);
-    border-left: 4px solid var(--accent-blue);
-    padding: 1.5rem;
-    border-radius: 4px;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-    transition: transform 0.2s;
+    border-left: 5px solid var(--accent-blue);
+    padding: 2rem;
+    width: 100%;
 }
 
-.post-card:hover {
-    transform: translateY(-2px);
+#post-grid .card .title {
+    color: var(--accent-blue);
+}
+
+#post-grid .card .date {
+    color: var(--text-muted);
+}
+
+/* --- 菜单与开关 --- */
+#theme-menu {
+    background-color: var(--bg-card);
+    border-left: 1px solid var(--border-color);
+}
+
+#nsfw-toggle.active {
+    background-color: var(--accent-blue);
 }
