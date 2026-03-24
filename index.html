@@ -100,6 +100,20 @@
         </div>
     </div>
 
+    <div id="nsfw-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity duration-300">
+        <div id="nsfw-modal-content" class="bg-white dark:bg-zinc-900 w-full max-w-md rounded-2xl p-8 shadow-2xl border border-zinc-200 dark:border-zinc-800 transform transition-all scale-95 opacity-0">
+            <h3 class="text-xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">NSFW内容警告</h3>
+            <div class="space-y-4 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                <p>如果您看到此提示，说明我们检测到你的当前位置处于内容审核较为宽松的地区若你的使用行为符合相关法律法规，你可自行选择开启该功能。</p>
+                <p>但若你通过反审核工具绕过内容审核严格地区的限制，请务必谨慎及评估自身行为，我们将不对任何因违规操作而产生的后果承担责任。</p>
+            </div>
+            <div class="mt-8 flex gap-3">
+                <button id="nsfw-cancel" class="flex-1 px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition">取消</button>
+                <button id="nsfw-confirm" disabled class="flex-1 px-4 py-2.5 rounded-xl bg-red-500 text-white text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all">确认开启 (5s)</button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/main.js"></script>
 </body>
 </html>
