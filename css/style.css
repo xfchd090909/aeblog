@@ -27,6 +27,25 @@
     --box-border: #3f3f46;
 }
 
+/* --- 【新功能】蓝条弹性掉落动画定义 --- */
+@keyframes elasticDrop {
+    0% {
+        transform: scaleY(0);
+        opacity: 0;
+    }
+    60% {
+        transform: scaleY(1.1); /* 稍微弹过头 */
+        opacity: 1;
+    }
+    80% {
+        transform: scaleY(0.95); /* 回弹 */
+    }
+    100% {
+        transform: scaleY(1); /* 最终状态 */
+        opacity: 1;
+    }
+}
+
 /* --- 标题样式修复 --- */
 h1, h2, h3, h4 {
     font-family: Georgia, serif;
@@ -34,21 +53,48 @@ h1, h2, h3, h4 {
     color: var(--text-main);
 }
 
-/* 仅在文章内容区和信息框内显示蓝色左边框 */
+/* --- 【动画实现】仅在文章内容区和信息框内的 h2 显示弹性蓝条 --- */
 #post-content h2, .info-box h2, .alert-box h2 {
     font-size: 1.75rem;
-    border-left: 5px solid var(--accent-blue);
-    padding-left: 12px;
+    position: relative; /* 必须，为伪元素定位 */
+    padding-left: 16px; /* 稍微加大间距，容纳蓝条 */
     margin: 1.5em 0 0.8em;
+    border-left: none; /* 移除原有的静态边框 */
 }
 
-/* 确保主页特定区域的标题没有边框 */
+/* 使用伪元素生成蓝条，并应用动画 */
+#post-content h2::before, .info-box h2::before, .alert-box h2::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 5px;
+    background-color: var(--accent-blue);
+    border-radius: 2px;
+    
+    /* 初始状态：缩放到最上方且透明 */
+    transform-origin: top;
+    transform: scaleY(0);
+    opacity: 0;
+    
+    /* 应用弹性动画：持续0.6s，贝塞尔曲线增加弹性感 */
+    animation: elasticDrop 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+    
+    /* 确保动画只在内容渲染出来后触发一次，后续切换主题不重复触发 */
+    animation-iteration-count: 1;
+}
+
+/* 确保主页特定区域的布局标题没有边框和动画 */
 #posts h2, #contact h2 {
     border-left: none;
     padding-left: 0;
 }
+#posts h2::before, #contact h2::before {
+    display: none;
+}
 
-/* --- 重点文本框 --- */
+/* --- 重点文本框 (Focus Boxes) --- */
 .info-box, .alert-box {
     background-color: var(--box-bg);
     border: 1px solid var(--box-border);
@@ -69,7 +115,7 @@ h1, h2, h3, h4 {
     color: var(--box-text);
 }
 
-/* --- 侧边菜单修复 --- */
+/* --- 侧边菜单修复 (保持原有逻辑) --- */
 #theme-menu {
     background-color: var(--bg-card);
     border-left: 1px solid var(--border-color);
@@ -88,18 +134,16 @@ h1, h2, h3, h4 {
     transform: translateX(0);
 }
 
-/* --- 文章卡片样式 (已移除悬停动画) --- */
+/* --- 文章卡片样式 (保持无悬停动画状态) --- */
 .card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     padding: 2rem;
     border-radius: 12px;
-    /* 移除了 transition: all 0.3s ease; 确保没有任何过渡效果 */
     display: block;
     position: relative;
 }
 
-/* 移除了 .card:hover 里的所有位移、阴影和边框变色逻辑 */
 .card:hover {
     /* 保持静态，不添加任何动画或样式变化 */
 }
