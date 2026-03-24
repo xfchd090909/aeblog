@@ -69,7 +69,53 @@ function switchTheme(mode) {
     closeMenu();
 }
 
-// ====================== NSFW 逻辑 ======================
+// ====================== NSFW 逻辑与弹窗控制 ======================
+function showNSFWModal(onConfirm) {
+    const modal = document.getElementById('nsfw-modal');
+    const content = document.getElementById('nsfw-modal-content');
+    const confirmBtn = document.getElementById('nsfw-confirm');
+    const cancelBtn = document.getElementById('nsfw-cancel');
+    
+    // 显示弹窗
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    setTimeout(() => {
+        content.classList.remove('scale-95', 'opacity-0');
+    }, 10);
+
+    // 5秒冷静时间
+    let timeLeft = 5;
+    confirmBtn.disabled = true;
+    confirmBtn.innerText = `确认开启 (${timeLeft}s)`;
+
+    const timer = setInterval(() => {
+        timeLeft--;
+        if (timeLeft > 0) {
+            confirmBtn.innerText = `确认开启 (${timeLeft}s)`;
+        } else {
+            clearInterval(timer);
+            confirmBtn.disabled = false;
+            confirmBtn.innerText = '确认开启';
+        }
+    }, 1000);
+
+    const closeModal = () => {
+        clearInterval(timer);
+        content.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }, 300);
+    };
+
+    confirmBtn.onclick = () => {
+        closeModal();
+        onConfirm();
+    };
+
+    cancelBtn.onclick = closeModal;
+}
+
 async function initNSFWLogic() {
     const nsfwSetting = document.getElementById('nsfw-setting');
     const nsfwToggle = document.getElementById('nsfw-toggle');
@@ -88,12 +134,23 @@ async function initNSFWLogic() {
             let isEnabled = localStorage.getItem('nsfw_enabled') === 'true';
             updateNSFWUI(isEnabled);
 
-            nsfwToggle.onclick = async () => {
-                isEnabled = !isEnabled;
-                localStorage.setItem('nsfw_enabled', isEnabled);
-                updateNSFWUI(isEnabled);
-                const posts = await loadPosts();
-                renderPosts(posts);
+            nsfwToggle.onclick = () => {
+                const currentStatus = localStorage.getItem('nsfw_enabled') === 'true';
+                
+                if (!currentStatus) {
+                    // 如果当前是关闭状态，点击则显示冷静弹窗
+                    showNSFWModal(async () => {
+                        localStorage.setItem('nsfw_enabled', 'true');
+                        updateNSFWUI(true);
+                        const posts = await loadPosts();
+                        renderPosts(posts);
+                    });
+                } else {
+                    // 如果当前是开启状态，点击则直接关闭
+                    localStorage.setItem('nsfw_enabled', 'false');
+                    updateNSFWUI(false);
+                    loadPosts().then(posts => renderPosts(posts));
+                }
             };
         }
     } catch (e) {
@@ -134,7 +191,6 @@ function makeDraggable() {
         btn.style.transform = `translate(${initialTranslateX}px, ${initialTranslateY}px)`;
     }
 
-    // 修复：passive 必须设为 false 才能在 touchmove 中阻止默认行为
     btn.addEventListener('touchstart', (e) => {
         isDragging = true;
         hasDragged = false;
@@ -150,10 +206,7 @@ function makeDraggable() {
 
     document.addEventListener('touchmove', (e) => {
         if (!isDragging) return;
-
-        // 核心修复：显式阻止默认事件，防止背景滚动和下拉刷新
-        e.preventDefault();
-
+        e.preventDefault(); // 拦截下拉刷新
         const touch = e.touches[0];
         const dx = touch.clientX - startX;
         const dy = touch.clientY - startY;
@@ -167,8 +220,6 @@ function makeDraggable() {
         if (!isDragging) return;
         isDragging = false;
         btn.style.transition = 'all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28)';
-        
-        // 修复：保存位置以便刷新后保持
         const style = window.getComputedStyle(btn);
         const matrix = new WebKitCSSMatrix(style.transform);
         localStorage.setItem('menuX', matrix.m41);
@@ -231,7 +282,9 @@ window.onload = async function() {
     document.addEventListener('click', function(e) {
         const menu = document.getElementById('theme-menu');
         const btn = document.getElementById('menu-toggle');
-        if (menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) {
+        const nsfwModal = document.getElementById('nsfw-modal');
+        // 排除掉开启弹窗时的外部点击干扰
+        if (menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target) && nsfwModal.classList.contains('hidden')) {
             closeMenu();
         }
     });
