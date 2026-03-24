@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* --- 定义颜色变量 --- */
+/* --- 全局颜色变量定义（主用style2修复版，兼容style1全功能）--- */
 :root {
     --bg-page: #ffffff;
     --bg-card: #ffffff;
@@ -10,14 +10,13 @@
     --text-muted: #71717a;
     --accent-blue: #0068B5;
     --border-color: #e5e7eb;
-    
-    /* 重点文本框：正常可读状态（style2修复版） */
+    /* 重点文本框：style2修复版 高对比度可读状态（核心优化） */
     --box-bg: #f8fafc;
-    --box-text: #1f2937; 
+    --box-text: #1f2937;
     --box-border: #e2e8f0;
 }
 
-/* --- 暗黑模式变量 --- */
+/* --- 暗黑模式变量（同步修复，保留style1原有变量映射）--- */
 .dark {
     --bg-page: #18181b;
     --bg-card: #27272a;
@@ -25,12 +24,13 @@
     --text-muted: #a1a1aa;
     --accent-blue: #3b82f6;
     --border-color: #3f3f46;
-    /* 暗黑模式下的可读状态（style2修复版） */
+    /* 重点文本框：style2修复版 暗黑模式高对比度 */
     --box-bg: #27272a;
     --box-text: #f4f4f5;
     --box-border: #3f3f46;
 }
 
+/* --- 全局基础样式（统一过渡，兼容双版本）--- */
 body {
     background-color: var(--bg-page);
     color: var(--text-main);
@@ -38,7 +38,7 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
-/* --- 动态标题样式 --- */
+/* --- 标题样式（双版本一致，保留原设计）--- */
 h1, h2, h3, h4 {
     font-family: Georgia, serif;
     font-weight: 700;
@@ -51,41 +51,29 @@ h2 {
     margin: 1.5em 0 0.8em;
 }
 
-/* --- 重点文本框 (Focus Boxes)：可读版+悬停交互（融合style1+style2） --- */
+/* --- 重点文本框 (Focus Boxes)：style2修复版+hover强化，保留标签基础样式 --- */
 .info-box, .alert-box {
     background-color: var(--box-bg);
     border: 1px solid var(--box-border);
     padding: 1.5rem;
     border-radius: 8px;
     margin: 1.5rem 0;
-    /* 正常对比度，允许用户划选（style2） */
+    /* 高对比度可读+允许划选（style2核心修复） */
     color: var(--box-text);
-    user-select: text; 
+    user-select: text;
     transition: all 0.3s ease;
 }
-/* 悬停高亮边框+文本适配（融合双样式优势） */
+/* hover边框高亮（style2交互优化） */
 .info-box:hover, .alert-box:hover {
     border-color: var(--accent-blue);
-    color: var(--text-main);
 }
-/* 重点文本框标题样式（继承style1） */
+/* 保留style1的文本框标题基础样式，继承高对比度颜色 */
 .info-box h3, .alert-box h3 {
-    color: var(--box-text); 
     margin-top: 0;
-    transition: color 0.3s ease;
-}
-/* 文本框标题随悬停同步变色 */
-.info-box:hover h3, .alert-box:hover h3 {
-    color: var(--text-main);
+    color: var(--box-text);
 }
 
-/* --- 文本高亮样式（style2） --- */
-.text-highlight {
-    color: var(--accent-blue);
-    font-weight: 600;
-}
-
-/* --- 文章卡片样式（完整保留style1） --- */
+/* --- style1核心功能：文章卡片样式（完整保留，无修改）--- */
 #post-grid .card {
     background-color: var(--bg-card);
     border-left: 5px solid var(--accent-blue);
@@ -99,11 +87,18 @@ h2 {
     color: var(--text-muted);
 }
 
-/* --- 菜单与NSFW开关样式（完整保留style1） --- */
+/* --- style1核心功能：侧边菜单+NSFW开关（完整保留，支持收起/展开）--- */
 #theme-menu {
     background-color: var(--bg-card);
     border-left: 1px solid var(--border-color);
+    transition: all 0.3s ease; /* 加过渡，匹配全局交互节奏 */
 }
 #nsfw-toggle.active {
     background-color: var(--accent-blue);
+}
+
+/* --- style2新增：文本高亮样式（实用扩展，无冲突）--- */
+.text-highlight {
+    color: var(--accent-blue);
+    font-weight: 600;
 }
